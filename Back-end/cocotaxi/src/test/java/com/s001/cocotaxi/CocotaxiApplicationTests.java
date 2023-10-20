@@ -1,10 +1,10 @@
-package com.s001.cocotexi;
+package com.s001.cocotaxi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CocotexiApplicationTests {
+class CocotaxiApplicationTests {
 
 	@Test
 	void contextLoads() {
