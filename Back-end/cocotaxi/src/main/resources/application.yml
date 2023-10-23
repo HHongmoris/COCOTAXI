@@ -16,6 +16,7 @@ spring:
 #    url: jdbc:mysql://localhost:3306/cocotaxi?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
 #    username: root
 #    password: 1234
+
   thymeleaf:
     cache: false
 
