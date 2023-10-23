@@ -1,11 +1,11 @@
-import styled from "styled-components";
 import React, { useEffect, useState } from "react";
 import { Map, View } from "ol";
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
 import { OSM, Vector as VectorSource } from "ol/source";
 import { Feature } from "ol";
-import { LineString } from "ol/geom";
+import { LineString, Circle as CircleGeometry } from "ol/geom";
 import { fromLonLat, toLonLat } from "ol/proj";
+import { Style, Stroke, Fill } from "ol/style";
 import "ol/ol.css";
 
 const MapComponent = () => {
@@ -22,7 +22,7 @@ const MapComponent = () => {
         }),
       ],
       view: new View({
-        center: fromLonLat([3.886, 51.007]), // 초기 지도 중심 좌표 설정
+        center: fromLonLat([3.886, 51.007]),
         zoom: 13,
       }),
     });
@@ -36,11 +36,37 @@ const MapComponent = () => {
         const lonLat = [position.coords.longitude, position.coords.latitude];
         setCurrentLocation(lonLat);
 
-        // Zoom to user's location
         map.getView().animate({
           center: fromLonLat(lonLat),
-          zoom: 15,
+          zoom: 12,
         });
+
+        // Create a source and layer for the yellow circle
+        const source = new VectorSource();
+        const layer = new VectorLayer({
+          source: source,
+        });
+
+        map.addLayer(layer);
+
+        // Create a yellow circle geometry around the user's location
+        const circleGeometry = new CircleGeometry(fromLonLat(lonLat), 6000); // 6km radius
+
+        // Style for the circle
+        const circleStyle = new Style({
+          fill: new Fill({
+            color: "rgba(255, 255, 0, 0.2)", // Yellow color with 60% opacity
+          }),
+          stroke: new Stroke({
+            color: "yellow",
+            width: 2,
+          }),
+        });
+
+        // Add the circle feature to the source with the defined style
+        const circleFeature = new Feature(circleGeometry);
+        circleFeature.setStyle(circleStyle);
+        source.addFeature(circleFeature);
       });
     } else {
       alert("Geolocation is not supported by your browser.");
@@ -53,19 +79,35 @@ const MapComponent = () => {
       return;
     }
 
-    // Define your origin and destination coordinates (in Lon/Lat)
     const origin = currentLocation;
     const destination = [8.692803, 49.409465];
 
-    // Create a source for the route geometry
+    const startCenter = fromLonLat(origin);
+    const endCenter = fromLonLat(destination);
+
+    const extent = [
+      Math.min(startCenter[0], endCenter[0]),
+      Math.min(startCenter[1], endCenter[1]),
+      Math.max(startCenter[0], endCenter[0]),
+      Math.max(startCenter[1], endCenter[1]),
+    ];
+
+    map.getView().fit(extent, { padding: [20, 20, 20, 20] });
+    map.getView().setZoom(map.getView().getZoom() + 12);
+
     const source = new VectorSource();
     const layer = new VectorLayer({
       source: source,
+      style: new Style({
+        stroke: new Stroke({
+          color: "blue",
+          width: 4,
+        }),
+      }),
     });
 
     map.addLayer(layer);
 
-    // Request the route from OpenRouteService
     fetch(
       `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${origin}&end=${destination}`
     )
@@ -80,10 +122,6 @@ const MapComponent = () => {
           geometry: route,
         });
         source.addFeature(feature);
-
-        // Zoom to the extent of the route
-        const extent = route.getExtent();
-        map.getView().fit(extent, { padding: [20, 20, 20, 20] });
       });
   };
 
