@@ -1,22 +1,19 @@
 import styled from "styled-components";
-import Openrouteservice from "openrouteservice-js";
 import React, { useEffect, useState } from "react";
-import Map from "ol/Map";
-import View from "ol/View";
+import { Map, View } from "ol";
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
 import { OSM, Vector as VectorSource } from "ol/source";
-import Feature from "ol/Feature";
+import { Feature } from "ol";
 import { LineString } from "ol/geom";
-import { fromLonLat } from "ol/proj";
+import { fromLonLat, toLonLat } from "ol/proj";
 import "ol/ol.css";
 
 const MapComponent = () => {
   const [map, setMap] = useState(null);
-  const ORS_API_KEY =
-    "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const ORS_API_KEY = "YOUR_ORS_API_KEY";
 
   useEffect(() => {
-    // Initialize the map
     const map = new Map({
       target: "map",
       layers: [
@@ -33,9 +30,31 @@ const MapComponent = () => {
     setMap(map);
   }, []);
 
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const lonLat = [position.coords.longitude, position.coords.latitude];
+        setCurrentLocation(lonLat);
+
+        // Zoom to user's location
+        map.getView().animate({
+          center: fromLonLat(lonLat),
+          zoom: 15,
+        });
+      });
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  };
+
   const showRoute = () => {
+    if (!currentLocation) {
+      alert("Please get your current location first.");
+      return;
+    }
+
     // Define your origin and destination coordinates (in Lon/Lat)
-    const origin = [8.676581, 49.418204];
+    const origin = currentLocation;
     const destination = [8.692803, 49.409465];
 
     // Create a source for the route geometry
@@ -61,16 +80,18 @@ const MapComponent = () => {
           geometry: route,
         });
         source.addFeature(feature);
+
+        // Zoom to the extent of the route
+        const extent = route.getExtent();
+        map.getView().fit(extent, { padding: [20, 20, 20, 20] });
       });
   };
 
   return (
     <div>
+      <button onClick={getUserLocation}>Get Current Location</button>
       <button onClick={showRoute}>Show Route</button>
-      <div
-        id="map"
-        style={{ width: "100%", height: "400px", display: "-ms-grid" }}
-      ></div>
+      <div id="map" style={{ width: "100%", height: "400px" }}></div>
     </div>
   );
 };
