@@ -1,8 +1,8 @@
-package com.s001.cocotaxi.client.service;
+package com.s001.cocotaxi.service;
 
-import com.s001.cocotaxi.client.domain.Client;
-import com.s001.cocotaxi.client.dto.AddClientRequest;
-import com.s001.cocotaxi.client.repository.ClientRepository;
+import com.s001.cocotaxi.domain.Client;
+import com.s001.cocotaxi.dto.AddClientRequest;
+import com.s001.cocotaxi.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

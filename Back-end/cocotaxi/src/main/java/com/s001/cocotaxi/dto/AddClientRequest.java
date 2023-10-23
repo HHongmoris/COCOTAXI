@@ -1,6 +1,6 @@
-package com.s001.cocotaxi.client.dto;
+package com.s001.cocotaxi.dto;
 
-import com.s001.cocotaxi.client.domain.Client;
+import com.s001.cocotaxi.domain.Client;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

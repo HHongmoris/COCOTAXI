@@ -1,4 +1,4 @@
-package com.s001.cocotaxi.client.domain;
+package com.s001.cocotaxi.domain;
 
 import lombok.*;
 

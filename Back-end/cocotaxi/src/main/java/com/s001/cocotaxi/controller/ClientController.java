@@ -1,8 +1,8 @@
-package com.s001.cocotaxi.client.controller;
+package com.s001.cocotaxi.controller;
 
-import com.s001.cocotaxi.client.domain.Client;
-import com.s001.cocotaxi.client.dto.AddClientRequest;
-import com.s001.cocotaxi.client.service.ClientService;
+import com.s001.cocotaxi.domain.Client;
+import com.s001.cocotaxi.dto.AddClientRequest;
+import com.s001.cocotaxi.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
