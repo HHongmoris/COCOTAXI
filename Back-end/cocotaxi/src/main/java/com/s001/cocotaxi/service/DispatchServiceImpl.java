@@ -2,6 +2,7 @@ package com.s001.cocotaxi.service;
 
 import com.s001.cocotaxi.domain.Call;
 import com.s001.cocotaxi.domain.Client;
+import com.s001.cocotaxi.domain.Dispatch;
 import com.s001.cocotaxi.domain.Driver;
 import com.s001.cocotaxi.dto.response.DispatchListResponse;
 import com.s001.cocotaxi.repository.CallRepository;
@@ -72,5 +73,22 @@ public class DispatchServiceImpl implements DispatchService {
         }
 
         return resultAroundDriverList;
+    }
+
+    //배차 진행 로직
+    @Override
+    public Dispatch makeDispatch(int callId, int driverId) {
+        Call call = callRepository.findById(callId).orElseThrow();
+        Driver driver = driverRepository.findById(driverId).orElseThrow();
+        Client client = clientRepository.findById(Long.valueOf(call.getClient().getClientId())).orElseThrow();
+
+        Dispatch dispatch = new Dispatch();
+        dispatch.setCall(call);
+        dispatch.setDriver(driver);
+        dispatch.setClient(client);
+
+        dispatchRepository.save(dispatch);
+
+        return dispatch;
     }
 }

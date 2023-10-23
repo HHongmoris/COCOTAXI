@@ -1,6 +1,6 @@
 package com.s001.cocotaxi.service;
 
-import com.s001.cocotaxi.dto.request.DispatchListRequest;
+import com.s001.cocotaxi.domain.Dispatch;
 import com.s001.cocotaxi.dto.response.DispatchListResponse;
 
 import java.util.List;
@@ -10,6 +10,6 @@ public interface DispatchService {
     List<DispatchListResponse> getDispatchList(int callId);
 
     //강제 배차
-
+    Dispatch makeDispatch(int callId, int driverId);
 
 }

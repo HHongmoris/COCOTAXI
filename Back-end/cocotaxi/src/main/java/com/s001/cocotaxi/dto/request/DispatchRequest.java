@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class DispatchListRequest {
-    //호출 번호 입력 받아서 관련 후보군 추출
-    private int callId;
+public class DispatchRequest {
+
+    private int dispatchId;
 }
