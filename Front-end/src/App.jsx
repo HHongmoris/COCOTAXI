@@ -1,109 +1,78 @@
-import React, { Component } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  Polyline,
-  Marker,
-  Popup,
-} from "react-leaflet";
-import axios from "axios";
+import styled from "styled-components";
+import Openrouteservice from "openrouteservice-js";
+import React, { useEffect, useState } from "react";
+import Map from "ol/Map";
+import View from "ol/View";
+import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
+import { OSM, Vector as VectorSource } from "ol/source";
+import Feature from "ol/Feature";
+import { LineString } from "ol/geom";
+import { fromLonLat } from "ol/proj";
+import "ol/ol.css";
 
-class RoutePlanner extends Component {
-  constructor() {
-    super();
-    this.state = {
-      startLocation: "",
-      endLocation: "",
-      route: null,
-      duration: null,
-    };
-  }
+const MapComponent = () => {
+  const [map, setMap] = useState(null);
+  const ORS_API_KEY =
+    "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
 
-  handleStartLocationChange = (event) => {
-    this.setState({ startLocation: event.target.value });
-  };
+  useEffect(() => {
+    // Initialize the map
+    const map = new Map({
+      target: "map",
+      layers: [
+        new TileLayer({
+          source: new OSM(),
+        }),
+      ],
+      view: new View({
+        center: fromLonLat([3.886, 51.007]), // 초기 지도 중심 좌표 설정
+        zoom: 13,
+      }),
+    });
 
-  handleEndLocationChange = (event) => {
-    this.setState({ endLocation: event.target.value });
-  };
+    setMap(map);
+  }, []);
 
-  calculateRoute = () => {
-    const { startLocation, endLocation } = this.state;
+  const showRoute = () => {
+    // Define your origin and destination coordinates (in Lon/Lat)
+    const origin = [8.676581, 49.418204];
+    const destination = [8.692803, 49.409465];
 
-    const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
-    const apiUrl = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${startLocation}&end=${endLocation}`;
+    // Create a source for the route geometry
+    const source = new VectorSource();
+    const layer = new VectorLayer({
+      source: source,
+    });
 
-    axios
-      .get(apiUrl)
-      .then((response) => {
-        const route = response.data.features[0].geometry.coordinates;
-        const duration =
-          response.data.features[0].properties.segments[0].duration;
+    map.addLayer(layer);
 
-        this.setState({ route, duration });
-      })
-      .catch((error) => {
-        console.error(error);
+    // Request the route from OpenRouteService
+    fetch(
+      `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${origin}&end=${destination}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        const coordinates = data.features[0].geometry.coordinates;
+        const route = new LineString(coordinates).transform(
+          "EPSG:4326",
+          "EPSG:3857"
+        );
+        const feature = new Feature({
+          geometry: route,
+        });
+        source.addFeature(feature);
       });
   };
 
-  render() {
-    const { route } = this.state;
-    const routeCoordinates = route
-      ? route.map((coord) => [coord[1], coord[0]])
-      : [];
+  return (
+    <div>
+      <button onClick={showRoute}>Show Route</button>
+      <div
+        id="map"
+        style={{ width: "100%", height: "400px", display: "-ms-grid" }}
+      ></div>
+    </div>
+  );
+};
 
-    return (
-      <div>
-        <input
-          type="text"
-          placeholder="Start Location"
-          value={this.state.startLocation}
-          onChange={this.handleStartLocationChange}
-        />
-        <input
-          type="text"
-          placeholder="End Location"
-          value={this.state.endLocation}
-          onChange={this.handleEndLocationChange}
-        />
-        <button onClick={this.calculateRoute}>Calculate Route</button>
-
-        {route && (
-          <div>
-            <div>Estimated Duration: {this.state.duration} seconds</div>
-            <div>Route Coordinates: {JSON.stringify(route)}</div>
-          </div>
-        )}
-
-        <MapContainer
-          center={[51.505, -0.09]}
-          zoom={13}
-          style={{ height: "100vh", width: "100%" }}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            minZoom={0}
-            maxZoom={19}
-          />
-          {/* 경로를 표시하는 Polyline 추가 */}
-          <Polyline
-            pathOptions={{ color: "red", weight: 5 }}
-            positions={routeCoordinates}
-          />
-
-          {/* 마커 추가 */}
-          <Marker position={[51.5, -0.09]}>
-            <Popup>
-              A pretty CSS popup.
-              <br />
-              Easily customizable.
-            </Popup>
-          </Marker>
-        </MapContainer>
-      </div>
-    );
-  }
-}
-
-export default RoutePlanner;
+export default MapComponent;

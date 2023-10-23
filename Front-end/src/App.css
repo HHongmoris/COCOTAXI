@@ -40,3 +40,9 @@
 .read-the-docs {
   color: #888;
 }
+
+.map {
+  width: 100%; /* Set the desired width, e.g., 100% */
+  height: 500px; /* Set the desired height, e.g., 500px */
+  display: block;
+}
