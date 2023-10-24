@@ -5,7 +5,7 @@ import com.s001.cocotaxi.domain.Client;
 import com.s001.cocotaxi.domain.Dispatch;
 import com.s001.cocotaxi.domain.Driver;
 import com.s001.cocotaxi.dto.response.DispatchListResponse;
-import com.s001.cocotaxi.repository.CallRepository;
+import com.s001.cocotaxi.repository.CallingsRepository;
 import com.s001.cocotaxi.repository.ClientRepository;
 import com.s001.cocotaxi.repository.DispatchRepository;
 import com.s001.cocotaxi.repository.DriverRepository;
@@ -24,7 +24,7 @@ public class DispatchServiceImpl implements DispatchService {
     private static final int RANGE_DISTANCE = 6; //강제배차 반경
     private final DispatchRepository dispatchRepository;
     private final ClientRepository clientRepository;
-    private final CallRepository callRepository;
+    private final CallingsRepository callingsRepository;
     private final DriverRepository driverRepository;
 
     //두 지점 사이의 거리 그하기
@@ -41,7 +41,7 @@ public class DispatchServiceImpl implements DispatchService {
     @Override
     public List<DispatchListResponse> getDispatchList(int callId) {
         //호출 번호에 맞는 위치에 따라 드라이버와 거리 비교 -> 6km 이내에 있다면 리스트에 추가
-        Callings callings = callRepository.findById(callId).orElseThrow();
+        Callings callings = callingsRepository.findById(callId).orElseThrow();
         //사용자 위도, 경도
         double userLatitude = callings.getStartPointLatitude();
         double userLongitude = callings.getStartPointLongitude();
@@ -78,7 +78,7 @@ public class DispatchServiceImpl implements DispatchService {
     //배차 진행 로직
     @Override
     public Dispatch makeDispatch(int callId, int driverId) {
-        Callings callings = callRepository.findById(callId).orElseThrow();
+        Callings callings = callingsRepository.findById(callId).orElseThrow();
         Driver driver = driverRepository.findById(driverId).orElseThrow();
         Client client = clientRepository.findById(Long.valueOf(callings.getClient().getClientId())).orElseThrow();
 
