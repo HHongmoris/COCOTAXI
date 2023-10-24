@@ -57,7 +57,9 @@ public class DispatchServiceImpl implements DispatchService {
         double minX = userLongitude -(RANGE_DISTANCE* kmForLongitude);
 
         //해당되는 좌표의 범위 안에 있는 택시
-        List<Driver>tempAroundDriverList = driverRepository.getAroundDriver(maxX, minX, maxY, minY);
+        //List<Driver>tempAroundDriverList = driverRepository.getAroundDriver(maxX, minX, maxY, minY);
+        List<Driver>tempAroundDriverList = driverRepository.findAll();
+
         List<DispatchListResponse>resultAroundDriverList = new ArrayList<>();
 
         //정확한 거리 측정 -> 범위 반경보다 작으면 반올림해서 표시
