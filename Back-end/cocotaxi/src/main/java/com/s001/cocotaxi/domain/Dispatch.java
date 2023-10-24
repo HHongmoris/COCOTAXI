@@ -21,7 +21,7 @@ public class Dispatch {
     private int dispatchId;
 
     //배차상태
-    @Column(name = "dispatch_state")
+    @Column(name = "dispatchState")
     private String dispatchState;
 
     //결제화폐단위
@@ -33,17 +33,17 @@ public class Dispatch {
     private int price;
 
     //결제수단
-    @Column(name = "payment_type")
+    @Column(name = "paymentType")
     private String paymentType;
 
     //기사ID (Driver 테이블)
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_id")
+    @JoinColumn(name = "driverId")
     private Driver driver;
 
     //호출번호(Callings 테이블)
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "call_id")
+    @JoinColumn(name = "callId")
     private Callings callings;
 
     //고객ID(CLient 테이블)

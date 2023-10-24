@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "Callings")
+
 @Getter
 @Setter
 @NoArgsConstructor
