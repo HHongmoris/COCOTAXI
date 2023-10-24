@@ -4,31 +4,36 @@ import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
 import { OSM, Vector as VectorSource } from "ol/source";
 import { Feature } from "ol";
 import { LineString, Circle as CircleGeometry } from "ol/geom";
-import { fromLonLat, toLonLat } from "ol/proj";
+import { fromLonLat } from "ol/proj";
 import { Style, Stroke, Fill } from "ol/style";
 import "ol/ol.css";
 
 const MapComponent = () => {
   const [map, setMap] = useState(null);
   const [currentLocation, setCurrentLocation] = useState(null);
-  const ORS_API_KEY = "YOUR_ORS_API_KEY";
+  const [circleFeature, setCircleFeature] = useState(null);
+  const ORS_API_KEY =
+    "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
+
+  const [circleCreated, setCircleCreated] = useState(false);
 
   useEffect(() => {
-    const map = new Map({
-      target: "map",
-      layers: [
-        new TileLayer({
-          source: new OSM(),
+    if (!map) {
+      const newMap = new Map({
+        target: "map",
+        layers: [
+          new TileLayer({
+            source: new OSM(),
+          }),
+        ],
+        view: new View({
+          center: fromLonLat([3.886, 51.007]),
+          zoom: 13,
         }),
-      ],
-      view: new View({
-        center: fromLonLat([3.886, 51.007]),
-        zoom: 13,
-      }),
-    });
-
-    setMap(map);
-  }, []);
+      });
+      setMap(newMap);
+    }
+  }, [map]);
 
   const getUserLocation = () => {
     if (navigator.geolocation) {
@@ -41,32 +46,35 @@ const MapComponent = () => {
           zoom: 12,
         });
 
-        // Create a source and layer for the yellow circle
-        const source = new VectorSource();
-        const layer = new VectorLayer({
-          source: source,
-        });
+        if (!circleCreated) {
+          const source = new VectorSource();
+          const layer = new VectorLayer({
+            source: source,
+          });
 
-        map.addLayer(layer);
+          map.addLayer(layer);
 
-        // Create a yellow circle geometry around the user's location
-        const circleGeometry = new CircleGeometry(fromLonLat(lonLat), 6000); // 6km radius
+          const circleGeometry = new CircleGeometry(fromLonLat(lonLat), 6000);
+          const circleStyle = new Style({
+            fill: new Fill({
+              color: "rgba(255, 255, 0, 0.2)",
+            }),
+            stroke: new Stroke({
+              color: "yellow",
+              width: 2,
+            }),
+          });
 
-        // Style for the circle
-        const circleStyle = new Style({
-          fill: new Fill({
-            color: "rgba(255, 255, 0, 0.2)", // Yellow color with 60% opacity
-          }),
-          stroke: new Stroke({
-            color: "yellow",
-            width: 2,
-          }),
-        });
+          const newCircleFeature = new Feature(circleGeometry);
+          newCircleFeature.setStyle(circleStyle);
+          source.addFeature(newCircleFeature);
 
-        // Add the circle feature to the source with the defined style
-        const circleFeature = new Feature(circleGeometry);
-        circleFeature.setStyle(circleStyle);
-        source.addFeature(circleFeature);
+          setCircleFeature(newCircleFeature);
+          setCircleCreated(true);
+        } else {
+          const circleGeometry = new CircleGeometry(fromLonLat(lonLat), 6000);
+          circleFeature.setGeometry(circleGeometry);
+        }
       });
     } else {
       alert("Geolocation is not supported by your browser.");
