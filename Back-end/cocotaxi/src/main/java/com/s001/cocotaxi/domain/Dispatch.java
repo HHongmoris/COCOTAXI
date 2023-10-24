@@ -8,7 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Dispatch")
+@Table(name = "dispatch")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,11 +17,11 @@ public class Dispatch {
     //배차번호
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "driverId", nullable = false)
+    @Column(name = "dispatchId", nullable = false)
     private int dispatchId;
 
     //배차상태
-    @Column(name = "dispatchState")
+    @Column(name = "dispatch_state")
     private String dispatchState;
 
     //결제화폐단위
@@ -33,21 +33,21 @@ public class Dispatch {
     private int price;
 
     //결제수단
-    @Column(name = "paymentType")
+    @Column(name = "payment_type")
     private String paymentType;
 
     //기사ID (Driver 테이블)
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driverId")
+    @JoinColumn(name = "driver_id")
     private Driver driver;
 
-    //호출번호(Call 테이블)
+    //호출번호(Callings 테이블)
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "callId")
-    private Call call;
+    @JoinColumn(name = "call_id")
+    private Callings callings;
 
     //고객ID(CLient 테이블)
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clientId")
+    @JoinColumn(name = "client_id")
     private Client client;
 }

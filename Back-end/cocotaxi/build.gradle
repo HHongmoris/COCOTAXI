@@ -8,7 +8,7 @@ group = 'com.s001'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '11'
+	sourceCompatibility = "16"
 }
 
 configurations {
@@ -42,3 +42,4 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+targetCompatibility = JavaVersion.VERSION_16
