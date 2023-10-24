@@ -21,8 +21,9 @@ public class Client {
     private String clientName;
 
     @Builder
-    public Client(String clientName){
+    public Client(String clientName, int clientId){
         this.clientName = clientName;
+        this.clientId = clientId;
     }
 
 }

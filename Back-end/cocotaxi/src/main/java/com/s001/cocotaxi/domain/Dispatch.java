@@ -8,7 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Dispatch")
+@Table(name = "dispatch")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,7 +17,7 @@ public class Dispatch {
     //배차번호
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "driverId", nullable = false)
+    @Column(name = "dispatchId", nullable = false)
     private int dispatchId;
 
     //배차상태
@@ -41,13 +41,13 @@ public class Dispatch {
     @JoinColumn(name = "driverId")
     private Driver driver;
 
-    //호출번호(Call 테이블)
+    //호출번호(Callings 테이블)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "callId")
-    private Calling calling;
+    private Callings callings;
 
     //고객ID(CLient 테이블)
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clientId")
+    @JoinColumn(name = "client_id")
     private Client client;
 }

@@ -9,12 +9,13 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "Calling")
+@Table(name = "Callings")
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Calling {
+public class Callings {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "callId", nullable = false)
