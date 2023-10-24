@@ -28,14 +28,14 @@ const MapComponent = () => {
         zoom: 2,
       }),
     });
-
+    document.body.style.display = "block";
     setMap(map);
   }, []);
 
   const showRoute = () => {
     // Define your origin and destination coordinates (in Lon/Lat)
-    const origin = [longitude1, latitude1];
-    const destination = [longitude2, latitude2];
+    const origin = [35.09443568187295, 128.85421192146904];
+    const destination = [35.09052017750784, 128.85331189172456];
 
     // Create a source for the route geometry
     const source = new VectorSource();
