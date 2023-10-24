@@ -27,14 +27,14 @@ public class ClientController {
                 .body(savedClient);
     }
 
-    @GetMapping("/api/client")
-    public ResponseEntity<List<ClientResponse>> findAllArticles() {
-        List<ClientResponse> clients = clientService.findAll()
-                .stream()
-                .map(ClientResponse::new)
-                .toList();
-
-        return ResponseEntity.ok()
-                .body(clients);
-    }
+//    @GetMapping("/api/client")
+//    public ResponseEntity<List<ClientResponse>> findAllArticles() {
+//        List<ClientResponse> clients = clientService.findAll()
+//                .stream()
+//                .map(ClientResponse::new)
+//                .toList();
+//
+//        return ResponseEntity.ok()
+//                .body(clients);
+//    }
 }
