@@ -44,7 +44,7 @@ public class Dispatch {
     //호출번호(Call 테이블)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "callId")
-    private Call call;
+    private Calling calling;
 
     //고객ID(CLient 테이블)
     @OneToOne(fetch = FetchType.LAZY)
