@@ -65,8 +65,6 @@ public class DispatchServiceImpl implements DispatchService {
 //        List<Driver>tempAroundDriverList = driverRepository.getAroundDriver(maxX, minX, maxY, minY);
         List<Driver>tempAroundDriverList = driverRepository.findAll();
 
-        System.out.println(tempAroundDriverList);
-
         List<DispatchListResponse>resultAroundDriverList = new ArrayList<>();
 
         //정확한 거리 측정 -> 범위 반경보다 작으면 반올림해서 표시
@@ -76,7 +74,7 @@ public class DispatchServiceImpl implements DispatchService {
                 DispatchListResponse response = new DispatchListResponse();
                 response.setDriverName(aroundDriver.getDriverName());
                 response.setVehicleNo(aroundDriver.getVehicleNo());
-                response.setDistance((int) Math.round(distance));
+                response.setDistance((double)Math.round(distance*1000)/1000);
                 resultAroundDriverList.add(response);
             }
         }
