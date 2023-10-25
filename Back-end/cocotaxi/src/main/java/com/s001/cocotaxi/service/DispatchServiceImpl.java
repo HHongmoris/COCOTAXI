@@ -56,9 +56,16 @@ public class DispatchServiceImpl implements DispatchService {
         double maxX = userLongitude +(RANGE_DISTANCE* kmForLongitude);
         double minX = userLongitude -(RANGE_DISTANCE* kmForLongitude);
 
+//        System.out.println("minX: " + minX);
+//        System.out.println("maxX: " + maxX);
+//        System.out.println("minY: " + minY);
+//        System.out.println("maxY: " + maxY);
+
         //해당되는 좌표의 범위 안에 있는 택시
-        //List<Driver>tempAroundDriverList = driverRepository.getAroundDriver(maxX, minX, maxY, minY);
+//        List<Driver>tempAroundDriverList = driverRepository.getAroundDriver(maxX, minX, maxY, minY);
         List<Driver>tempAroundDriverList = driverRepository.findAll();
+
+        System.out.println(tempAroundDriverList);
 
         List<DispatchListResponse>resultAroundDriverList = new ArrayList<>();
 
