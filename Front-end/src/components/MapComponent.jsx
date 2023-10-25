@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import Openrouteservice from "openrouteservice-js";
 import React, { useEffect, useState } from "react";
+
+import DispatchDriverList from "./DispatchDriverList";
+
 import Map from "ol/Map";
 import View from "ol/View";
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
@@ -67,6 +70,7 @@ const MapComponent = () => {
     <div>
       <button onClick={showRoute}>Show Route</button>
       <div id="map" style={{ width: "100%", height: "400px" }}></div>
+      <DispatchDriverList />
     </div>
   );
 };
