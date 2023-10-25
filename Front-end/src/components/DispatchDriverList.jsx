@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 const TableContainer = styled.div`
   max-height: 400px;
-  width: 50%;
+  width: 50%; // 테이블 사이즈는 이걸로 조절합니다.
   overflow: hidden;
 `;
 
@@ -25,7 +25,7 @@ const Thead = styled.thead`
 const TbodyContainer = styled.div`
   max-height: 360px; // 최대 높이 지정
   overflow-y: scroll; // 세로 스크롤
-  display: block; // 세로 스크롤을 위해 block 표시
+  display: block;
 `;
 
 const Tbody = styled.tbody`
@@ -36,7 +36,7 @@ const Tbody = styled.tbody`
 `;
 
 const TableCell = styled.td`
-  height: 40px; // 고정 높이를 설정
+  height: 40px; // 셀 고정 높이(데이터 4개 미만일 경우 비어있는 셀 디자인)
 `;
 
 function DispatchDriverList() {
@@ -44,6 +44,7 @@ function DispatchDriverList() {
   const [driverList, setDriverList] = useState([]);
 
   const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/1`;
+  // 일단 임시로 callId 1로 고정한 url 사용. useParam이나 redux로 수정예정
 
   const fetchData = async () => {
     try {
@@ -85,7 +86,6 @@ function DispatchDriverList() {
     []
   );
 
-  // 데이터를 react-table 형식에 맞게 변환
   const data = React.useMemo(() => {
     return driverList.map((item) => {
       return {
@@ -96,7 +96,7 @@ function DispatchDriverList() {
     });
   }, [driverList]);
 
-  // react-table을 초기화
+  // react-table 초기화
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
