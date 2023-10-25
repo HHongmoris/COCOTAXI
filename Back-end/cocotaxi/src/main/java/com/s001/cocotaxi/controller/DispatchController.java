@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/api/dispatch")
 public class DispatchController {
