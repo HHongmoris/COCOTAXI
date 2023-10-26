@@ -3,6 +3,7 @@ import Openrouteservice from "openrouteservice-js";
 import React, { useEffect, useState } from "react";
 
 import DispatchDriverList from "./DispatchDriverList";
+import ClientList from "./ClientList";
 
 import Map from "ol/Map";
 import View from "ol/View";
@@ -70,7 +71,17 @@ const MapComponent = () => {
     <div>
       <button onClick={showRoute}>Show Route</button>
       <div id="map" style={{ width: "100%", height: "400px" }}></div>
-      <DispatchDriverList />
+      <div style={{ display: "flex" }}>
+        <div style={{ flex: 5 }}>{/* 빈 공간 (5) */}</div>
+        <div style={{ flex: 50 }}>
+          <ClientList />
+        </div>
+        <div style={{ flex: 2 }}>{/* 빈 공간 (2) */}</div>
+        <div style={{ flex: 40 }}>
+          <DispatchDriverList />
+        </div>
+        <div style={{ flex: 2 }}>{/* 빈 공간 (5) */}</div>
+      </div>
     </div>
   );
 };

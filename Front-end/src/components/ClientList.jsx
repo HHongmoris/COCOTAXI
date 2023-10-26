@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 const TableContainer = styled.div`
   max-height: 400px;
-  width: 50%; // 테이블 사이즈는 이걸로 조절합니다.
+  width: 100%;
   overflow: hidden;
 `;
 
@@ -23,8 +23,8 @@ const Thead = styled.thead`
 `;
 
 const TbodyContainer = styled.div`
-  max-height: 360px; // 최대 높이 지정
-  overflow-y: scroll; // 세로 스크롤
+  max-height: 400px;
+  overflow-y: scroll;
   display: block;
 `;
 
@@ -36,15 +36,14 @@ const Tbody = styled.tbody`
 `;
 
 const TableCell = styled.td`
-  height: 40px; // 셀 고정 높이(데이터 4개 미만일 경우 비어있는 셀 디자인)
+  height: 40px;
 `;
 
-function DispatchDriverList() {
+function ClientList() {
   const { callId } = useParams();
-  const [driverList, setDriverList] = useState([]);
+  const [clientList, setClientList] = useState([]); // Fixed typo in variable name
 
-  const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/1`;
-  // 일단 임시로 callId 1로 고정한 url 사용. useParam이나 redux로 수정예정
+  const url = `http://k9s101.p.ssafy.io:9000/api/callings/all`;
 
   const fetchData = async () => {
     try {
@@ -54,7 +53,7 @@ function DispatchDriverList() {
       if (response.status === 200) {
         const data = await response.json();
         console.log(data);
-        setDriverList(data);
+        setClientList(data);
       }
     } catch (error) {
       console.error(error);
@@ -65,18 +64,34 @@ function DispatchDriverList() {
     fetchData();
   }, [callId]);
 
-  console.log(driverList);
+  console.log(clientList);
 
   // 데이터를 react-table 형식에 맞게 변환
   const columns = React.useMemo(
     () => [
       {
-        Header: "Driver",
-        accessor: "driverName",
+        Header: "callCreatedTime",
+        accessor: "callCreatedTime",
       },
       {
-        Header: "Plate Number",
-        accessor: "vehicleNo",
+        Header: "vehicleType",
+        accessor: "vehicleType",
+      },
+      {
+        Header: "startPointLatitude",
+        accessor: "startPointLatitude",
+      },
+      {
+        Header: "endPointLatitude",
+        accessor: "endPointLatitude",
+      },
+      {
+        Header: "startPointLongitute",
+        accessor: "startPointLongitute",
+      },
+      {
+        Header: "endPointLongitute",
+        accessor: "endPointLongitute",
       },
       {
         Header: "Distance",
@@ -87,14 +102,18 @@ function DispatchDriverList() {
   );
 
   const data = React.useMemo(() => {
-    return driverList.map((item) => {
+    return clientList.map((item) => {
       return {
-        driverName: item.driverName,
-        vehicleNo: item.vehicleNo,
+        callCreatedTime: item.callCreatedTime,
+        vehicleType: item.vehicleType,
+        startPointLatitude: item.startPointLatitude,
+        endPointLatitude: item.endPointLatitude,
+        startPointLongitute: item.startPointLongitute,
+        endPointLongitute: item.endPointLongitute,
         distance: item.distance,
       };
     });
-  }, [driverList]);
+  }, [clientList]);
 
   // react-table 초기화
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
@@ -133,7 +152,7 @@ function DispatchDriverList() {
                 </tr>
               );
             })}
-            {Array(Math.max(0, maxRows - rows.length))
+            {Array(maxRows - rows.length)
               .fill()
               .map((_, index) => (
                 <tr key={index}>
@@ -149,4 +168,4 @@ function DispatchDriverList() {
   );
 }
 
-export default DispatchDriverList;
+export default ClientList;
