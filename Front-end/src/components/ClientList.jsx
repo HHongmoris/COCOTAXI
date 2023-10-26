@@ -57,9 +57,10 @@ function ClientList() {
         startPointLongitute
       );
       map.setCenter(latLng);
-      console.log("Clicked row - startPointLatitude:", startPointLatitude);
-      console.log("Clicked row - startPointLongitute:", startPointLongitute);
+      console.log("21321312312 row - startPointLatitude:");
     }
+    console.log("Clicked row - startPointLatitude:", startPointLatitude);
+    console.log("Clicked row - startPointLongitute:", startPointLongitute);
   };
 
   const url = `http://k9s101.p.ssafy.io:9000/api/callings`;

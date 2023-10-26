@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 const TableContainer = styled.div`
   max-height: 400px;
-  width: 50%; // 테이블 사이즈는 이걸로 조절합니다.
+  width: 100%;
   overflow: hidden;
 `;
 
@@ -23,8 +23,8 @@ const Thead = styled.thead`
 `;
 
 const TbodyContainer = styled.div`
-  max-height: 360px; // 최대 높이 지정
-  overflow-y: scroll; // 세로 스크롤
+  max-height: 400px;
+  overflow-y: scroll;
   display: block;
 `;
 
@@ -36,7 +36,13 @@ const Tbody = styled.tbody`
 `;
 
 const TableCell = styled.td`
-  height: 40px; // 셀 고정 높이(데이터 4개 미만일 경우 비어있는 셀 디자인)
+  height: 40px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
 `;
 
 function DispatchDriverList() {

@@ -4,6 +4,7 @@ import DispatchDriverList from "./DispatchDriverList";
 
 const MapComponent = () => {
   const [map, setMap] = useState(null);
+  const [randomLocation, setRandomLocation] = useState(null);
 
   useEffect(() => {
     const loadGoogleMapsScript = () => {
@@ -51,9 +52,37 @@ const MapComponent = () => {
     }
   };
 
+  const generateRandomLocation = () => {
+    const lat = 35.0 + Math.random() * 0.2; // Adjust the range as needed
+    const lng = 128.7 + Math.random() * 0.2; // Adjust the range as needed
+    setRandomLocation({ lat, lng });
+
+    if (map) {
+      const latLng = new window.google.maps.LatLng(lat, lng);
+      map.setCenter(latLng);
+      drawCircle(lat, lng);
+    }
+  };
+
+  const drawCircle = (lat, lng) => {
+    if (map) {
+      const circle = new window.google.maps.Circle({
+        strokeColor: "#4158c1",
+        strokeOpacity: 0.9,
+        strokeWeight: 2,
+        fillColor: "#6c8fe8",
+        fillOpacity: 0.35,
+        map,
+        center: { lat, lng },
+        radius: 6000,
+      });
+    }
+  };
+
   return (
     <div>
       <button onClick={showRoute}>Show Route</button>
+      <button onClick={generateRandomLocation}>Generate Random Location</button>
       <div id="map" style={{ width: "100%", height: "400px" }}></div>
       <div style={{ display: "flex" }}>
         <div style={{ flex: 5 }}>{/* 빈 공간 (5) */}</div>
