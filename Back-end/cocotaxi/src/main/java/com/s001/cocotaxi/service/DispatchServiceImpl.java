@@ -70,7 +70,7 @@ public class DispatchServiceImpl implements DispatchService {
         //정확한 거리 측정 -> 범위 반경보다 작으면 반올림해서 표시
         for(Driver aroundDriver : tempAroundDriverList) {
             double distance = getDistance(userLatitude, userLongitude, aroundDriver.getDriverLatitude(), aroundDriver.getDriverLongitude());
-            if(distance < RANGE_DISTANCE){
+            if(distance < RANGE_DISTANCE){ // 6km 보다 작으면
                 DispatchListResponse response = new DispatchListResponse();
                 response.setDriverName(aroundDriver.getDriverName());
                 response.setVehicleNo(aroundDriver.getVehicleNo());

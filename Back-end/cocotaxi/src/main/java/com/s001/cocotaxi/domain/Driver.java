@@ -1,9 +1,7 @@
 package com.s001.cocotaxi.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.s001.cocotaxi.controller.DriverController;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -13,6 +11,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Driver {
     //기사 ID
     @Id
@@ -43,4 +42,5 @@ public class Driver {
     //기사위치 경도
     @Column(name = "driverLongitude")
     private double driverLongitude;
+
 }

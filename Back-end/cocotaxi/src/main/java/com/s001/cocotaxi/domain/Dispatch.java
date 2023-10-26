@@ -18,7 +18,7 @@ public class Dispatch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "dispatchId", nullable = false)
-    private int dispatchId;
+    private int driverId;
 
     //배차상태
     @Column(name = "dispatchState")

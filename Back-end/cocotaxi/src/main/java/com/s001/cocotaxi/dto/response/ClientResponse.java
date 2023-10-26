@@ -1,4 +1,4 @@
-package com.s001.cocotaxi.dto;
+package com.s001.cocotaxi.dto.response;
 
 import com.s001.cocotaxi.domain.Client;
 import lombok.Getter;
