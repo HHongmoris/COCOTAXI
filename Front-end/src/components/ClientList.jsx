@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
@@ -37,13 +37,32 @@ const Tbody = styled.tbody`
 
 const TableCell = styled.td`
   height: 40px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
 `;
 
 function ClientList() {
   const { callId } = useParams();
-  const [clientList, setClientList] = useState([]); // Fixed typo in variable name
+  const [clientList, setClientList] = useState([]);
+  let map;
 
-  const url = `http://k9s101.p.ssafy.io:9000/api/callings/all`;
+  const handleRowClick = (startPointLatitude, startPointLongitute) => {
+    if (window.google && map) {
+      const latLng = new window.google.maps.LatLng(
+        startPointLatitude,
+        startPointLongitute
+      );
+      map.setCenter(latLng);
+      console.log("Clicked row - startPointLatitude:", startPointLatitude);
+      console.log("Clicked row - startPointLongitute:", startPointLongitute);
+    }
+  };
+
+  const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
 
   const fetchData = async () => {
     try {
@@ -82,12 +101,12 @@ function ClientList() {
         accessor: "startPointLatitude",
       },
       {
-        Header: "endPointLatitude",
-        accessor: "endPointLatitude",
-      },
-      {
         Header: "startPointLongitute",
         accessor: "startPointLongitute",
+      },
+      {
+        Header: "endPointLatitude",
+        accessor: "endPointLatitude",
       },
       {
         Header: "endPointLongitute",
@@ -104,11 +123,12 @@ function ClientList() {
   const data = React.useMemo(() => {
     return clientList.map((item) => {
       return {
+        callId: item.callId,
         callCreatedTime: item.callCreatedTime,
         vehicleType: item.vehicleType,
         startPointLatitude: item.startPointLatitude,
-        endPointLatitude: item.endPointLatitude,
         startPointLongitute: item.startPointLongitute,
+        endPointLatitude: item.endPointLatitude,
         endPointLongitute: item.endPointLongitute,
         distance: item.distance,
       };
@@ -143,7 +163,15 @@ function ClientList() {
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr
+                  {...row.getRowProps()}
+                  onClick={() =>
+                    handleRowClick(
+                      row.original.startPointLatitude,
+                      row.original.startPointLongitute
+                    )
+                  }
+                >
                   {row.cells.map((cell) => (
                     <TableCell {...cell.getCellProps()}>
                       {cell.render("Cell")}

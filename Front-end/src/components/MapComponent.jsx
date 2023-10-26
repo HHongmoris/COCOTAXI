@@ -1,70 +1,54 @@
-import styled from "styled-components";
-import Openrouteservice from "openrouteservice-js";
 import React, { useEffect, useState } from "react";
-
-import DispatchDriverList from "./DispatchDriverList";
 import ClientList from "./ClientList";
-
-import Map from "ol/Map";
-import View from "ol/View";
-import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
-import { OSM, Vector as VectorSource } from "ol/source";
-import Feature from "ol/Feature";
-import { LineString } from "ol/geom";
-import { fromLonLat } from "ol/proj";
-import "ol/ol.css";
+import DispatchDriverList from "./DispatchDriverList";
 
 const MapComponent = () => {
   const [map, setMap] = useState(null);
-  const ORS_API_KEY = "여기 API 넣으세요";
 
   useEffect(() => {
-    // Initialize the map
-    const map = new Map({
-      target: "map",
-      layers: [
-        new TileLayer({
-          source: new OSM(),
-        }),
-      ],
-      view: new View({
-        center: fromLonLat([0, 0]),
-        zoom: 2,
-      }),
-    });
-    document.body.style.display = "block";
-    setMap(map);
+    const loadGoogleMapsScript = () => {
+      const googleMapsScript = document.createElement("script");
+      googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAcpJXGOLDdWsqoSBrIUOZEDtSXNoGtTvw&libraries=geometry`;
+      googleMapsScript.async = true;
+      googleMapsScript.defer = true;
+      googleMapsScript.onload = initMap;
+      document.head.appendChild(googleMapsScript);
+    };
+
+    const initMap = () => {
+      const map = new window.google.maps.Map(document.getElementById("map"), {
+        center: { lat: 35.092, lng: 128.854 },
+        zoom: 12,
+      });
+
+      setMap(map);
+    };
+
+    loadGoogleMapsScript();
   }, []);
 
   const showRoute = () => {
-    // Define your origin and destination coordinates (in Lon/Lat)
-    const origin = [35.09443568187295, 128.85421192146904];
-    const destination = [35.09052017750784, 128.85331189172456];
-
-    // Create a source for the route geometry
-    const source = new VectorSource();
-    const layer = new VectorLayer({
-      source: source,
-    });
-
-    map.addLayer(layer);
-
-    // Request the route from OpenRouteService
-    fetch(
-      `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${origin}&end=${destination}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        const coordinates = data.features[0].geometry.coordinates;
-        const route = new LineString(coordinates).transform(
-          "EPSG:4326",
-          "EPSG:3857"
-        );
-        const feature = new Feature({
-          geometry: route,
-        });
-        source.addFeature(feature);
+    if (map) {
+      const directionsService = new window.google.maps.DirectionsService();
+      const directionsRenderer = new window.google.maps.DirectionsRenderer({
+        map,
       });
+
+      const origin = { lat: 35.09443568187295, lng: 128.85421192146904 };
+      const destination = { lat: 35.09052017750784, lng: 128.85331189172456 };
+
+      const request = {
+        origin,
+        destination,
+        travelMode: window.google.maps.TravelMode.DRIVING,
+      };
+
+      directionsService.route(request, (result, status) => {
+        if (status === "OK") {
+          directionsRenderer.setDirections(result);
+        }
+      });
+    }
   };
 
   return (
