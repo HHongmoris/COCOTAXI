@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @ToString
 public class CallingsResponse implements Comparable<CallingsResponse> {
     // Fields, Getters, Setters 생략
-    
+    private int callId;
     private Timestamp callCreatedTime;
     private String vehicleType;
     private double startPointLatitude;
@@ -22,6 +22,7 @@ public class CallingsResponse implements Comparable<CallingsResponse> {
     private double Distance;
 
     public void callingsResponseList(Callings entity){
+        this.callId = entity.getCallId();
         this.callCreatedTime = entity.getCallCreatedTime();
         this.vehicleType = entity.getVehicleType();
         this.startPointLongitute = entity.getStartPointLongitude();
