@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Component } from "react";
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
+import axios from "axios";
 
 const MapComponent = () => {
   const [map, setMap] = useState(null);
@@ -30,25 +31,36 @@ const MapComponent = () => {
 
   const showRoute = () => {
     if (map) {
-      const directionsService = new window.google.maps.DirectionsService();
-      const directionsRenderer = new window.google.maps.DirectionsRenderer({
-        map,
-      });
+      // 출발지와 도착지 좌표 (부산역과 부산공항 예시)
+      const startLocation = "8.676581,49.418204";
+      const endLocation = "8.692803,49.409465";
 
-      const origin = { lat: 35.09443568187295, lng: 128.85421192146904 };
-      const destination = { lat: 35.09052017750784, lng: 128.85331189172456 };
+      const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77"; // ORS API 키로 교체
 
-      const request = {
-        origin,
-        destination,
-        travelMode: window.google.maps.TravelMode.DRIVING,
-      };
+      // ORS API를 사용하여 경로 및 시간 가져오기
+      axios
+        .get(
+          `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${startLocation}&end=${endLocation}`
+        )
+        .then((response) => {
+          const data = response.data;
+          const duration = data.features[0].properties.segments[0].duration;
+          const routeCoordinates = data.features[0].geometry.coordinates;
 
-      directionsService.route(request, (result, status) => {
-        if (status === "OK") {
-          directionsRenderer.setDirections(result);
-        }
-      });
+          // 경로 좌표를 JSON 문자열로 변환
+          const routeCoordinatesJSON = JSON.stringify(routeCoordinates);
+
+          // 경로 좌표와 시간을 표시
+          const message =
+            "Route Coordinates: " +
+            routeCoordinatesJSON +
+            "\nDuration: " +
+            duration;
+          alert(message);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
   };
 
