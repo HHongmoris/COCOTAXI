@@ -56,25 +56,29 @@ public class DispatchServiceImpl implements DispatchService {
         double maxX = userLongitude +(RANGE_DISTANCE* kmForLongitude);
         double minX = userLongitude -(RANGE_DISTANCE* kmForLongitude);
 
-//        System.out.println("minX: " + minX);
-//        System.out.println("maxX: " + maxX);
-//        System.out.println("minY: " + minY);
-//        System.out.println("maxY: " + maxY);
+        System.out.println("minX: " + minX);
+        System.out.println("maxX: " + maxX);
+        System.out.println("minY: " + minY);
+        System.out.println("maxY: " + maxY);
 
         //해당되는 좌표의 범위 안에 있는 택시
-//        List<Driver>tempAroundDriverList = driverRepository.getAroundDriver(maxX, minX, maxY, minY);
+//        List<Driver>tempAroundDriverList = driverRepository.findDriverByDriverLatitudeAndDriverLongitude(maxX, minX, maxY, minY);
         List<Driver>tempAroundDriverList = driverRepository.findAll();
 
         List<DispatchListResponse>resultAroundDriverList = new ArrayList<>();
 
         //정확한 거리 측정 -> 범위 반경보다 작으면 반올림해서 표시
         for(Driver aroundDriver : tempAroundDriverList) {
+            System.out.println(tempAroundDriverList.size());
             double distance = getDistance(userLatitude, userLongitude, aroundDriver.getDriverLatitude(), aroundDriver.getDriverLongitude());
+            System.out.println("거리: "+distance);
             if(distance < RANGE_DISTANCE){ // 6km 보다 작으면
                 DispatchListResponse response = new DispatchListResponse();
                 response.setDriverName(aroundDriver.getDriverName());
                 response.setVehicleNo(aroundDriver.getVehicleNo());
                 response.setDistance((double)Math.round(distance*1000)/1000);
+//                response.setDriverLatitude(aroundDriver.getDriverLatitude());
+//                response.setDriverLongitude(aroundDriver.getDriverLongitude());
                 resultAroundDriverList.add(response);
             }
         }

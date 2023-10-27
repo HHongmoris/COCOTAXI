@@ -10,14 +10,14 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table (name = "Client")
+@Table (name = "client")
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "clientId", updatable = false)
+    @Column(name = "client_id", updatable = false)
     private int clientId;
 
-    @Column(name = "clientName")
+    @Column(name = "client_name")
     private String clientName;
 
     @Builder
