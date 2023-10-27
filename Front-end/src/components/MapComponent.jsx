@@ -6,6 +6,16 @@ import axios from "axios";
 const MapComponent = () => {
   const [map, setMap] = useState(null);
   const [randomLocation, setRandomLocation] = useState(null);
+  const [centerLat, setCenterLat] = useState(35.092);
+  const [centerLng, setCenterLng] = useState(128.854);
+
+  const updateCenterLat = (startPointLatitude) => {
+    setCenterLat(startPointLatitude);
+  };
+
+  const updateCenterLng = (startPointLongitute) => {
+    setCenterLng(startPointLongitute);
+  };
 
   useEffect(() => {
     const loadGoogleMapsScript = () => {
@@ -19,15 +29,16 @@ const MapComponent = () => {
 
     const initMap = () => {
       const map = new window.google.maps.Map(document.getElementById("map"), {
-        center: { lat: 35.092, lng: 128.854 },
-        zoom: 12,
+        center: { lat: centerLat, lng: centerLng },
+        zoom: 15,
       });
-
+      console.log("centerLat", centerLat);
+      console.log("centerLng", centerLng);
       setMap(map);
     };
 
     loadGoogleMapsScript();
-  }, []);
+  }, [centerLat, centerLng]);
 
   const showRoute = () => {
     if (map) {
@@ -46,6 +57,7 @@ const MapComponent = () => {
           const data = response.data;
           const duration = data.features[0].properties.segments[0].duration;
           const routeCoordinates = data.features[0].geometry.coordinates;
+          const distance = data.features[0].properties.segments[0].distance;
 
           // 경로 좌표를 JSON 문자열로 변환
           const routeCoordinatesJSON = JSON.stringify(routeCoordinates);
@@ -55,7 +67,10 @@ const MapComponent = () => {
             "Route Coordinates: " +
             routeCoordinatesJSON +
             "\nDuration: " +
-            duration;
+            duration +
+            " || Real Distance: " +
+            distance +
+            " meters"; // 이동 거리를 추가합니다.
           alert(message);
         })
         .catch((error) => {
@@ -95,11 +110,19 @@ const MapComponent = () => {
     <div>
       <button onClick={showRoute}>Show Route</button>
       <button onClick={generateRandomLocation}>Generate Random Location</button>
-      <div id="map" style={{ width: "100%", height: "400px" }}></div>
+      <div
+        id="map"
+        style={{ width: "100%", height: "400px", position: "relative" }}
+      ></div>
       <div style={{ display: "flex" }}>
         <div style={{ flex: 5 }}>{/* 빈 공간 (5) */}</div>
         <div style={{ flex: 50 }}>
-          <ClientList />
+          <ClientList
+            centerLat={centerLat}
+            centerLng={centerLng}
+            updateCenterLat={updateCenterLat}
+            updateCenterLng={updateCenterLng}
+          />
         </div>
         <div style={{ flex: 2 }}>{/* 빈 공간 (2) */}</div>
         <div style={{ flex: 40 }}>

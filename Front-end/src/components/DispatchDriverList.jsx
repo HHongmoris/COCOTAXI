@@ -4,7 +4,7 @@ import { useTable } from "react-table";
 import styled from "styled-components";
 
 const TableContainer = styled.div`
-  max-height: 400px;
+  max-height: 300px;
   width: 100%;
   overflow: hidden;
 `;
@@ -23,7 +23,7 @@ const Thead = styled.thead`
 `;
 
 const TbodyContainer = styled.div`
-  max-height: 400px;
+  max-height: 300px;
   overflow-y: scroll;
   display: block;
 `;

@@ -45,22 +45,29 @@ const TableCell = styled.td`
   }
 `;
 
-function ClientList() {
+function ClientList(props) {
   const { callId } = useParams();
   const [clientList, setClientList] = useState([]);
-  let map;
+  const { centerLat, centerLng } = props;
+
+  // MapComponent 갱신을 위한 콜백 함수
+  const { updateCenterLat, updateCenterLng } = props;
+
+  // let map;
 
   const handleRowClick = (startPointLatitude, startPointLongitute) => {
-    if (window.google && map) {
-      const latLng = new window.google.maps.LatLng(
-        startPointLatitude,
-        startPointLongitute
-      );
-      map.setCenter(latLng);
-      console.log("21321312312 row - startPointLatitude:");
-    }
-    console.log("Clicked row - startPointLatitude:", startPointLatitude);
-    console.log("Clicked row - startPointLongitute:", startPointLongitute);
+    // if (window.google && map) {
+    //   const latLng = new window.google.maps.LatLng(
+    //     startPointLatitude,
+    //     startPointLongitute
+    //   );
+    //   map.setCenter(latLng);
+    //   console.log("21321312312 row - startPointLatitude:");
+    // }
+    updateCenterLat(startPointLatitude);
+    updateCenterLng(startPointLongitute);
+    console.log("Clicked row - startPointLatitude:", centerLat);
+    console.log("Clicked row - startPointLongitute:", centerLng);
   };
 
   const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
