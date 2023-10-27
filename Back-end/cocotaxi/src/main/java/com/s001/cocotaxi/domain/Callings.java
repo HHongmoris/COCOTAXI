@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "Callings")
+@Table(name = "callings")
 
 @Getter
 @Setter
@@ -18,32 +18,32 @@ import java.sql.Timestamp;
 public class Callings {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "callId", nullable = false)
+    @Column(name = "call_id", nullable = false)
     private int callId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "clientId")
+    @JoinColumn(name = "client_id")
     private Client client;
 
-    @Column(name = "callStatus")
+    @Column(name = "call_status")
     private String callStatus;
 
-    @Column(name = "callCreatedTime")
+    @Column(name = "call_createdTime")
     private Timestamp callCreatedTime;
 
-    @Column(name = "startPointLatitude")
+    @Column(name = "start_point_latitude")
     private double startPointLatitude;
 
-    @Column(name = "startPointLongitude")
+    @Column(name = "start_point_longitude")
     private double startPointLongitude;
 
-    @Column(name = "endPointLatitude")
+    @Column(name = "end_point_latitude")
     private double endPointLatitude;
 
-    @Column(name = "endPointLongitude")
+    @Column(name = "end_point_longitude")
     private double endPointLongitude;
 
-    @Column(name = "vehicleType")
+    @Column(name = "vehicle_type")
     private String vehicleType;
 
 }

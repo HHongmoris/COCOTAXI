@@ -1,12 +1,11 @@
 package com.s001.cocotaxi.domain;
 
-import com.s001.cocotaxi.controller.DriverController;
 import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Driver")
+@Table(name = "driver")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,31 +15,31 @@ public class Driver {
     //기사 ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "driverId", nullable = false)
+    @Column(name = "driver_id", nullable = false)
     private int driverId;
 
     //기사 이름
-    @Column(name="driverName")
+    @Column(name="driver_name")
     private String driverName;
 
     //차량 종류
-    @Column(name="vehicleType")
+    @Column(name="vehicle_type")
     private String vehicleType;
 
     //차량등록번호
-    @Column(name="vehicleNo")
+    @Column(name="vehicle_no")
     private String vehicleNo;
 
     //배차여부
-    @Column(name = "isVehicleMatched")
+    @Column(name = "is_vehicle_matched")
     private boolean isVehicleMatched;
 
     //기사위치 위도
-    @Column(name = "driverLatitude")
+    @Column(name = "driver_latitude")
     private double driverLatitude;
 
     //기사위치 경도
-    @Column(name = "driverLongitude")
+    @Column(name = "driver_longitude")
     private double driverLongitude;
 
 }
