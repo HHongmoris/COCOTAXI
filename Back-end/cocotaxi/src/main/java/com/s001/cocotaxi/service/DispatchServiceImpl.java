@@ -4,6 +4,7 @@ import com.s001.cocotaxi.domain.Callings;
 import com.s001.cocotaxi.domain.Client;
 import com.s001.cocotaxi.domain.Dispatch;
 import com.s001.cocotaxi.domain.Driver;
+import com.s001.cocotaxi.dto.response.CallingsResponse;
 import com.s001.cocotaxi.dto.response.DispatchListResponse;
 import com.s001.cocotaxi.repository.CallRepository;
 import com.s001.cocotaxi.repository.ClientRepository;
@@ -14,7 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+import static java.util.Collections.sort;
 
 @Slf4j
 @Service
@@ -56,13 +61,13 @@ public class DispatchServiceImpl implements DispatchService {
         double maxX = userLongitude +(RANGE_DISTANCE* kmForLongitude);
         double minX = userLongitude -(RANGE_DISTANCE* kmForLongitude);
 
-//        System.out.println("minX: " + minX);
-//        System.out.println("maxX: " + maxX);
-//        System.out.println("minY: " + minY);
-//        System.out.println("maxY: " + maxY);
+        System.out.println("minX: " + minX);
+        System.out.println("maxX: " + maxX);
+        System.out.println("minY: " + minY);
+        System.out.println("maxY: " + maxY);
 
         //해당되는 좌표의 범위 안에 있는 택시
-//        List<Driver>tempAroundDriverList = driverRepository.findDriverByDriverLatitudeAndDriverLongitude(maxX, minX, maxY, minY);
+//        List<Driver>tempAroundDriverList = driverRepository.findDriverByDriverLatitudeBetweenAndDriverLongitudeBetween(maxX, minX, maxY, minY);
         List<Driver>tempAroundDriverList = driverRepository.findAll();
 
         List<DispatchListResponse>resultAroundDriverList = new ArrayList<>();
@@ -71,7 +76,7 @@ public class DispatchServiceImpl implements DispatchService {
         for(Driver aroundDriver : tempAroundDriverList) {
             System.out.println(tempAroundDriverList.size());
             double distance = getDistance(userLatitude, userLongitude, aroundDriver.getDriverLatitude(), aroundDriver.getDriverLongitude());
-//            System.out.println("거리: "+distance);
+            System.out.println("거리: "+distance);
             if(distance < RANGE_DISTANCE){ // 6km 보다 작으면
                 DispatchListResponse response = new DispatchListResponse();
                 response.setDriverName(aroundDriver.getDriverName());
@@ -82,6 +87,8 @@ public class DispatchServiceImpl implements DispatchService {
                 resultAroundDriverList.add(response);
             }
         }
+
+        Collections.sort(resultAroundDriverList, (driver1, driver2) -> Double.compare(driver1.getDistance(), driver2.getDistance()));
 
         return resultAroundDriverList;
     }
