@@ -15,7 +15,7 @@ const Table = styled.table`
 `;
 
 const Thead = styled.thead`
-  background-color: #f2f2f2;
+  background-color: #f2;
   th {
     padding: 8px;
     border-bottom: 1px solid #ddd;
@@ -130,9 +130,18 @@ function ClientList(props) {
 
   const data = React.useMemo(() => {
     return clientList.map((item) => {
+      const date = new Date(item.callCreatedTime);
+
+      const 시간 = ("0" + date.getHours()).slice(-2);
+      const 분 = ("0" + date.getMinutes()).slice(-2);
+      const 초 = ("0" + date.getSeconds()).slice(-2);
+
+      const formattedTime = `${시간}:${분}:${초}`;
+
       return {
         callId: item.callId,
-        callCreatedTime: item.callCreatedTime,
+        callCreatedTime: formattedTime,
+        // callCreatedTime : item.callCreatedTime,
         vehicleType: item.vehicleType,
         startPointLatitude: item.startPointLatitude,
         startPointLongitute: item.startPointLongitute,

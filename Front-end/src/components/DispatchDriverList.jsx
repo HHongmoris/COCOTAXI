@@ -15,7 +15,7 @@ const Table = styled.table`
 `;
 
 const Thead = styled.thead`
-  background-color: #f2f2f2;
+  background-color: #f2;
   th {
     padding: 8px;
     border-bottom: 1px solid #ddd;
