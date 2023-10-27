@@ -30,7 +30,7 @@ const MapComponent = () => {
     const initMap = () => {
       const map = new window.google.maps.Map(document.getElementById("map"), {
         center: { lat: centerLat, lng: centerLng },
-        zoom: 15,
+        zoom: 12,
       });
       console.log("centerLat", centerLat);
       console.log("centerLng", centerLng);

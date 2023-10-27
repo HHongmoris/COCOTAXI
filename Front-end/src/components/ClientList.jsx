@@ -4,7 +4,7 @@ import { useTable } from "react-table";
 import styled from "styled-components";
 
 const TableContainer = styled.div`
-  max-height: 400px;
+  max-height: 300px;
   width: 100%;
   overflow: hidden;
 `;
@@ -150,7 +150,7 @@ function ClientList(props) {
   });
 
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
-  const maxRows = 4;
+  const maxRows = 6;
 
   return (
     <TableContainer>
@@ -188,7 +188,7 @@ function ClientList(props) {
                 </tr>
               );
             })}
-            {Array(maxRows - rows.length)
+            {Array(Math.max(0, maxRows - rows.length))
               .fill()
               .map((_, index) => (
                 <tr key={index}>

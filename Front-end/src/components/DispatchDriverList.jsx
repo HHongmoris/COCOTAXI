@@ -4,7 +4,7 @@ import { useTable } from "react-table";
 import styled from "styled-components";
 
 const TableContainer = styled.div`
-  max-height: 300px;
+  max-height: 320px;
   width: 100%;
   overflow: hidden;
 `;
