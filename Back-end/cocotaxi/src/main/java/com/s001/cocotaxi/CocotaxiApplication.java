@@ -18,7 +18,8 @@ public class CocotaxiApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("http://k9s101.p.ssafy.io:5000/");
+			registry.addMapping("/**").allowedOrigins("http://k9s101.p.ssafy.io:5000/");
+			registry.addMapping("/**").allowedOrigins("http://localhost:5000/");
 			}
 		};
 	}
