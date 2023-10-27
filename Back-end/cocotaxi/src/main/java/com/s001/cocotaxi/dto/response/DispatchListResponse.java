@@ -17,8 +17,8 @@ public class DispatchListResponse {
     private double distance;
 
     //TODO : 이거 나중에 따로 api 뺴서 하든 어찌하든 필요
-//    private double driverLongitude;
-//    private double driverLatitude;
+    private double driverLongitude;
+    private double driverLatitude;
 
 
     public DispatchListResponse(Driver entity){
