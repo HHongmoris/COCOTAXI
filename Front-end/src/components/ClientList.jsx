@@ -23,9 +23,9 @@ const Thead = styled.thead`
 `;
 
 const TbodyContainer = styled.div`
-  max-height: 400px;
-  overflow-y: scroll;
+  max-height: 300px;
   display: block;
+  overflow-y: scroll;
 `;
 
 const Tbody = styled.tbody`
