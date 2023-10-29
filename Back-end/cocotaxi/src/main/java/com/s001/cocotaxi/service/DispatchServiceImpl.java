@@ -99,7 +99,7 @@ public class DispatchServiceImpl implements DispatchService {
     public Dispatch makeDispatch(int callId, int driverId) {
         Callings callings = callRepository.findById(callId).orElseThrow();
         Driver driver = driverRepository.findById(driverId).orElseThrow();
-        Client client = clientRepository.findById(Long.valueOf(callings.getClient().getClientId())).orElseThrow();
+        Client client = clientRepository.findById(callings.getClient().getClientId()).orElseThrow();
 
         Dispatch dispatch = new Dispatch();
         dispatch.setCallings(callings);
