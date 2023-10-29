@@ -19,8 +19,9 @@ public class CocotaxiApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 			// CORS 배포 및 Local 허용
-			registry.addMapping("/**").allowedOrigins("http://k9s101.p.ssafy.io:5000/");
-			registry.addMapping("/**").allowedOrigins("http://localhost:5000/");
+			registry.addMapping("/**")
+					.allowedOrigins("http://k9s101.p.ssafy.io:5000/", "http://localhost:5000/")
+					.allowedMethods("POST", "PUT", "GET", "HEAD", "OPTIONS", "DELETE");;
 			}
 		};
 	}
