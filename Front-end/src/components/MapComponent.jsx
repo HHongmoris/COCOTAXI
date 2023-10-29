@@ -8,6 +8,7 @@ const MapComponent = () => {
   const [randomLocation, setRandomLocation] = useState(null);
   const [centerLat, setCenterLat] = useState(35.092);
   const [centerLng, setCenterLng] = useState(128.854);
+  const [circle, setCircle] = useState(null);
 
   const updateCenterLat = (startPointLatitude) => {
     setCenterLat(startPointLatitude);
@@ -30,7 +31,7 @@ const MapComponent = () => {
     const initMap = () => {
       const map = new window.google.maps.Map(document.getElementById("map"), {
         center: { lat: centerLat, lng: centerLng },
-        zoom: 15,
+        zoom: 12,
       });
       console.log("centerLat", centerLat);
       console.log("centerLng", centerLng);
@@ -87,13 +88,16 @@ const MapComponent = () => {
     if (map) {
       const latLng = new window.google.maps.LatLng(lat, lng);
       map.setCenter(latLng);
+      if (circle) {
+        circle.setMap(null);
+      }
       drawCircle(lat, lng);
     }
   };
 
   const drawCircle = (lat, lng) => {
     if (map) {
-      const circle = new window.google.maps.Circle({
+      const newCircle = new window.google.maps.Circle({
         strokeColor: "#4158c1",
         strokeOpacity: 0.9,
         strokeWeight: 2,
@@ -103,6 +107,7 @@ const MapComponent = () => {
         center: { lat, lng },
         radius: 6000,
       });
+      setCircle(newCircle);
     }
   };
 
