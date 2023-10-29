@@ -9,6 +9,7 @@ const MapComponent = () => {
   const [centerLat, setCenterLat] = useState(35.092);
   const [centerLng, setCenterLng] = useState(128.854);
   const [circle, setCircle] = useState(null);
+  const [openPage, setOpenPage] = useState(false);
 
   const updateCenterLat = (startPointLatitude) => {
     setCenterLat(startPointLatitude);
@@ -29,17 +30,34 @@ const MapComponent = () => {
     };
 
     const initMap = () => {
-      const map = new window.google.maps.Map(document.getElementById("map"), {
-        center: { lat: centerLat, lng: centerLng },
-        zoom: 12,
-      });
-      console.log("centerLat", centerLat);
-      console.log("centerLng", centerLng);
-      setMap(map);
+      const newMap = new window.google.maps.Map(
+        document.getElementById("map"),
+        {
+          center: { lat: centerLat, lng: centerLng },
+          zoom: 12,
+        }
+      );
+      setMap(newMap);
     };
 
     loadGoogleMapsScript();
-  }, [centerLat, centerLng]);
+  }, []);
+
+  useEffect(() => {
+    if (map) {
+      const latLng = new window.google.maps.LatLng(centerLat, centerLng);
+      map.setCenter(latLng);
+      if (circle) {
+        circle.setMap(null);
+      }
+      console.log(openPage);
+      if (openPage) {
+        drawCircle(centerLat, centerLng);
+      } else {
+        setOpenPage(true);
+      }
+    }
+  }, [centerLat, centerLng, map]);
 
   const showRoute = () => {
     if (map) {
