@@ -70,8 +70,9 @@ public class DispatchServiceImpl implements DispatchService {
         for(Driver aroundDriver : tempAroundDriverList) {
 
             double distance = getDistance(userLatitude, userLongitude, aroundDriver.getDriverLatitude(), aroundDriver.getDriverLongitude());
+            boolean flag = aroundDriver.isVehicleMatched();
 
-            if(distance < RANGE_DISTANCE){ // 6km 보다 작으면
+            if(distance < RANGE_DISTANCE && !flag){ // 6km 보다 작고 손님 없는 경우만
                 DispatchListResponse response = new DispatchListResponse();
                 response.setDriverName(aroundDriver.getDriverName());
                 response.setVehicleNo(aroundDriver.getVehicleNo());
