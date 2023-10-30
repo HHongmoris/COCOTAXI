@@ -70,7 +70,7 @@ public class DispatchServiceImpl implements DispatchService {
         for(Driver aroundDriver : tempAroundDriverList) {
 
             double distance = getDistance(userLatitude, userLongitude, aroundDriver.getDriverLatitude(), aroundDriver.getDriverLongitude());
-            boolean flag = aroundDriver.isVehicleMatched();
+            boolean flag = aroundDriver.getIsVehicleMatched();
 
             if(distance < RANGE_DISTANCE && !flag){ // 6km 보다 작고 손님 없는 경우만
                 DispatchListResponse response = new DispatchListResponse();
@@ -95,12 +95,22 @@ public class DispatchServiceImpl implements DispatchService {
         Driver driver = driverRepository.findById(driverId).orElseThrow();
         Client client = clientRepository.findById(callings.getClient().getClientId()).orElseThrow();
 
+        //Dispatch 레코드 추가
         Dispatch dispatch = new Dispatch();
         dispatch.setCallings(callings);
         dispatch.setDriver(driver);
         dispatch.setClient(client);
-
+        dispatch.setDispatchState("on_board");
         dispatchRepository.save(dispatch);
+
+        //driver에서 isVehicleMatched true로 변환(빈차->운행중)
+        driver.setIsVehicleMatched(true);
+        System.out.println("이거 봐 : "+ driver.getIsVehicleMatched());
+        driverRepository.save(driver);
+
+        //callings에서 호출 성공으로 call에서 on_board로 변경
+        callings.setCallStatus("on_board");
+        callRepository.save(callings);
 
         return dispatch;
     }
