@@ -2,6 +2,7 @@ import React, { useEffect, useState, Component } from "react";
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
+import polyline from "@mapbox/polyline";
 
 const MapComponent = () => {
   const [map, setMap] = useState(null);
@@ -61,17 +62,17 @@ const MapComponent = () => {
 
   const showRoute = () => {
     if (map) {
-      // 출발지와 도착지 좌표 (부산역과 부산공항 예시)
+      // 출발지와 도착지 좌표
       const startLocation = "8.676581,49.418204";
       const endLocation = "8.692803,49.409465";
 
-      const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77"; // ORS API 키로 교체
+      //const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77"; // ORS API 키로 교체
 
       // ORS API를 사용하여 경로 및 시간 가져오기
       axios
-        .get(
-          `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${startLocation}&end=${endLocation}`
-        )
+        .get
+        //`https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${startLocation}&end=${endLocation}`
+        ()
         .then((response) => {
           const data = response.data;
           const duration = data.features[0].properties.segments[0].duration;
@@ -91,6 +92,8 @@ const MapComponent = () => {
             distance +
             " meters"; // 이동 거리를 추가합니다.
           alert(message);
+
+          console.log(message);
         })
         .catch((error) => {
           console.error(error);
@@ -129,10 +132,109 @@ const MapComponent = () => {
     }
   };
 
+  const getAndSetPolylineCoords = () => {
+    const startLocation = "8.676581,49.418204";
+    const endLocation = "8.692803,49.409465";
+    const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77"; // ORS API 키로 교체해야 합니다.
+
+    // function parseCoordinatePair(pairString) {
+    //   const [longitude, latitude] = pairString.split(",").map(Number);
+    //   return { latitude, longitude };
+    // }
+
+    // // 주어진 legs 문자열을 파싱하여 배열에 좌표 객체를 추가
+    // function parseLegs(legs) {
+    //   const coordinates = legs.split(",").map(parseCoordinatePair);
+    //   return coordinates;
+    // }
+
+    axios
+      .get(
+        `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${startLocation}&end=${endLocation}`
+      )
+      .then((response) => {
+        const data = response.data;
+        const routeCoordinatesJSON = data.features[0].geometry.coordinates;
+        const legs = routeCoordinatesJSON;
+
+        // const parsedCoordinates = parseLegs(legs);
+        // console.log("변환값 " + parsedCoordinates);
+        console.log("데이터를 불러오는 부분" + legs);
+        // const poly = polyline.decode(legs);
+        // console.log("폴리 적용" + poly);
+
+        const coords = [];
+
+        // 좌표
+        // const decodedPolyline = legs;
+        // decodedPolyline.forEach((coordinate) => {
+        //   coords.push({
+        //     latitude: coordinate[0],
+        //     longitude: coordinate[1],
+        //   });
+        // });
+
+        //디코딩해서 값 추출
+
+        const decodedPolyline = legs;
+        console.log(decodedPolyline);
+
+        decodedPolyline.forEach((coordinate) => {
+          coords.push({
+            latitude: coordinate[0],
+            longitude: coordinate[1],
+          });
+        });
+
+        // setPolylineCoords(coords);
+
+        console.log(coords);
+        // 지도를 첫 번째 좌표로 이동
+        if (coords.length > 0 && map) {
+          const firstCoord = coords[0];
+          const latLng = new window.google.maps.LatLng(
+            firstCoord.latitude,
+            firstCoord.longitude
+          );
+          map.setCenter(latLng);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  useEffect(() => {
+    if (map) {
+      // 다중 선을 그릴 좌표 배열 (예: 선1, 선2, 선3, ...)
+      const multiPolylineCoordinates = [
+        [
+          { lat: 37.7749, lng: -122.4194 },
+          { lat: 37.7759, lng: -122.4199 },
+          { lat: 37.7769, lng: -122.4204 },
+        ],
+        // 다른 다중 선의 좌표
+      ];
+
+      // 다중 선을 그리기
+      multiPolylineCoordinates.forEach((coordinates) => {
+        const polyline = new window.google.maps.Polyline({
+          path: coordinates,
+          strokeColor: "#FF0000", // 선 색상 설정
+          strokeOpacity: 1.0, // 선 불투명도 설정
+          strokeWeight: 2, // 선 굵기 설정
+        });
+        polyline.setMap(map);
+      });
+    }
+  }, [map]);
+
   return (
     <div>
       <button onClick={showRoute}>Show Route</button>
       <button onClick={generateRandomLocation}>Generate Random Location</button>
+      <button onClick={getAndSetPolylineCoords}>경로 보기</button>
+
       <div
         id="map"
         style={{ width: "100%", height: "400px", position: "relative" }}
