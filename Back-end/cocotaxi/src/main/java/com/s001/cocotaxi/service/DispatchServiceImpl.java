@@ -4,7 +4,6 @@ import com.s001.cocotaxi.domain.Callings;
 import com.s001.cocotaxi.domain.Client;
 import com.s001.cocotaxi.domain.Dispatch;
 import com.s001.cocotaxi.domain.Driver;
-import com.s001.cocotaxi.dto.response.CallingsResponse;
 import com.s001.cocotaxi.dto.response.DispatchListResponse;
 import com.s001.cocotaxi.repository.CallRepository;
 import com.s001.cocotaxi.repository.ClientRepository;
@@ -16,10 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-
-import static java.util.Collections.sort;
 
 @Slf4j
 @Service
@@ -47,6 +43,10 @@ public class DispatchServiceImpl implements DispatchService {
     public List<DispatchListResponse> getDispatchList(int callId) {
         //호출 번호에 맞는 위치에 따라 드라이버와 거리 비교 -> 6km 이내에 있다면 리스트에 추가
         Callings callings = callRepository.findById(callId).orElseThrow();
+
+        //사용자가 호출한 차량 종류
+        String vehicleType = callings.getVehicleType();
+
         //사용자 위도, 경도
         double userLatitude = callings.getStartPointLatitude();
         double userLongitude = callings.getStartPointLongitude();
@@ -61,24 +61,18 @@ public class DispatchServiceImpl implements DispatchService {
         double maxX = userLongitude -(RANGE_DISTANCE* kmForLongitude);
         double minX = userLongitude +(RANGE_DISTANCE* kmForLongitude);
 
-//        System.out.println("minX: " + minX);
-//        System.out.println("maxX: " + maxX);
-//        System.out.println("minY: " + minY);
-//        System.out.println("maxY: " + maxY);
-
         //해당되는 좌표의 범위 안에 있는 택시
-        List<Driver>tempAroundDriverList = driverRepository.findDriverByDriverLatitudeAndDriverLongitude(maxX, minX, maxY, minY);
-//        List<Driver>tempAroundDriverList = driverRepository.findAll();
-//        System.out.println(tempAroundDriverList.size());
+        List<Driver>tempAroundDriverList = driverRepository.findDriverByDriverLatitudeAndDriverLongitude(maxX, minX, maxY, minY, vehicleType);
 
         List<DispatchListResponse>resultAroundDriverList = new ArrayList<>();
 
         //정확한 거리 측정 -> 범위 반경보다 작으면 반올림해서 표시
         for(Driver aroundDriver : tempAroundDriverList) {
-//            System.out.println(tempAroundDriverList.size());
+
             double distance = getDistance(userLatitude, userLongitude, aroundDriver.getDriverLatitude(), aroundDriver.getDriverLongitude());
-//            System.out.println("거리: "+distance);
-            if(distance < RANGE_DISTANCE){ // 6km 보다 작으면
+            boolean flag = aroundDriver.getIsVehicleMatched();
+
+            if(distance < RANGE_DISTANCE && !flag){ // 6km 보다 작고 손님 없는 경우만
                 DispatchListResponse response = new DispatchListResponse();
                 response.setDriverName(aroundDriver.getDriverName());
                 response.setVehicleNo(aroundDriver.getVehicleNo());
@@ -99,14 +93,24 @@ public class DispatchServiceImpl implements DispatchService {
     public Dispatch makeDispatch(int callId, int driverId) {
         Callings callings = callRepository.findById(callId).orElseThrow();
         Driver driver = driverRepository.findById(driverId).orElseThrow();
-        Client client = clientRepository.findById(Long.valueOf(callings.getClient().getClientId())).orElseThrow();
+        Client client = clientRepository.findById(callings.getClient().getClientId()).orElseThrow();
 
+        //Dispatch 레코드 추가
         Dispatch dispatch = new Dispatch();
         dispatch.setCallings(callings);
         dispatch.setDriver(driver);
         dispatch.setClient(client);
-
+        dispatch.setDispatchState("on_board");
         dispatchRepository.save(dispatch);
+
+        //driver에서 isVehicleMatched true로 변환(빈차->운행중)
+        driver.setIsVehicleMatched(true);
+        System.out.println("이거 봐 : "+ driver.getIsVehicleMatched());
+        driverRepository.save(driver);
+
+        //callings에서 호출 성공으로 call에서 on_board로 변경
+        callings.setCallStatus("on_board");
+        callRepository.save(callings);
 
         return dispatch;
     }

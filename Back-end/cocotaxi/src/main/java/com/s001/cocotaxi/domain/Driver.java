@@ -32,7 +32,7 @@ public class Driver {
 
     //배차여부
     @Column(name = "is_vehicle_matched")
-    private boolean isVehicleMatched;
+    private Boolean isVehicleMatched;
 
     //기사위치 위도
     @Column(name = "driver_latitude")

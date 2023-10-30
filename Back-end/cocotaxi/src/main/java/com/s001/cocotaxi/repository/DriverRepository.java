@@ -10,10 +10,7 @@ import java.util.List;
 
 @Repository
 public interface DriverRepository extends JpaRepository<Driver, Integer> {
-//    @Query("SELECT d FROM Driver d WHERE d.driverLatitude > :minY AND d.driverLatitude < :maxY AND d.driverLongitude > :minX AND d.driverLongitude < :maxX")
-//    List<Driver> getAroundDriver(@Param("maxX") double maxX, @Param("minX") double minX, @Param("maxY") double maxY, @Param("minY") double minY);
 
-    @Query("SELECT d FROM Driver d WHERE (d.driverLatitude BETWEEN :minY AND  :maxY) AND (d.driverLongitude BETWEEN :minX AND :maxX)")
-    List<Driver> findDriverByDriverLatitudeAndDriverLongitude(@Param("maxX") double maxX, @Param("minX") double minX, @Param("maxY") double maxY, @Param("minY") double minY);
-
+    @Query("SELECT d FROM Driver d WHERE (d.driverLatitude BETWEEN :minY AND  :maxY) AND (d.driverLongitude BETWEEN :minX AND :maxX) AND d.vehicleType = :vehicleType")
+    List<Driver> findDriverByDriverLatitudeAndDriverLongitude(@Param("maxX") double maxX, @Param("minX") double minX, @Param("maxY") double maxY, @Param("minY") double minY, @Param("vehicleType") String vehicleType);
 }
