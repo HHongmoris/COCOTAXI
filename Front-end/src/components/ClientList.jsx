@@ -93,6 +93,24 @@ function ClientList(props) {
 
   console.log(clientList);
 
+  // 좌표를 주소로 변환하는 함수
+  async function reverseGeocodeCoordinates(latitude, longitude) {
+    const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      if (data.display_name) {
+        const address = data.display_name;
+        console.log("주소:", address);
+      } else {
+        console.error("좌표를 주소로 변환할 수 없습니다.");
+      }
+    } catch (error) {
+      console.error("네트워크 오류:", error);
+    }
+  }
+
   // 데이터를 react-table 형식에 맞게 변환
   const columns = React.useMemo(
     () => [
@@ -105,12 +123,8 @@ function ClientList(props) {
         accessor: "vehicleType",
       },
       {
-        Header: "startPointLatitude",
-        accessor: "startPointLatitude",
-      },
-      {
-        Header: "startPointLongitute",
-        accessor: "startPointLongitute",
+        Header: "Pick-up location",
+        accessor: "pickUpLocation",
       },
       {
         Header: "endPointLatitude",
@@ -137,6 +151,13 @@ function ClientList(props) {
       const 초 = ("0" + date.getSeconds()).slice(-2);
 
       const formattedTime = `${시간}:${분}:${초}`;
+
+      const pickUpLocation = reverseGeocodeCoordinates(
+        item.startPointLatitude,
+        item.startPointLongitute
+      );
+      console.log(pickUpLocation);
+      console.log("clientList", clientList);
 
       return {
         callId: item.callId,
