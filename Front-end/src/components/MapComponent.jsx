@@ -1,7 +1,8 @@
-import React, { useEffect, useState, Component } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
+import { useCallback } from "react";
 
 const MapComponent = () => {
   const [map, setMap] = useState(null);
@@ -28,6 +29,7 @@ const MapComponent = () => {
       googleMapsScript.defer = true;
       googleMapsScript.onload = initMap;
       document.head.appendChild(googleMapsScript);
+      console.log("googleAPI called")
     };
 
     const initMap = () => {
@@ -77,7 +79,7 @@ const MapComponent = () => {
     }
   };
 
-  const getAndSetPolylineCoords = () => {
+  const getAndSetPolylineCoords = useCallback(() => {
     // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함
     const startLocation = "129.084206,35.201727";
     const endLocation = "129.049873,35.171177";
@@ -120,6 +122,13 @@ const MapComponent = () => {
       .catch((error) => {
         console.error(error);
       });
+  },[]);
+  // dispatch 버튼
+  const [trash, setTrash] = useState(0);
+  const onClickRefresh = () => {
+    console.log("hi");
+    setTrash(() => trash + 1);
+
   };
 
   // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
@@ -141,6 +150,8 @@ const MapComponent = () => {
     }
   }, [map]);
 
+  console.log("mapPage called")
+
   return (
     <div>
       <button onClick={getAndSetPolylineCoords}>경로 보기</button>
@@ -161,7 +172,10 @@ const MapComponent = () => {
         </div>
         <div style={{ flex: 2 }}></div>
         <div style={{ flex: 40 }}>
-          <DispatchDriverList />
+          <button
+          onClick = {onClickRefresh}
+          >refresh</button>
+          <DispatchDriverList/>
         </div>
         <div style={{ flex: 2 }}></div>
       </div>

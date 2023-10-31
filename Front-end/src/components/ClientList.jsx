@@ -161,6 +161,8 @@ function ClientList(props) {
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
   const maxRows = 6;
 
+  console.log("clientList called")
+
   return (
     <TableContainer>
       <Table {...getTableProps()}>
