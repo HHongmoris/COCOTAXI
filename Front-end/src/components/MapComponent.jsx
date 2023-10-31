@@ -11,6 +11,26 @@ const MapComponent = () => {
   const [centerLng, setCenterLng] = useState(128.854);
   const [circle, setCircle] = useState(null);
   const [openPage, setOpenPage] = useState(false);
+  const [legs, setlegs] = useState(null);
+  const [routeCoordinatesJSON, setrouteCoordinatesJSON] = useState(null);
+  const [coords, setcoords] = useState(null);
+
+  // 좌표 변형
+  function convertRawDataToCoordinates(routeCoordinatesJSON) {
+    const lines = routeCoordinatesJSON.split(",");
+    const coordinates = [];
+
+    for (let i = 0; i < lines.length; i += 2) {
+      const latitude = parseFloat(lines[i]);
+      const longitude = parseFloat(lines[i + 1]);
+
+      if (!isNaN(latitude) && !isNaN(longitude)) {
+        coordinates.push({ lat: latitude, lng: longitude });
+      }
+    }
+
+    return coordinates;
+  }
 
   const updateCenterLat = (startPointLatitude) => {
     setCenterLat(startPointLatitude);
@@ -137,17 +157,6 @@ const MapComponent = () => {
     const endLocation = "8.692803,49.409465";
     const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77"; // ORS API 키로 교체해야 합니다.
 
-    // function parseCoordinatePair(pairString) {
-    //   const [longitude, latitude] = pairString.split(",").map(Number);
-    //   return { latitude, longitude };
-    // }
-
-    // // 주어진 legs 문자열을 파싱하여 배열에 좌표 객체를 추가
-    // function parseLegs(legs) {
-    //   const coordinates = legs.split(",").map(parseCoordinatePair);
-    //   return coordinates;
-    // }
-
     axios
       .get(
         `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${startLocation}&end=${endLocation}`
@@ -155,13 +164,21 @@ const MapComponent = () => {
       .then((response) => {
         const data = response.data;
         const routeCoordinatesJSON = data.features[0].geometry.coordinates;
-        const legs = routeCoordinatesJSON;
+        console.log("fkdf라우터 이사앨" + routeCoordinatesJSON);
+
+        const legs = routeCoordinatesJSON.toString();
+        // const dede = polyline.encode(routeCoordinatesJSON);
+        // const legs = routeCoordinatesJSON.toString();
+
+        // setlegs(legs);
 
         // const parsedCoordinates = parseLegs(legs);
-        // console.log("변환값 " + parsedCoordinates);
+
+        // // console.log("변환값 " + parsedCoordinates);
         console.log("데이터를 불러오는 부분" + legs);
         // const poly = polyline.decode(legs);
         // console.log("폴리 적용" + poly);
+        console.log("규격적용" + convertRawDataToCoordinates(legs));
 
         const coords = [];
 
@@ -176,19 +193,18 @@ const MapComponent = () => {
 
         //디코딩해서 값 추출
 
-        const decodedPolyline = legs;
-        console.log(decodedPolyline);
-
+        const decodedPolyline = routeCoordinatesJSON;
         decodedPolyline.forEach((coordinate) => {
           coords.push({
-            latitude: coordinate[0],
-            longitude: coordinate[1],
+            lat: coordinate[0],
+            lng: coordinate[1],
           });
         });
 
         // setPolylineCoords(coords);
 
         console.log(coords);
+
         // 지도를 첫 번째 좌표로 이동
         if (coords.length > 0 && map) {
           const firstCoord = coords[0];
@@ -206,14 +222,20 @@ const MapComponent = () => {
 
   useEffect(() => {
     if (map) {
-      // 다중 선을 그릴 좌표 배열 (예: 선1, 선2, 선3, ...)
+      // const multiPolylineCoordinates = [];
+      // multiPolylineCoordinates.push(routeCoordinatesJSON);
+
+      // console.log("다리들 불러옴" + multiPolylineCoordinates);
+      // routeCoordinatesJSON
       const multiPolylineCoordinates = [
         [
           { lat: 37.7749, lng: -122.4194 },
           { lat: 37.7759, lng: -122.4199 },
           { lat: 37.7769, lng: -122.4204 },
+          { lat: 37.7749, lng: -122.418 },
+          { lat: 37.7759, lng: -122.4185 },
+          { lat: 37.7769, lng: -122.419 },
         ],
-        // 다른 다중 선의 좌표
       ];
 
       // 다중 선을 그리기
