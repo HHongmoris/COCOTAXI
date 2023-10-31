@@ -1,7 +1,8 @@
-import React, { useEffect, useState, Component } from "react";
+import React, { useEffect, useState } from "react";
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
+import polyline from "@mapbox/polyline";
 
 const MapComponent = () => {
   const [map, setMap] = useState(null);
@@ -18,6 +19,42 @@ const MapComponent = () => {
   const updateCenterLng = (startPointLongitute) => {
     setCenterLng(startPointLongitute);
   };
+
+  // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
+  useEffect(() => {
+    if (map) {
+      const multiPolylineCoordinates = [];
+      multiPolylineCoordinates.push(coords); // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정해야함
+      console.log(multiPolylineCoordinates); // 지금 실행화면에서 경로보기 누르고 vscode 상에서 컨트롤 + s 눌러서 저장되어야지만 좌표나옴
+
+      multiPolylineCoordinates.forEach((coordinates) => {
+        const polyline = new window.google.maps.Polyline({
+          path: coordinates,
+          strokeColor: "blue", // 선 색상 설정
+          strokeOpacity: 1.0, // 선 불투명도 설정
+          strokeWeight: 4, // 선 굵기 설정
+        });
+        polyline.setMap(map);
+      });
+    }
+  }, [coords, map]);
+
+  useEffect(() => {
+    if (map) {
+      const latLng = new window.google.maps.LatLng(centerLat, centerLng);
+      map.setCenter(latLng);
+      if (circle) {
+        circle.setMap(null);
+      }
+      console.log(openPage);
+      if (openPage) {
+        drawCircle(centerLat, centerLng);
+      } else {
+        setOpenPage(true);
+      }
+    }
+  }, [centerLat, centerLng, map]);
+
 
   // 시작하자마자 구글 맵 적용
   useEffect(() => {
@@ -42,23 +79,9 @@ const MapComponent = () => {
     };
 
     loadGoogleMapsScript();
-  }, []);
+  },[]);
 
-  useEffect(() => {
-    if (map) {
-      const latLng = new window.google.maps.LatLng(centerLat, centerLng);
-      map.setCenter(latLng);
-      if (circle) {
-        circle.setMap(null);
-      }
-      console.log(openPage);
-      if (openPage) {
-        drawCircle(centerLat, centerLng);
-      } else {
-        setOpenPage(true);
-      }
-    }
-  }, [centerLat, centerLng, map]);
+  
 
   // 원 그리기
   const drawCircle = (lat, lng) => {
@@ -92,7 +115,6 @@ const MapComponent = () => {
 
         //ORS 에서 경로를 불러오는 부분
         const routeCoordinatesJSON = data.features[0].geometry.coordinates;
-        const legs = routeCoordinatesJSON.toString();
         const coords = [];
 
         // 형식에 맞춰 경로 변환
@@ -122,24 +144,7 @@ const MapComponent = () => {
       });
   };
 
-  // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
-  useEffect(() => {
-    if (map) {
-      const multiPolylineCoordinates = [];
-      multiPolylineCoordinates.push(coords); // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정해야함
-      console.log(multiPolylineCoordinates); // 지금 실행화면에서 경로보기 누르고 vscode 상에서 컨트롤 + s 눌러서 저장되어야지만 좌표나옴
 
-      multiPolylineCoordinates.forEach((coordinates) => {
-        const polyline = new window.google.maps.Polyline({
-          path: coordinates,
-          strokeColor: "blue", // 선 색상 설정
-          strokeOpacity: 1.0, // 선 불투명도 설정
-          strokeWeight: 4, // 선 굵기 설정
-        });
-        polyline.setMap(map);
-      });
-    }
-  }, [map]);
 
   return (
     <div>
