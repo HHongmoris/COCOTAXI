@@ -54,7 +54,8 @@ const MapComponent = () => {
       const newMap = new window.google.maps.Map(
         document.getElementById("map"),
         {
-          center: { lat: centerLat, lng: centerLng },
+          center: { lat: centerLng, lng: centerLat },
+          // center: { lat: centerLat, lng: centerLng },
           zoom: 12,
         }
       );
@@ -153,8 +154,8 @@ const MapComponent = () => {
   };
 
   const getAndSetPolylineCoords = () => {
-    const startLocation = "8.676581,49.418204";
-    const endLocation = "8.692803,49.409465";
+    const startLocation = "129.084206,35.201727";
+    const endLocation = "129.049873,35.171177";
     const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77"; // ORS API 키로 교체해야 합니다.
 
     axios
@@ -182,28 +183,18 @@ const MapComponent = () => {
 
         const coords = [];
 
-        // 좌표
-        // const decodedPolyline = legs;
-        // decodedPolyline.forEach((coordinate) => {
-        //   coords.push({
-        //     latitude: coordinate[0],
-        //     longitude: coordinate[1],
-        //   });
-        // });
-
-        //디코딩해서 값 추출
-
         const decodedPolyline = routeCoordinatesJSON;
         decodedPolyline.forEach((coordinate) => {
           coords.push({
-            lat: coordinate[0],
-            lng: coordinate[1],
+            lat: coordinate[1],
+            lng: coordinate[0],
           });
         });
 
         // setPolylineCoords(coords);
 
         console.log(coords);
+        setcoords(coords);
 
         // 지도를 첫 번째 좌표로 이동
         if (coords.length > 0 && map) {
@@ -222,29 +213,30 @@ const MapComponent = () => {
 
   useEffect(() => {
     if (map) {
-      // const multiPolylineCoordinates = [];
-      // multiPolylineCoordinates.push(routeCoordinatesJSON);
+      const multiPolylineCoordinates = [];
+      console.log("해줘해줘");
+      multiPolylineCoordinates.push(coords);
+      console.log(multiPolylineCoordinates);
 
       // console.log("다리들 불러옴" + multiPolylineCoordinates);
-      // routeCoordinatesJSON
-      const multiPolylineCoordinates = [
-        [
-          { lat: 37.7749, lng: -122.4194 },
-          { lat: 37.7759, lng: -122.4199 },
-          { lat: 37.7769, lng: -122.4204 },
-          { lat: 37.7749, lng: -122.418 },
-          { lat: 37.7759, lng: -122.4185 },
-          { lat: 37.7769, lng: -122.419 },
-        ],
-      ];
+      // const multiPolylineCoordinates = [
+      //   [
+      //     { lat: 37.7749, lng: -122.4194 },
+      //     { lat: 37.7759, lng: -122.4199 },
+      //     { lat: 37.7769, lng: -122.4204 },
+      //     { lat: 37.7749, lng: -122.418 },
+      //     { lat: 37.7759, lng: -122.4185 },
+      //     { lat: 37.7769, lng: -122.419 },
+      //   ],
+      // ];
 
       // 다중 선을 그리기
       multiPolylineCoordinates.forEach((coordinates) => {
         const polyline = new window.google.maps.Polyline({
           path: coordinates,
-          strokeColor: "#FF0000", // 선 색상 설정
+          strokeColor: "blue", // 선 색상 설정
           strokeOpacity: 1.0, // 선 불투명도 설정
-          strokeWeight: 2, // 선 굵기 설정
+          strokeWeight: 4, // 선 굵기 설정
         });
         polyline.setMap(map);
       });
