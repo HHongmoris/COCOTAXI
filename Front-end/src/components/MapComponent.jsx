@@ -126,8 +126,8 @@ const MapComponent = () => {
   useEffect(() => {
     if (map) {
       const multiPolylineCoordinates = [];
-      multiPolylineCoordinates.push(coords); // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정
-      console.log(multiPolylineCoordinates); // 지금 vscode 상에서 컨트롤 + s 눌러서 저장되어야지만 좌표나옴
+      multiPolylineCoordinates.push(coords); // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정해야함
+      console.log(multiPolylineCoordinates); // 지금 실행화면에서 경로보기 누르고 vscode 상에서 컨트롤 + s 눌러서 저장되어야지만 좌표나옴
 
       multiPolylineCoordinates.forEach((coordinates) => {
         const polyline = new window.google.maps.Polyline({
