@@ -77,6 +77,7 @@ public class DispatchServiceImpl implements DispatchService {
                 response.setDriverName(aroundDriver.getDriverName());
                 response.setDriverId(aroundDriver.getDriverId());
                 response.setVehicleNo(aroundDriver.getVehicleNo());
+                response.setVehicleType(aroundDriver.getVehicleType());
                 response.setDistance((double)Math.round(distance*1000)/1000);
                 response.setDriverLatitude(aroundDriver.getDriverLatitude());
                 response.setDriverLongitude(aroundDriver.getDriverLongitude());
