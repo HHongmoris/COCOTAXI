@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
@@ -45,11 +45,18 @@ const TableCell = styled.td`
   }
 `;
 
-function DispatchDriverList() {
+function DispatchDriverList(props) {
   const { callId } = useParams();
   const [driverList, setDriverList] = useState([]);
+  const {updateDriverId} = props;
 
-  const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/1`;
+  const handleRowClick = useCallback((driverId) => {
+    updateDriverId(driverId);
+    console.log("dispatch driverId check : " + driverId);
+    },[updateDriverId]
+  )
+
+  const url = `http://localhost:9000/api/dispatch/1`;
   // 일단 임시로 callId 1로 고정한 url 사용. useParam이나 redux로 수정예정
 
   const fetchData = async () => {
@@ -59,7 +66,7 @@ function DispatchDriverList() {
       });
       if (response.status === 200) {
         const data = await response.json();
-        console.log(data);
+        console.log("driverList : " + data);
         setDriverList(data);
       }
     } catch (error) {
@@ -71,7 +78,7 @@ function DispatchDriverList() {
     fetchData();
   }, [callId]);
 
-  console.log(driverList);
+  console.log("driverList : ", driverList);
 
   // 데이터를 react-table 형식에 맞게 변환
   const columns = React.useMemo(
@@ -95,6 +102,7 @@ function DispatchDriverList() {
   const data = React.useMemo(() => {
     return driverList.map((item) => {
       return {
+        driverId : item.driverId,
         driverName: item.driverName,
         vehicleNo: item.vehicleNo,
         distance: item.distance,
@@ -111,12 +119,17 @@ function DispatchDriverList() {
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
   const maxRows = 4;
 
+  console.log("driverList called")
+
   return (
     <TableContainer>
       <Table {...getTableProps()}>
         <Thead>
           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <tr 
+            {...headerGroup.getHeaderGroupProps()}
+            
+            >
               {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps()}>{column.render("Header")}</th>
               ))}
@@ -130,7 +143,13 @@ function DispatchDriverList() {
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr {...row.getRowProps()}
+                onClick={() => 
+                  handleRowClick(
+                    row.original.driverId
+                  )
+                }
+                >
                   {row.cells.map((cell) => (
                     <TableCell {...cell.getCellProps()}>
                       {cell.render("Cell")}

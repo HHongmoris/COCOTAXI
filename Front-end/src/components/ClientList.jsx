@@ -48,19 +48,30 @@ const TableCell = styled.td`
 function ClientList(props) {
   const { callId } = useParams();
   const [clientList, setClientList] = useState([]);
+  
   const { centerLat, centerLng } = props;
-
+  const {updateCallId} = props;
   // MapComponent 갱신을 위한 콜백 함수
   const { updateCenterLat, updateCenterLng } = props;
 
   // let map;
 
-  const handleRowClick = (startPointLatitude, startPointLongitute) => {
+  const handleRowClick = (startPointLatitude, startPointLongitute, callId) => {
+    // if (window.google && map) {
+    //   const latLng = new window.google.maps.LatLng(
+    //     startPointLatitude,
+    //     startPointLongitute
+    //   );
+    //   map.setCenter(latLng);
+    //   console.log("21321312312 row - startPointLatitude:");
+    // }
+    updateCallId(callId);
     updateCenterLat(startPointLatitude);
     updateCenterLng(startPointLongitute);
   };
 
-  const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
+  // const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
+  const url = `http://localhost:9000/api/callings`;
 
   const fetchData = async () => {
     try {
@@ -69,6 +80,7 @@ function ClientList(props) {
       });
       if (response.status === 200) {
         const data = await response.json();
+        console.log("clientList : ", data);
         setClientList(data);
       }
     } catch (error) {
@@ -168,6 +180,8 @@ function ClientList(props) {
           };
         })
       );
+      // console.log(pickUpLocation);
+      // console.log("clientList", clientList);
 
       setData(newData);
       console.log(data);
@@ -185,6 +199,8 @@ function ClientList(props) {
 
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
   const maxRows = 6;
+
+  console.log("clientList called")
 
   return (
     <TableContainer>
@@ -210,7 +226,8 @@ function ClientList(props) {
                   onClick={() =>
                     handleRowClick(
                       row.original.startPointLatitude,
-                      row.original.startPointLongitute
+                      row.original.startPointLongitute,
+                      row.original.callId
                     )
                   }
                 >

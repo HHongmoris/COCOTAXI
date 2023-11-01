@@ -5,6 +5,7 @@ import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
 import polyline from "@mapbox/polyline";
+import { useCallback } from "react";
 
 const MapComponent = () => {
   const { callId } = useParams();
@@ -14,6 +15,8 @@ const MapComponent = () => {
   const [circle, setCircle] = useState(null);
   const [openPage, setOpenPage] = useState(false);
   const [coords, setcoords] = useState(null);
+  const [callId, setCallId] = useState(0);
+  const [driverId, setDriverId] = useState(0);
 
   const updateCenterLat = (startPointLatitude) => {
     setCenterLat(startPointLatitude);
@@ -22,6 +25,17 @@ const MapComponent = () => {
   const updateCenterLng = (startPointLongitute) => {
     setCenterLng(startPointLongitute);
   };
+
+  const updateCallId = (callId) => {
+    setCallId(callId);
+  }
+
+  const updateDriverId = (driverId) => {
+    setDriverId(driverId);
+  }
+
+  console.log("callId : " + callId );
+  console.log("DId : " + driverId );
 
   // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
   useEffect(() => {
@@ -67,6 +81,7 @@ const MapComponent = () => {
       googleMapsScript.defer = true;
       googleMapsScript.onload = initMap;
       document.head.appendChild(googleMapsScript);
+      console.log("googleAPI called")
     };
 
     const initMap = () => {
@@ -102,7 +117,7 @@ const MapComponent = () => {
     }
   };
 
-  const getAndSetPolylineCoords = () => {
+  const getAndSetPolylineCoords = useCallback(() => {
     // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함
     const startLocation = "129.084206,35.201727";
     const endLocation = "129.049873,35.171177";
@@ -144,9 +159,27 @@ const MapComponent = () => {
       .catch((error) => {
         console.error(error);
       });
-  };
+  },[]);
+
+  const onClickDispatch = () => {
+    axios.post(`http://localhost:9000/api/dispatch/${callId}`,
+      {
+        "callId" : callId,
+        "driverId" : driverId
+      }
+    )
+    .then((응답) => {
+      console.log("Dispatch Activated", 응답);
+    })
+    .catch((error) => {
+      console.error(error);
+    })
+    console.log("Dispatch Activated")
+  }
+  
 
 
+  console.log("mapPage called")
 
   return (
     <div>
@@ -163,13 +196,23 @@ const MapComponent = () => {
             callId={callId}
             centerLat={centerLat}
             centerLng={centerLng}
+            updateCallId={updateCallId}
             updateCenterLat={updateCenterLat}
             updateCenterLng={updateCenterLng}
           />
         </div>
         <div style={{ flex: 2 }}></div>
         <div style={{ flex: 40 }}>
-          <DispatchDriverList callId={callId} />
+          <DispatchDriverList
+            updateDriverId={updateDriverId}
+          />
+          <div style={{display : "flex"}}>
+          <button
+          onClick = {onClickDispatch}
+          >
+            Dispatch
+          </button>
+          </div>
         </div>
         <div style={{ flex: 2 }}></div>
       </div>
