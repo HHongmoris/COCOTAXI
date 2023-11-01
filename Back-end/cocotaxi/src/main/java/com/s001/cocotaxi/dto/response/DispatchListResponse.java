@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class DispatchListResponse {
+    private int driverId;
     private String driverName;
     private String vehicleNo;
 
@@ -22,6 +23,7 @@ public class DispatchListResponse {
 
 
     public DispatchListResponse(Driver entity){
+        this.driverId = entity.getDriverId();
         this.driverName = entity.getDriverName();
         this.vehicleNo = entity.getVehicleNo();
     }
