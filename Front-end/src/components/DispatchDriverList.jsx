@@ -45,11 +45,17 @@ const TableCell = styled.td`
   }
 `;
 
-function DispatchDriverList() {
+function DispatchDriverList(props) {
   const { callId } = useParams();
   const [driverList, setDriverList] = useState([]);
+  const {updateDriverId} = props;
 
-  const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/1`;
+  const handleRowClick = (driverId) => {
+    updateDriverId(driverId);
+    console.log(driverId);
+  }
+
+  const url = `http://localhost:9000/api/dispatch/2`;
   // 일단 임시로 callId 1로 고정한 url 사용. useParam이나 redux로 수정예정
 
   const fetchData = async () => {
@@ -59,7 +65,7 @@ function DispatchDriverList() {
       });
       if (response.status === 200) {
         const data = await response.json();
-        console.log(data);
+        console.log("driverList : " + data);
         setDriverList(data);
       }
     } catch (error) {
@@ -71,7 +77,7 @@ function DispatchDriverList() {
     fetchData();
   }, [callId]);
 
-  console.log(driverList);
+  console.log("driverList : ", driverList);
 
   // 데이터를 react-table 형식에 맞게 변환
   const columns = React.useMemo(
@@ -118,7 +124,10 @@ function DispatchDriverList() {
       <Table {...getTableProps()}>
         <Thead>
           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <tr 
+            {...headerGroup.getHeaderGroupProps()}
+            
+            >
               {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps()}>{column.render("Header")}</th>
               ))}
@@ -132,7 +141,13 @@ function DispatchDriverList() {
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr {...row.getRowProps()}
+                onClick={() => 
+                  handleRowClick(
+                    row.original.driverId
+                  )
+                }
+                >
                   {row.cells.map((cell) => (
                     <TableCell {...cell.getCellProps()}>
                       {cell.render("Cell")}

@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
+import polyline from "@mapbox/polyline";
 import { useCallback } from "react";
 
 const MapComponent = () => {
@@ -11,6 +12,8 @@ const MapComponent = () => {
   const [circle, setCircle] = useState(null);
   const [openPage, setOpenPage] = useState(false);
   const [coords, setcoords] = useState(null);
+  const [callId, setCallId] = useState(null);
+  const [driverId, setDriverId] = useState(null);
 
   const updateCenterLat = (startPointLatitude) => {
     setCenterLat(startPointLatitude);
@@ -19,6 +22,53 @@ const MapComponent = () => {
   const updateCenterLng = (startPointLongitute) => {
     setCenterLng(startPointLongitute);
   };
+
+  const updateCallId = (callId) => {
+    setCallId(callId);
+  }
+
+  const updateDriverId = (callId) => {
+    setDriverId(callId);
+  }
+
+  console.log("callId : " + callId );
+  console.log("DId : " + driverId );
+
+  // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
+  useEffect(() => {
+    if (map) {
+      const multiPolylineCoordinates = [];
+      multiPolylineCoordinates.push(coords); // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정해야함
+      console.log(multiPolylineCoordinates); // 지금 실행화면에서 경로보기 누르고 vscode 상에서 컨트롤 + s 눌러서 저장되어야지만 좌표나옴
+
+      multiPolylineCoordinates.forEach((coordinates) => {
+        const polyline = new window.google.maps.Polyline({
+          path: coordinates,
+          strokeColor: "blue", // 선 색상 설정
+          strokeOpacity: 1.0, // 선 불투명도 설정
+          strokeWeight: 4, // 선 굵기 설정
+        });
+        polyline.setMap(map);
+      });
+    }
+  }, [coords, map]);
+
+  useEffect(() => {
+    if (map) {
+      const latLng = new window.google.maps.LatLng(centerLat, centerLng);
+      map.setCenter(latLng);
+      if (circle) {
+        circle.setMap(null);
+      }
+      console.log(openPage);
+      if (openPage) {
+        drawCircle(centerLat, centerLng);
+      } else {
+        setOpenPage(true);
+      }
+    }
+  }, [centerLat, centerLng, map]);
+
 
   // 시작하자마자 구글 맵 적용
   useEffect(() => {
@@ -44,23 +94,9 @@ const MapComponent = () => {
     };
 
     loadGoogleMapsScript();
-  }, []);
+  },[]);
 
-  useEffect(() => {
-    if (map) {
-      const latLng = new window.google.maps.LatLng(centerLat, centerLng);
-      map.setCenter(latLng);
-      if (circle) {
-        circle.setMap(null);
-      }
-      console.log(openPage);
-      if (openPage) {
-        drawCircle(centerLat, centerLng);
-      } else {
-        setOpenPage(true);
-      }
-    }
-  }, [centerLat, centerLng, map]);
+  
 
   // 원 그리기
   const drawCircle = (lat, lng) => {
@@ -94,7 +130,6 @@ const MapComponent = () => {
 
         //ORS 에서 경로를 불러오는 부분
         const routeCoordinatesJSON = data.features[0].geometry.coordinates;
-        const legs = routeCoordinatesJSON.toString();
         const coords = [];
 
         // 형식에 맞춰 경로 변환
@@ -123,32 +158,21 @@ const MapComponent = () => {
         console.error(error);
       });
   },[]);
-  // dispatch 버튼
-  const [trash, setTrash] = useState(0);
-  const onClickRefresh = () => {
-    console.log("hi");
-    setTrash(() => trash + 1);
 
-  };
+  const onClickDispatch = () => {
+    axios.post(`http://localhost:9000/api/dispatch/${callId}`, {
+      headers : {
+        "callId" : callId,
+        "driverId" : driverId
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    })
+    console.log("Dispatch Activated")
+  }
+  
 
-  // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
-  useEffect(() => {
-    if (map) {
-      const multiPolylineCoordinates = [];
-      multiPolylineCoordinates.push(coords); // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정해야함
-      console.log(multiPolylineCoordinates); // 지금 실행화면에서 경로보기 누르고 vscode 상에서 컨트롤 + s 눌러서 저장되어야지만 좌표나옴
-
-      multiPolylineCoordinates.forEach((coordinates) => {
-        const polyline = new window.google.maps.Polyline({
-          path: coordinates,
-          strokeColor: "blue", // 선 색상 설정
-          strokeOpacity: 1.0, // 선 불투명도 설정
-          strokeWeight: 4, // 선 굵기 설정
-        });
-        polyline.setMap(map);
-      });
-    }
-  }, [map]);
 
   console.log("mapPage called")
 
@@ -166,16 +190,23 @@ const MapComponent = () => {
           <ClientList
             centerLat={centerLat}
             centerLng={centerLng}
+            updateCallId={updateCallId}
             updateCenterLat={updateCenterLat}
             updateCenterLng={updateCenterLng}
           />
         </div>
         <div style={{ flex: 2 }}></div>
         <div style={{ flex: 40 }}>
+          <DispatchDriverList
+            updateDriverId={updateDriverId}
+          />
+          <div style={{display : "flex"}}>
           <button
-          onClick = {onClickRefresh}
-          >refresh</button>
-          <DispatchDriverList/>
+          onClick = {onClickDispatch}
+          >
+            Dispatch
+          </button>
+          </div>
         </div>
         <div style={{ flex: 2 }}></div>
       </div>

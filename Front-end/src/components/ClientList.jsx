@@ -48,14 +48,15 @@ const TableCell = styled.td`
 function ClientList(props) {
   const { callId } = useParams();
   const [clientList, setClientList] = useState([]);
+  
   const { centerLat, centerLng } = props;
-
+  const {updateCallId} = props;
   // MapComponent 갱신을 위한 콜백 함수
   const { updateCenterLat, updateCenterLng } = props;
 
   // let map;
 
-  const handleRowClick = (startPointLatitude, startPointLongitute) => {
+  const handleRowClick = (startPointLatitude, startPointLongitute, callId) => {
     // if (window.google && map) {
     //   const latLng = new window.google.maps.LatLng(
     //     startPointLatitude,
@@ -64,13 +65,15 @@ function ClientList(props) {
     //   map.setCenter(latLng);
     //   console.log("21321312312 row - startPointLatitude:");
     // }
+    updateCallId(callId);
     updateCenterLat(startPointLatitude);
     updateCenterLng(startPointLongitute);
     console.log("Clicked row - startPointLatitude:", centerLat);
     console.log("Clicked row - startPointLongitute:", centerLng);
   };
 
-  const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
+  // const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
+  const url = `http://localhost:9000/api/callings`;
 
   const fetchData = async () => {
     try {
@@ -79,7 +82,7 @@ function ClientList(props) {
       });
       if (response.status === 200) {
         const data = await response.json();
-        console.log(data);
+        console.log("clientList : ", data);
         setClientList(data);
       }
     } catch (error) {
@@ -93,6 +96,24 @@ function ClientList(props) {
 
   console.log(clientList);
 
+  // 좌표를 주소로 변환하는 함수
+  async function reverseGeocodeCoordinates(latitude, longitude) {
+    const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      if (data.display_name) {
+        const address = data.display_name;
+        console.log("주소:", address);
+      } else {
+        console.error("좌표를 주소로 변환할 수 없습니다.");
+      }
+    } catch (error) {
+      console.error("네트워크 오류:", error);
+    }
+  }
+
   // 데이터를 react-table 형식에 맞게 변환
   const columns = React.useMemo(
     () => [
@@ -105,12 +126,8 @@ function ClientList(props) {
         accessor: "vehicleType",
       },
       {
-        Header: "startPointLatitude",
-        accessor: "startPointLatitude",
-      },
-      {
-        Header: "startPointLongitute",
-        accessor: "startPointLongitute",
+        Header: "Pick-up location",
+        accessor: "pickUpLocation",
       },
       {
         Header: "endPointLatitude",
@@ -137,6 +154,13 @@ function ClientList(props) {
       const 초 = ("0" + date.getSeconds()).slice(-2);
 
       const formattedTime = `${시간}:${분}:${초}`;
+
+      const pickUpLocation = reverseGeocodeCoordinates(
+        item.startPointLatitude,
+        item.startPointLongitute
+      );
+      console.log(pickUpLocation);
+      console.log("clientList", clientList);
 
       return {
         callId: item.callId,
@@ -187,7 +211,8 @@ function ClientList(props) {
                   onClick={() =>
                     handleRowClick(
                       row.original.startPointLatitude,
-                      row.original.startPointLongitute
+                      row.original.startPointLongitute,
+                      row.original.callId
                     )
                   }
                 >
