@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Component } from "react";
+import { useParams } from "react-router-dom";
+
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
 import polyline from "@mapbox/polyline";
 
 const MapComponent = () => {
+  const { callId } = useParams();
   const [map, setMap] = useState(null);
   const [centerLat, setCenterLat] = useState(35.092);
   const [centerLng, setCenterLng] = useState(128.854);
@@ -157,6 +160,7 @@ const MapComponent = () => {
         <div style={{ flex: 5 }}>{/* 빈 공간 (5) */}</div>
         <div style={{ flex: 50 }}>
           <ClientList
+            callId={callId}
             centerLat={centerLat}
             centerLng={centerLng}
             updateCenterLat={updateCenterLat}
@@ -165,7 +169,7 @@ const MapComponent = () => {
         </div>
         <div style={{ flex: 2 }}></div>
         <div style={{ flex: 40 }}>
-          <DispatchDriverList />
+          <DispatchDriverList callId={callId} />
         </div>
         <div style={{ flex: 2 }}></div>
       </div>
