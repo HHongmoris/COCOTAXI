@@ -56,18 +56,8 @@ function ClientList(props) {
   // let map;
 
   const handleRowClick = (startPointLatitude, startPointLongitute) => {
-    // if (window.google && map) {
-    //   const latLng = new window.google.maps.LatLng(
-    //     startPointLatitude,
-    //     startPointLongitute
-    //   );
-    //   map.setCenter(latLng);
-    //   console.log("21321312312 row - startPointLatitude:");
-    // }
     updateCenterLat(startPointLatitude);
     updateCenterLng(startPointLongitute);
-    console.log("Clicked row - startPointLatitude:", centerLat);
-    console.log("Clicked row - startPointLongitute:", centerLng);
   };
 
   const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
@@ -79,7 +69,6 @@ function ClientList(props) {
       });
       if (response.status === 200) {
         const data = await response.json();
-        console.log(data);
         setClientList(data);
       }
     } catch (error) {
@@ -91,8 +80,6 @@ function ClientList(props) {
     fetchData();
   }, [callId]);
 
-  console.log(clientList);
-
   // 좌표를 주소로 변환하는 함수
   async function reverseGeocodeCoordinates(latitude, longitude) {
     const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
@@ -103,11 +90,14 @@ function ClientList(props) {
       if (data.display_name) {
         const address = data.display_name;
         console.log("주소:", address);
+        return address;
       } else {
         console.error("좌표를 주소로 변환할 수 없습니다.");
+        return "주소 없음";
       }
     } catch (error) {
       console.error("네트워크 오류:", error);
+      return "네트워크 오류";
     }
   }
 
@@ -123,16 +113,12 @@ function ClientList(props) {
         accessor: "vehicleType",
       },
       {
-        Header: "Pick-up location",
+        Header: "Pick-up Location",
         accessor: "pickUpLocation",
       },
       {
-        Header: "endPointLatitude",
-        accessor: "endPointLatitude",
-      },
-      {
-        Header: "endPointLongitute",
-        accessor: "endPointLongitute",
+        Header: "Drop-off Location",
+        accessor: "dropOffLocation",
       },
       {
         Header: "Distance",
@@ -142,36 +128,54 @@ function ClientList(props) {
     []
   );
 
-  const data = React.useMemo(() => {
-    return clientList.map((item) => {
-      const date = new Date(item.callCreatedTime);
+  const [data, setData] = React.useState([]);
 
-      const 시간 = ("0" + date.getHours()).slice(-2);
-      const 분 = ("0" + date.getMinutes()).slice(-2);
-      const 초 = ("0" + date.getSeconds()).slice(-2);
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const newData = await Promise.all(
+        clientList.map(async (item) => {
+          const date = new Date(item.callCreatedTime);
 
-      const formattedTime = `${시간}:${분}:${초}`;
+          const 시간 = ("0" + date.getHours()).slice(-2);
+          const 분 = ("0" + date.getMinutes()).slice(-2);
+          const 초 = ("0" + date.getSeconds()).slice(-2);
 
-      const pickUpLocation = reverseGeocodeCoordinates(
-        item.startPointLatitude,
-        item.startPointLongitute
+          const formattedTime = `${시간}:${분}:${초}`;
+
+          const pickUpLocation = await reverseGeocodeCoordinates(
+            item.startPointLatitude,
+            item.startPointLongitute
+          );
+          console.log(pickUpLocation);
+
+          const dropOffLocation = await reverseGeocodeCoordinates(
+            item.endPointLatitude,
+            item.endPointLongitute
+          );
+          console.log(dropOffLocation);
+
+          return {
+            callId: item.callId,
+            callCreatedTime: formattedTime,
+            vehicleType: item.vehicleType,
+            pickUpLocation: pickUpLocation,
+            dropOffLocation: dropOffLocation,
+            startPointLatitude: item.startPointLatitude,
+            startPointLongitute: item.startPointLongitute,
+            endPointLatitude: item.endPointLatitude,
+            endPointLongitute: item.endPointLongitute,
+            distance: item.distance,
+          };
+        })
       );
-      console.log(pickUpLocation);
-      console.log("clientList", clientList);
 
-      return {
-        callId: item.callId,
-        callCreatedTime: formattedTime,
-        // callCreatedTime : item.callCreatedTime,
-        vehicleType: item.vehicleType,
-        startPointLatitude: item.startPointLatitude,
-        startPointLongitute: item.startPointLongitute,
-        endPointLatitude: item.endPointLatitude,
-        endPointLongitute: item.endPointLongitute,
-        distance: item.distance,
-      };
-    });
+      setData(newData);
+      console.log(data);
+    };
+
+    fetchData();
   }, [clientList]);
+  console.log(data);
 
   // react-table 초기화
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({

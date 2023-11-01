@@ -46,7 +46,6 @@ const MapComponent = () => {
       if (circle) {
         circle.setMap(null);
       }
-      console.log(openPage);
       if (openPage) {
         drawCircle(centerLat, centerLng);
       } else {
