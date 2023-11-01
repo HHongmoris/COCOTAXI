@@ -13,6 +13,7 @@ public class DispatchListResponse {
     private int driverId;
     private String driverName;
     private String vehicleNo;
+    private String vehicleType;
 
     //TODO: 일단 int로 했는데 string이나 double로 바꿀수도 있음
     private double distance;
@@ -26,5 +27,8 @@ public class DispatchListResponse {
         this.driverId = entity.getDriverId();
         this.driverName = entity.getDriverName();
         this.vehicleNo = entity.getVehicleNo();
+        this.vehicleType = entity.getVehicleType();
+        this.driverLongitude = entity.getDriverLongitude();
+        this.driverLatitude = entity.getDriverLatitude();
     }
 }
