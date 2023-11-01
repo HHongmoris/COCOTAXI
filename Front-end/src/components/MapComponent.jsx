@@ -12,8 +12,8 @@ const MapComponent = () => {
   const [circle, setCircle] = useState(null);
   const [openPage, setOpenPage] = useState(false);
   const [coords, setcoords] = useState(null);
-  const [callId, setCallId] = useState(null);
-  const [driverId, setDriverId] = useState(null);
+  const [callId, setCallId] = useState(0);
+  const [driverId, setDriverId] = useState(0);
 
   const updateCenterLat = (startPointLatitude) => {
     setCenterLat(startPointLatitude);
@@ -27,8 +27,8 @@ const MapComponent = () => {
     setCallId(callId);
   }
 
-  const updateDriverId = (callId) => {
-    setDriverId(callId);
+  const updateDriverId = (driverId) => {
+    setDriverId(driverId);
   }
 
   console.log("callId : " + callId );
@@ -160,11 +160,14 @@ const MapComponent = () => {
   },[]);
 
   const onClickDispatch = () => {
-    axios.post(`http://localhost:9000/api/dispatch/${callId}`, {
-      headers : {
+    axios.post(`http://localhost:9000/api/dispatch/${callId}`,
+      {
         "callId" : callId,
         "driverId" : driverId
       }
+    )
+    .then((응답) => {
+      console.log("Dispatch Activated", 응답);
     })
     .catch((error) => {
       console.error(error);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
@@ -50,12 +50,13 @@ function DispatchDriverList(props) {
   const [driverList, setDriverList] = useState([]);
   const {updateDriverId} = props;
 
-  const handleRowClick = (driverId) => {
+  const handleRowClick = useCallback((driverId) => {
     updateDriverId(driverId);
-    console.log(driverId);
-  }
+    console.log("dispatch driverId check : " + driverId);
+    },[updateDriverId]
+  )
 
-  const url = `http://localhost:9000/api/dispatch/2`;
+  const url = `http://localhost:9000/api/dispatch/1`;
   // 일단 임시로 callId 1로 고정한 url 사용. useParam이나 redux로 수정예정
 
   const fetchData = async () => {
@@ -101,6 +102,7 @@ function DispatchDriverList(props) {
   const data = React.useMemo(() => {
     return driverList.map((item) => {
       return {
+        driverId : item.driverId,
         driverName: item.driverName,
         vehicleNo: item.vehicleNo,
         distance: item.distance,

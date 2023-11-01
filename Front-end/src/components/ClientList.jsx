@@ -159,8 +159,8 @@ function ClientList(props) {
         item.startPointLatitude,
         item.startPointLongitute
       );
-      console.log(pickUpLocation);
-      console.log("clientList", clientList);
+      // console.log(pickUpLocation);
+      // console.log("clientList", clientList);
 
       return {
         callId: item.callId,
