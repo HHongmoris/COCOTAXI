@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Component } from "react";
+import { useParams } from "react-router-dom";
+
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
@@ -6,6 +8,7 @@ import polyline from "@mapbox/polyline";
 import { useCallback } from "react";
 
 const MapComponent = () => {
+  const { callId } = useParams();
   const [map, setMap] = useState(null);
   const [centerLat, setCenterLat] = useState(35.092);
   const [centerLng, setCenterLng] = useState(128.854);
@@ -60,7 +63,6 @@ const MapComponent = () => {
       if (circle) {
         circle.setMap(null);
       }
-      console.log(openPage);
       if (openPage) {
         drawCircle(centerLat, centerLng);
       } else {
@@ -191,6 +193,7 @@ const MapComponent = () => {
         <div style={{ flex: 5 }}>{/* 빈 공간 (5) */}</div>
         <div style={{ flex: 50 }}>
           <ClientList
+            callId={callId}
             centerLat={centerLat}
             centerLng={centerLng}
             updateCallId={updateCallId}
