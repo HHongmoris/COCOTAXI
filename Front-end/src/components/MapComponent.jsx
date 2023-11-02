@@ -169,8 +169,7 @@ const MapComponent = () => {
   },[centerLat, centerLng, driverLat, driverLng, map]);
 
   const onClickDispatch = () => {
-    //axios.post('http://k9s101.p.ssafy.io:9000/api/dispatch', null ,{
-    axios.post('http://localhost:9000/api/dispatch', null ,{
+    axios.post('http://k9s101.p.ssafy.io:9000/api/dispatch', null ,{
     params : {
       callId: callId,
       driverId: driverId,
