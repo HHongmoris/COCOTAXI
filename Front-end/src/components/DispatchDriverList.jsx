@@ -49,7 +49,7 @@ const TableCell = styled.td`
 `;
 
 function DispatchDriverList(props) {
-  const { callId } = useParams();
+  const { callId } = props;
   const [driverList, setDriverList] = useState([]);
   const { updateDriverId } = props;
   const { driverLng, driverLat } = props;
@@ -62,7 +62,7 @@ function DispatchDriverList(props) {
   };
   //[updateDriverId, updateDriveLng, updateDriverLat]
 
-  const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/1`;
+  const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/${callId}`;
   // 일단 임시로 callId 1로 고정한 url 사용. useParam이나 redux로 수정예정
 
   const fetchData = async () => {
@@ -83,7 +83,7 @@ function DispatchDriverList(props) {
   useEffect(() => {
     fetchData();
   }, [callId]);
-
+  console.log("dispatchCallId", callId);
   console.log("driverList : ", driverList);
 
   // 데이터를 react-table 형식에 맞게 변환

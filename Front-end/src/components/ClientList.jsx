@@ -49,7 +49,7 @@ const TableCell = styled.td`
 `;
 
 function ClientList(props) {
-  const { callId } = useParams();
+  const { callId } = props;
   const [clientList, setClientList] = useState([]);
   const { centerLat, centerLng } = props;
   const { updateCallId } = props;
