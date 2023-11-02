@@ -11,6 +11,8 @@ const MapComponent = () => {
   const [map, setMap] = useState(null);
   const [centerLat, setCenterLat] = useState(35.092);
   const [centerLng, setCenterLng] = useState(128.854);
+  const [driverLat, setDriverLat] = useState(null);
+  const [driverLng, setDriverLng] = useState(null);
   const [circle, setCircle] = useState(null);
   const [openPage, setOpenPage] = useState(false);
   const [coords, setcoords] = useState(null);
@@ -23,6 +25,14 @@ const MapComponent = () => {
 
   const updateCenterLng = (startPointLongitute) => {
     setCenterLng(startPointLongitute);
+  };
+
+  const updateDriverLat = (driverLatitude) => {
+    setDriverLat(driverLatitude);
+  };
+
+  const updateDriverLng = (driverLongitude) => {
+    setDriverLng(driverLongitude);
   };
 
   const updateCallId = (callId) => {
@@ -115,8 +125,9 @@ const MapComponent = () => {
 
   const getAndSetPolylineCoords = useCallback(() => {
     // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함 / 형식 추가
-    const startLocation = "129.084206,35.201727"; // 손님의 시작부분
-    const endLocation = "129.049873,35.171177"; // 드라이버 위치
+    const startLocation = `${centerLng},${centerLat}`; // 손님의 시작부분
+    const endLocation = `${driverLng},${driverLat}`; // 드라이버 위치
+    console.log(startLocation + "그리고" + endLocation);
     const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
 
     axios
@@ -137,7 +148,7 @@ const MapComponent = () => {
             lat: coordinate[1],
             lng: coordinate[0],
           });
-        });
+        },[]);
 
         // setPolylineCoords(coords);
 
@@ -155,29 +166,33 @@ const MapComponent = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  },[centerLat, centerLng, driverLat, driverLng, map]);
 
   const onClickDispatch = () => {
-    axios.post(`http://k9s101.p.ssafy.io:9000/api/dispatch/${callId}`, {
+    //axios.post('http://k9s101.p.ssafy.io:9000/api/dispatch', null ,{
+    axios.post('http://localhost:9000/api/dispatch', null ,{
+    params : {
       callId: callId,
       driverId: driverId,
+    },
+  })
+    .then((response) => {
+      console.log("Dispatch Activated", response);
+    })
+    .catch((error) => {
+      console.error(error);
     });
-    console
-      .log("콜아이디" + callId + driverId)
-      .then((응답) => {
-        console.log("Dispatch Activated", 응답);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
     console.log("Dispatch Activated");
   };
 
   console.log("mapPage called");
 
   return (
-    <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
+    <div>
       <button onClick={getAndSetPolylineCoords}>경로 보기</button>
+    
+    <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
+      
 
       <div
         id="map"
@@ -226,7 +241,13 @@ const MapComponent = () => {
           zIndex: 2,
         }}
       >
-        <DispatchDriverList updateDriverId={updateDriverId} />
+        <DispatchDriverList 
+        updateDriverId={updateDriverId}
+        driverLat = {driverLat}
+        driverLng = {driverLng}
+        updateDriverLng = {updateDriverLng}
+        updateDriverLat = {updateDriverLat}
+        />
         <div>
           <button
             onClick={onClickDispatch}
@@ -242,6 +263,7 @@ const MapComponent = () => {
           </button>
         </div>
       </div>
+    </div>
     </div>
   );
 };
