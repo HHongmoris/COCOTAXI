@@ -48,9 +48,9 @@ const TableCell = styled.td`
 function ClientList(props) {
   const { callId } = useParams();
   const [clientList, setClientList] = useState([]);
-  
+
   const { centerLat, centerLng } = props;
-  const {updateCallId} = props;
+  const { updateCallId } = props;
   // MapComponent 갱신을 위한 콜백 함수
   const { updateCenterLat, updateCenterLng } = props;
 
@@ -199,7 +199,7 @@ function ClientList(props) {
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
   const maxRows = 6;
 
-  console.log("clientList called")
+  console.log("clientList called");
 
   return (
     <TableContainer>

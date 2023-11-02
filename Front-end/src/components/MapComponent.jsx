@@ -8,7 +8,6 @@ import polyline from "@mapbox/polyline";
 import { useCallback } from "react";
 
 const MapComponent = () => {
-  const { callId } = useParams();
   const [map, setMap] = useState(null);
   const [centerLat, setCenterLat] = useState(35.092);
   const [centerLng, setCenterLng] = useState(128.854);
@@ -28,14 +27,14 @@ const MapComponent = () => {
 
   const updateCallId = (callId) => {
     setCallId(callId);
-  }
+  };
 
   const updateDriverId = (driverId) => {
     setDriverId(driverId);
-  }
+  };
 
-  console.log("callId : " + callId );
-  console.log("DId : " + driverId );
+  console.log("callId : " + callId);
+  console.log("DId : " + driverId);
 
   // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
   useEffect(() => {
@@ -71,7 +70,6 @@ const MapComponent = () => {
     }
   }, [centerLat, centerLng, map]);
 
-
   // 시작하자마자 구글 맵 적용
   useEffect(() => {
     const loadGoogleMapsScript = () => {
@@ -81,7 +79,7 @@ const MapComponent = () => {
       googleMapsScript.defer = true;
       googleMapsScript.onload = initMap;
       document.head.appendChild(googleMapsScript);
-      console.log("googleAPI called")
+      console.log("googleAPI called");
     };
 
     const initMap = () => {
@@ -96,9 +94,7 @@ const MapComponent = () => {
     };
 
     loadGoogleMapsScript();
-  },[]);
-
-  
+  }, []);
 
   // 원 그리기
   const drawCircle = (lat, lng) => {
@@ -159,27 +155,24 @@ const MapComponent = () => {
       .catch((error) => {
         console.error(error);
       });
-  },[]);
+  }, []);
 
   const onClickDispatch = () => {
-    axios.post(`http://k9s101.p.ssafy.io:9000/api/dispatch/${callId}`,
-      {
-        "callId" : callId,
-        "driverId" : driverId
-      }
-    )
-    .then((응답) => {
-      console.log("Dispatch Activated", 응답);
-    })
-    .catch((error) => {
-      console.error(error);
-    })
-    console.log("Dispatch Activated")
-  }
-  
+    axios
+      .post(`http://k9s101.p.ssafy.io:9000/api/dispatch/${callId}`, {
+        callId: callId,
+        driverId: driverId,
+      })
+      .then((응답) => {
+        console.log("Dispatch Activated", 응답);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    console.log("Dispatch Activated");
+  };
 
-
-  console.log("mapPage called")
+  console.log("mapPage called");
 
   return (
     <div>
@@ -203,15 +196,9 @@ const MapComponent = () => {
         </div>
         <div style={{ flex: 2 }}></div>
         <div style={{ flex: 40 }}>
-          <DispatchDriverList
-            updateDriverId={updateDriverId}
-          />
-          <div style={{display : "flex"}}>
-          <button
-          onClick = {onClickDispatch}
-          >
-            Dispatch
-          </button>
+          <DispatchDriverList updateDriverId={updateDriverId} />
+          <div style={{ display: "flex" }}>
+            <button onClick={onClickDispatch}>Dispatch</button>
           </div>
         </div>
         <div style={{ flex: 2 }}></div>
