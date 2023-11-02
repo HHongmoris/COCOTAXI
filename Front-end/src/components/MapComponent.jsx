@@ -201,6 +201,8 @@ const MapComponent = () => {
           width: "500px",
           background: "white",
           boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+          radius: 30,
+          radius: 10,
           zIndex: 2,
         }}
       >
@@ -234,8 +236,8 @@ const MapComponent = () => {
               width: "100%", // 버튼이 표 안에 가득 차도록 너비 설정
               padding: "10px", // 원하는 패딩 설정
               border: "none", // 테두리 제거
-              color: "black", // 글자색 설정
-              cursor: "pointer", // 커서 스타일 설정
+              color: "black",
+              cursor: "pointer",
             }}
           >
             Dispatch
