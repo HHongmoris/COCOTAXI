@@ -27,8 +27,8 @@ public class DispatchController {
     }
 
     //배차 시스템
-    @PostMapping("/{callId}")
-    public ResponseEntity<DispatchRequest> makeDispatch(@PathVariable("callId") int callId, int driverId){
+    @PostMapping
+    public ResponseEntity<DispatchRequest> makeDispatch(@RequestParam(value = "callId") int callId, @RequestParam(value = "driverId") int driverId){
         Dispatch dispatch = new Dispatch();
         dispatch = dispatchService.makeDispatch(callId, driverId);
         int dispatchId = dispatch.getDriverId();
