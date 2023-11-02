@@ -17,8 +17,8 @@ public class CallingsResponse implements Comparable<CallingsResponse> {
     private String vehicleType;
     private double startPointLatitude;
     private double endPointLatitude;
-    private double startPointLongitute;
-    private double endPointLongitute;
+    private double startPointLongitude;
+    private double endPointLongitude;
     private double distance;
     private String pickUpLocation;
     private String dropOffLocation;
@@ -27,10 +27,13 @@ public class CallingsResponse implements Comparable<CallingsResponse> {
         this.callId = entity.getCallId();
         this.callCreatedTime = entity.getCallCreatedTime();
         this.vehicleType = entity.getVehicleType();
-        this.startPointLongitute = entity.getStartPointLongitude();
+        this.startPointLongitude = entity.getStartPointLongitude();
         this.startPointLatitude = entity.getStartPointLatitude();
-        this.endPointLongitute = entity.getEndPointLongitude();
+        this.endPointLongitude = entity.getEndPointLongitude();
         this.endPointLatitude = entity.getEndPointLatitude();
+        this.distance = entity.getDistance();
+        this.pickUpLocation = entity.getPickUpLocation();
+        this.dropOffLocation = entity.getDropOffLocation();
     }
 
     @Override

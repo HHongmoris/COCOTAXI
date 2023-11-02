@@ -13,11 +13,12 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/callings")
 public class CallingsController {
 
     private final CallingsService callingsService;
 
-    @GetMapping("/api/callings")
+    @GetMapping
     public ResponseEntity<List<CallingsResponse>> getCallingsList(){
         List<CallingsResponse> callingsListResponses = callingsService.getAllCallings();
 
