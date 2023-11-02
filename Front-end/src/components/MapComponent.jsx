@@ -1,24 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Component } from "react";
+import { useParams } from "react-router-dom";
+
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
 import polyline from "@mapbox/polyline";
+import { useCallback } from "react";
 
 const MapComponent = () => {
   const [map, setMap] = useState(null);
   const [centerLat, setCenterLat] = useState(35.092);
   const [centerLng, setCenterLng] = useState(128.854);
+  const [driverLat, setDriverLat] = useState(null);
+  const [driverLng, setDriverLng] = useState(null);
   const [circle, setCircle] = useState(null);
   const [openPage, setOpenPage] = useState(false);
   const [coords, setcoords] = useState(null);
+  const [callId, setCallId] = useState(0);
+  const [driverId, setDriverId] = useState(0);
+  const [polyline, setPolyline] = useState(false);
 
   const updateCenterLat = (startPointLatitude) => {
     setCenterLat(startPointLatitude);
   };
 
-  const updateCenterLng = (startPointLongitute) => {
-    setCenterLng(startPointLongitute);
+  const updateCenterLng = (startPointLongitude) => {
+    setCenterLng(startPointLongitude);
   };
+
+  const updateDriverLat = (driverLatitude) => {
+    setDriverLat(driverLatitude);
+  };
+
+  const updateDriverLng = (driverLongitude) => {
+    setDriverLng(driverLongitude);
+  };
+
+  const updateCallId = (callId) => {
+    setCallId(callId);
+  };
+
+  const updateDriverId = (driverId) => {
+    setDriverId(driverId);
+  };
+
+  console.log("callId : " + callId);
+  console.log("DId : " + driverId);
 
   // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
   useEffect(() => {
@@ -46,15 +73,15 @@ const MapComponent = () => {
       if (circle) {
         circle.setMap(null);
       }
-      console.log(openPage);
       if (openPage) {
         drawCircle(centerLat, centerLng);
       } else {
         setOpenPage(true);
       }
     }
-  }, [centerLat, centerLng, map]);
 
+    getAndSetPolylineCoords();
+  }, [centerLat, centerLng, driverId, map]);
 
   // 시작하자마자 구글 맵 적용
   useEffect(() => {
@@ -65,6 +92,7 @@ const MapComponent = () => {
       googleMapsScript.defer = true;
       googleMapsScript.onload = initMap;
       document.head.appendChild(googleMapsScript);
+      console.log("googleAPI called");
     };
 
     const initMap = () => {
@@ -79,9 +107,7 @@ const MapComponent = () => {
     };
 
     loadGoogleMapsScript();
-  },[]);
-
-  
+  }, []);
 
   // 원 그리기
   const drawCircle = (lat, lng) => {
@@ -100,11 +126,27 @@ const MapComponent = () => {
     }
   };
 
-  const getAndSetPolylineCoords = () => {
-    // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함
-    const startLocation = "129.084206,35.201727";
-    const endLocation = "129.049873,35.171177";
+  const getAndSetPolylineCoords = useCallback(() => {
+    // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함 / 형식 추가
+    const startLocation = `${centerLng},${centerLat}`; // 손님의 시작부분
+    const endLocation = `${driverLng},${driverLat}`; // 드라이버 위치
+    console.log(startLocation + "그리고" + endLocation);
     const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
+
+    // console.log("아무거나");
+    //출발
+    // const marker1 = new google.maps.Marker({
+    //   position: { lat: centerLng, lng: centerLat },
+    //   map: map, // 마커를 지도에 추가
+    //   icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
+    // });
+
+    // // 도착지점 마크 생성
+    // const marker2 = new google.maps.Marker({
+    //   position: { lat: driverLng, lng: driverLat },
+    //   map: map, // 마커를 지도에 추가
+    //   icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
+    // });
 
     axios
       .get(
@@ -124,7 +166,7 @@ const MapComponent = () => {
             lat: coordinate[1],
             lng: coordinate[0],
           });
-        });
+        }, []);
 
         // setPolylineCoords(coords);
 
@@ -142,33 +184,104 @@ const MapComponent = () => {
       .catch((error) => {
         console.error(error);
       });
+  }, [centerLat, centerLng, driverLat, driverLng, map]);
+
+  const onClickDispatch = () => {
+    axios
+      .post("http://k9s101.p.ssafy.io:9000/api/dispatch", null, {
+        params: {
+          callId: callId,
+          driverId: driverId,
+        },
+      })
+      .then((response) => {
+        console.log("Dispatch Activated", response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    console.log("Dispatch Activated");
   };
 
+  console.log("mapPage called");
 
+  // if (driverLat && driverLng) getAndSetPolylineCoords();
 
   return (
     <div>
       <button onClick={getAndSetPolylineCoords}>경로 보기</button>
 
-      <div
-        id="map"
-        style={{ width: "100%", height: "400px", position: "relative" }}
-      ></div>
-      <div style={{ display: "flex" }}>
-        <div style={{ flex: 5 }}>{/* 빈 공간 (5) */}</div>
-        <div style={{ flex: 50 }}>
+      <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
+        <div
+          id="map"
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            zIndex: 1,
+          }}
+        >
+          {/* 맵 컨텐츠 */}
+        </div>
+
+        <div
+          style={{
+            position: "absolute",
+            bottom: 15,
+            left: 30,
+            width: "500px",
+            background: "white",
+            boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+            zIndex: 2,
+          }}
+        >
+          {/* 클라이언트 리스트 컴포넌트 */}
           <ClientList
+            callId={callId}
             centerLat={centerLat}
             centerLng={centerLng}
+            updateCallId={updateCallId}
             updateCenterLat={updateCenterLat}
             updateCenterLng={updateCenterLng}
           />
         </div>
-        <div style={{ flex: 2 }}></div>
-        <div style={{ flex: 40 }}>
-          <DispatchDriverList />
+
+        <div
+          style={{
+            position: "absolute",
+            bottom: 15,
+            right: 60,
+            width: "350px",
+            background: "white",
+            boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+            zIndex: 2,
+          }}
+        >
+          <DispatchDriverList
+            callId={callId}
+            updateDriverId={updateDriverId}
+            driverLat={driverLat}
+            driverLng={driverLng}
+            updateDriverLng={updateDriverLng}
+            updateDriverLat={updateDriverLat}
+          />
+          <div>
+            <button
+              onClick={onClickDispatch}
+              style={{
+                width: "100%", // 버튼이 표 안에 가득 차도록 너비 설정
+                padding: "10px", // 원하는 패딩 설정
+                border: "none", // 테두리 제거
+                color: "black", // 글자색 설정
+                cursor: "pointer", // 커서 스타일 설정
+              }}
+            >
+              Dispatch
+            </button>
+          </div>
         </div>
-        <div style={{ flex: 2 }}></div>
       </div>
     </div>
   );
