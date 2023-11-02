@@ -52,17 +52,15 @@ function DispatchDriverList(props) {
   const { callId } = useParams();
   const [driverList, setDriverList] = useState([]);
   const { updateDriverId } = props;
-  const {driverLng, driverLat} = props;
-  const {updateDriverLng, updateDriverLat} = props;
+  const { driverLng, driverLat } = props;
+  const { updateDriverLng, updateDriverLat } = props;
 
-  const handleRowClick = (
-    (driverId, driverLng, driverLat) => {
-      updateDriverId(driverId);
-      updateDriverLng(driverLng);
-      updateDriverLat(driverLat);
-    })
-    //[updateDriverId, updateDriveLng, updateDriverLat]
-  
+  const handleRowClick = (driverId, driverLng, driverLat) => {
+    updateDriverId(driverId);
+    updateDriverLng(driverLng);
+    updateDriverLat(driverLat);
+  };
+  //[updateDriverId, updateDriveLng, updateDriverLat]
 
   const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/1`;
   // 일단 임시로 callId 1로 고정한 url 사용. useParam이나 redux로 수정예정
@@ -114,8 +112,8 @@ function DispatchDriverList(props) {
         driverName: item.driverName,
         vehicleNo: item.vehicleNo,
         distance: item.distance,
-        driverLongitude : item.driverLongitude,
-        driverLatitude : item.driverLatitude
+        driverLongitude: item.driverLongitude,
+        driverLatitude: item.driverLatitude,
       };
     });
   }, [driverList]);
@@ -152,10 +150,13 @@ function DispatchDriverList(props) {
               return (
                 <tr
                   {...row.getRowProps()}
-                  onClick={() => handleRowClick(
-                    row.original.driverId,
-                    row.original.driverLongitude,
-                    row.original.driverLatitude)}
+                  onClick={() =>
+                    handleRowClick(
+                      row.original.driverId,
+                      row.original.driverLongitude,
+                      row.original.driverLatitude
+                    )
+                  }
                 >
                   {row.cells.map((cell) => (
                     <TableCell {...cell.getCellProps()}>

@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
+import polyline from "@mapbox/polyline";
 import { useCallback } from "react";
-import "./table.css";
 
 const MapComponent = () => {
   const [map, setMap] = useState(null);
@@ -148,7 +148,7 @@ const MapComponent = () => {
             lat: coordinate[1],
             lng: coordinate[0],
           });
-        },[]);
+        }, []);
 
         // setPolylineCoords(coords);
 
@@ -166,105 +166,104 @@ const MapComponent = () => {
       .catch((error) => {
         console.error(error);
       });
-  },[centerLat, centerLng, driverLat, driverLng, map]);
+  }, [centerLat, centerLng, driverLat, driverLng, map]);
 
   const onClickDispatch = () => {
-    axios.post('http://k9s101.p.ssafy.io:9000/api/dispatch', null ,{
-    params : {
-      callId: callId,
-      driverId: driverId,
-    },
-  })
-    .then((response) => {
-      console.log("Dispatch Activated", response);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    axios
+      .post("http://k9s101.p.ssafy.io:9000/api/dispatch", null, {
+        params: {
+          callId: callId,
+          driverId: driverId,
+        },
+      })
+      .then((response) => {
+        console.log("Dispatch Activated", response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
     console.log("Dispatch Activated");
   };
 
   console.log("mapPage called");
 
+  if (driverLat && driverLng) getAndSetPolylineCoords();
+
   return (
     <div>
       <button onClick={getAndSetPolylineCoords}>경로 보기</button>
-    
-    <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
-      
 
-      <div
-        id="map"
-        style={{
-          width: "100%",
-          height: "100%",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          zIndex: 1,
-        }}
-      >
-        {/* 맵 컨텐츠 */}
-      </div>
+      <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
+        <div
+          id="map"
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            zIndex: 1,
+          }}
+        >
+          {/* 맵 컨텐츠 */}
+        </div>
 
-      <div
-        style={{
-          position: "absolute",
-          bottom: 15,
-          left: 30,
-          width: "500px",
-          background: "white",
-          boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
-          radius: 30,
-          radius: 10,
-          zIndex: 2,
-        }}
-      >
-        {/* 클라이언트 리스트 컴포넌트 */}
-        <ClientList
-          callId={callId}
-          centerLat={centerLat}
-          centerLng={centerLng}
-          updateCallId={updateCallId}
-          updateCenterLat={updateCenterLat}
-          updateCenterLng={updateCenterLng}
-        />
-      </div>
+        <div
+          style={{
+            position: "absolute",
+            bottom: 15,
+            left: 30,
+            width: "500px",
+            background: "white",
+            boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+            zIndex: 2,
+          }}
+        >
+          {/* 클라이언트 리스트 컴포넌트 */}
+          <ClientList
+            callId={callId}
+            centerLat={centerLat}
+            centerLng={centerLng}
+            updateCallId={updateCallId}
+            updateCenterLat={updateCenterLat}
+            updateCenterLng={updateCenterLng}
+          />
+        </div>
 
-      <div
-        style={{
-          position: "absolute",
-          bottom: 15,
-          right: 60,
-          width: "350px",
-          background: "white",
-          boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
-          zIndex: 2,
-        }}
-      >
-        <DispatchDriverList 
-        updateDriverId={updateDriverId}
-        driverLat = {driverLat}
-        driverLng = {driverLng}
-        updateDriverLng = {updateDriverLng}
-        updateDriverLat = {updateDriverLat}
-        />
-        <div>
-          <button
-            onClick={onClickDispatch}
-            style={{
-              width: "100%",
-              padding: "7px",
-              border: "none",
-              color: "black",
-              cursor: "pointer",
-            }}
-          >
-            Dispatch
-          </button>
+        <div
+          style={{
+            position: "absolute",
+            bottom: 15,
+            right: 60,
+            width: "350px",
+            background: "white",
+            boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+            zIndex: 2,
+          }}
+        >
+          <DispatchDriverList
+            updateDriverId={updateDriverId}
+            driverLat={driverLat}
+            driverLng={driverLng}
+            updateDriverLng={updateDriverLng}
+            updateDriverLat={updateDriverLat}
+          />
+          <div>
+            <button
+              onClick={onClickDispatch}
+              style={{
+                width: "100%", // 버튼이 표 안에 가득 차도록 너비 설정
+                padding: "10px", // 원하는 패딩 설정
+                border: "none", // 테두리 제거
+                color: "black", // 글자색 설정
+                cursor: "pointer", // 커서 스타일 설정
+              }}
+            >
+              Dispatch
+            </button>
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };
