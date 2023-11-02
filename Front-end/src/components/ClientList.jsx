@@ -73,7 +73,6 @@ function ClientList(props) {
   };
 
   const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
-
   const fetchData = async () => {
     try {
       const response = await fetch(url, {
