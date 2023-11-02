@@ -27,9 +27,11 @@ public class CallingsServiceImpl implements CallingsService {
         List<CallingsResponse> resultAllCallings = new ArrayList<>();
 
         for(Callings call : callings) {
-            CallingsResponse response = new CallingsResponse();
-            response.callingsResponseList(call);
-            resultAllCallings.add(response);
+            if(call.getCallStatus().equals("call")){
+                CallingsResponse response = new CallingsResponse();
+                response.callingsResponseList(call);
+                resultAllCallings.add(response);
+            }
         }
 
         Comparator<CallingsResponse> comparator = (response1, response2) -> response1.getCallCreatedTime().compareTo(response2.getCallCreatedTime());
