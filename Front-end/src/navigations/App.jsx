@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/:callId" element={<MapComponent />} />
+        <Route path="/" element={<MapComponent />} />
       </Routes>
     </>
   );
