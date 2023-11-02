@@ -4,7 +4,7 @@ import { useTable } from "react-table";
 import styled from "styled-components";
 
 const TableContainer = styled.div`
-  max-height: 260px;
+  max-height: 190px;
   width: 100%;
   overflow: hidden;
 `;
@@ -17,8 +17,10 @@ const Table = styled.table`
 const Thead = styled.thead`
   background-color: #f2f2f2;
   th {
-    padding: 8px;
+    padding: 6px;
     border-bottom: 1px solid #ddd;
+    font-size: 12px;
+    text-align: left;
   }
 `;
 
@@ -30,13 +32,14 @@ const TbodyContainer = styled.div`
 
 const Tbody = styled.tbody`
   td {
-    padding: 8px;
+    padding: 6px;
     border-bottom: 1px solid #ddd;
+    font-size: 14px;
   }
 `;
 
 const TableCell = styled.td`
-  height: 40px;
+  height: 30px;
   cursor: pointer;
   transition: background-color 0.3s;
 

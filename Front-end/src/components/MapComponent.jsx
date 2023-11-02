@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
-import polyline from "@mapbox/polyline";
 import { useCallback } from "react";
+import "./table.css";
 
 const MapComponent = () => {
   const [map, setMap] = useState(null);
@@ -233,9 +233,9 @@ const MapComponent = () => {
           <button
             onClick={onClickDispatch}
             style={{
-              width: "100%", // 버튼이 표 안에 가득 차도록 너비 설정
-              padding: "10px", // 원하는 패딩 설정
-              border: "none", // 테두리 제거
+              width: "100%",
+              padding: "7px",
+              border: "none",
               color: "black",
               cursor: "pointer",
             }}
