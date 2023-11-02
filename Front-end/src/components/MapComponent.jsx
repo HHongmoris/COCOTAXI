@@ -118,7 +118,7 @@ const MapComponent = () => {
   };
 
   const getAndSetPolylineCoords = useCallback(() => {
-    // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함
+    // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함 / 형식 추가
     const startLocation = "129.084206,35.201727";
     const endLocation = "129.049873,35.171177";
     const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
