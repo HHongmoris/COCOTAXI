@@ -242,6 +242,7 @@ const MapComponent = () => {
           }}
         >
           <DispatchDriverList
+            callId={callId}
             updateDriverId={updateDriverId}
             driverLat={driverLat}
             driverLng={driverLng}
