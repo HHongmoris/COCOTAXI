@@ -48,15 +48,17 @@ const TableCell = styled.td`
 function DispatchDriverList(props) {
   const { callId } = useParams();
   const [driverList, setDriverList] = useState([]);
-  const {updateDriverId} = props;
+  const { updateDriverId } = props;
 
-  const handleRowClick = useCallback((driverId) => {
-    updateDriverId(driverId);
-    console.log("dispatch driverId check : " + driverId);
-    },[updateDriverId]
-  )
+  const handleRowClick = useCallback(
+    (driverId) => {
+      updateDriverId(driverId);
+      console.log("dispatch driverId check : " + driverId);
+    },
+    [updateDriverId]
+  );
 
-  const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
+  const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/1`;
   // 일단 임시로 callId 1로 고정한 url 사용. useParam이나 redux로 수정예정
 
   const fetchData = async () => {
@@ -102,7 +104,7 @@ function DispatchDriverList(props) {
   const data = React.useMemo(() => {
     return driverList.map((item) => {
       return {
-        driverId : item.driverId,
+        driverId: item.driverId,
         driverName: item.driverName,
         vehicleNo: item.vehicleNo,
         distance: item.distance,
@@ -119,17 +121,14 @@ function DispatchDriverList(props) {
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
   const maxRows = 4;
 
-  console.log("driverList called")
+  console.log("driverList called");
 
   return (
     <TableContainer>
       <Table {...getTableProps()}>
         <Thead>
           {headerGroups.map((headerGroup) => (
-            <tr 
-            {...headerGroup.getHeaderGroupProps()}
-            
-            >
+            <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps()}>{column.render("Header")}</th>
               ))}
@@ -143,12 +142,9 @@ function DispatchDriverList(props) {
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}
-                onClick={() => 
-                  handleRowClick(
-                    row.original.driverId
-                  )
-                }
+                <tr
+                  {...row.getRowProps()}
+                  onClick={() => handleRowClick(row.original.driverId)}
                 >
                   {row.cells.map((cell) => (
                     <TableCell {...cell.getCellProps()}>

@@ -93,7 +93,7 @@ function ClientList(props) {
 
   // 좌표를 주소로 변환하는 함수
   async function reverseGeocodeCoordinates(latitude, longitude) {
-    const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+    // const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
 
     try {
       const response = await fetch(apiUrl);
