@@ -63,7 +63,6 @@ function DispatchDriverList(props) {
   //[updateDriverId, updateDriveLng, updateDriverLat]
 
   const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/${callId}`;
-  // 일단 임시로 callId 1로 고정한 url 사용. useParam이나 redux로 수정예정
 
   const fetchData = async () => {
     try {
