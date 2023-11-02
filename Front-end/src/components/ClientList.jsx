@@ -58,18 +58,10 @@ function ClientList(props) {
 
   // let map;
 
-  const handleRowClick = (startPointLatitude, startPointLongitute, callId) => {
-    // if (window.google && map) {
-    //   const latLng = new window.google.maps.LatLng(
-    //     startPointLatitude,
-    //     startPointLongitute
-    //   );
-    //   map.setCenter(latLng);
-    //   console.log("21321312312 row - startPointLatitude:");
-    // }
+  const handleRowClick = (startPointLatitude, startPointLongitude, callId) => {
     updateCallId(callId);
     updateCenterLat(startPointLatitude);
-    updateCenterLng(startPointLongitute);
+    updateCenterLng(startPointLongitude);
   };
 
   const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
@@ -117,7 +109,7 @@ function ClientList(props) {
   const columns = React.useMemo(
     () => [
       {
-        Header: "callCreatedTime",
+        Header: "callTime",
         accessor: "callCreatedTime",
       },
       {
@@ -156,13 +148,13 @@ function ClientList(props) {
 
           const pickUpLocation = await reverseGeocodeCoordinates(
             item.startPointLatitude,
-            item.startPointLongitute
+            item.startPointLongitude
           );
           console.log(pickUpLocation);
 
           const dropOffLocation = await reverseGeocodeCoordinates(
             item.endPointLatitude,
-            item.endPointLongitute
+            item.endPointLongitude
           );
           console.log(dropOffLocation);
 
@@ -173,15 +165,15 @@ function ClientList(props) {
             pickUpLocation: pickUpLocation,
             dropOffLocation: dropOffLocation,
             startPointLatitude: item.startPointLatitude,
-            startPointLongitute: item.startPointLongitute,
+            startPointLongitude: item.startPointLongitude,
             endPointLatitude: item.endPointLatitude,
-            endPointLongitute: item.endPointLongitute,
+            endPointLongitude: item.endPointLongitude,
             distance: item.distance,
+            pickUpLocation: item.pickUpLocation,
+            dropOffLocation: item.dropOffLocation,
           };
         })
       );
-      // console.log(pickUpLocation);
-      // console.log("clientList", clientList);
 
       setData(newData);
       console.log(data);
@@ -226,7 +218,7 @@ function ClientList(props) {
                   onClick={() =>
                     handleRowClick(
                       row.original.startPointLatitude,
-                      row.original.startPointLongitute,
+                      row.original.startPointLongitude,
                       row.original.callId
                     )
                   }

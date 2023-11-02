@@ -23,8 +23,8 @@ const MapComponent = () => {
     setCenterLat(startPointLatitude);
   };
 
-  const updateCenterLng = (startPointLongitute) => {
-    setCenterLng(startPointLongitute);
+  const updateCenterLng = (startPointLongitude) => {
+    setCenterLng(startPointLongitude);
   };
 
   const updateDriverLat = (driverLatitude) => {
@@ -129,6 +129,21 @@ const MapComponent = () => {
     const endLocation = `${driverLng},${driverLat}`; // 드라이버 위치
     console.log(startLocation + "그리고" + endLocation);
     const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
+
+    // console.log("아무거나");
+    //출발
+    // const marker1 = new google.maps.Marker({
+    //   position: { lat: centerLng, lng: centerLat },
+    //   map: map, // 마커를 지도에 추가
+    //   icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
+    // });
+
+    // // 도착지점 마크 생성
+    // const marker2 = new google.maps.Marker({
+    //   position: { lat: driverLng, lng: driverLat },
+    //   map: map, // 마커를 지도에 추가
+    //   icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
+    // });
 
     axios
       .get(
