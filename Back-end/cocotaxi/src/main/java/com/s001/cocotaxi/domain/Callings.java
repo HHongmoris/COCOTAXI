@@ -46,4 +46,12 @@ public class Callings {
     @Column(name = "vehicle_type")
     private String vehicleType;
 
+    @Column(name = "distance")
+    private double distance;
+
+    @Column(name = "pick_up_location")
+    private String pickUpLocation;
+
+    @Column(name = "drop_off_location")
+    private String dropOffLocation;
 }
