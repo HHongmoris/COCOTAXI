@@ -19,7 +19,9 @@ public class CallingsResponse implements Comparable<CallingsResponse> {
     private double endPointLatitude;
     private double startPointLongitute;
     private double endPointLongitute;
-    private double Distance;
+    private double distance;
+    private String pickUpLocation;
+    private String dropOffLocation;
 
     public void callingsResponseList(Callings entity){
         this.callId = entity.getCallId();
