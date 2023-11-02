@@ -18,6 +18,7 @@ const MapComponent = () => {
   const [coords, setcoords] = useState(null);
   const [callId, setCallId] = useState(0);
   const [driverId, setDriverId] = useState(0);
+  const [polyline, setPolyline] = useState(false);
 
   const updateCenterLat = (startPointLatitude) => {
     setCenterLat(startPointLatitude);
@@ -78,7 +79,9 @@ const MapComponent = () => {
         setOpenPage(true);
       }
     }
-  }, [centerLat, centerLng, map]);
+
+    getAndSetPolylineCoords();
+  }, [centerLat, centerLng, driverId, map]);
 
   // 시작하자마자 구글 맵 적용
   useEffect(() => {
