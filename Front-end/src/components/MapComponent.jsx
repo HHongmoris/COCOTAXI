@@ -202,7 +202,7 @@ const MapComponent = () => {
 
   console.log("mapPage called");
 
-  if (driverLat && driverLng) getAndSetPolylineCoords();
+  // if (driverLat && driverLng) getAndSetPolylineCoords();
 
   return (
     <div>
