@@ -50,6 +50,7 @@ function ClientList(props) {
   const [clientList, setClientList] = useState([]);
 
   const { centerLat, centerLng } = props;
+
   const { updateCallId } = props;
   // MapComponent 갱신을 위한 콜백 함수
   const { updateCenterLat, updateCenterLng } = props;

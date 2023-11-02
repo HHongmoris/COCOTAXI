@@ -158,11 +158,12 @@ const MapComponent = () => {
   }, []);
 
   const onClickDispatch = () => {
-    axios
-      .post(`http://k9s101.p.ssafy.io:9000/api/dispatch/1`, {
-        callId: callId,
-        driverId: driverId,
-      })
+    axios.post(`http://k9s101.p.ssafy.io:9000/api/dispatch/${callId}`, {
+      callId: callId,
+      driverId: driverId,
+    });
+    console
+      .log("콜아이디" + callId + driverId)
       .then((응답) => {
         console.log("Dispatch Activated", 응답);
       })
@@ -175,33 +176,71 @@ const MapComponent = () => {
   console.log("mapPage called");
 
   return (
-    <div>
+    <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
       <button onClick={getAndSetPolylineCoords}>경로 보기</button>
 
       <div
         id="map"
-        style={{ width: "100%", height: "400px", position: "relative" }}
-      ></div>
-      <div style={{ display: "flex" }}>
-        <div style={{ flex: 5 }}>{/* 빈 공간 (5) */}</div>
-        <div style={{ flex: 50 }}>
-          <ClientList
-            callId={callId}
-            centerLat={centerLat}
-            centerLng={centerLng}
-            updateCallId={updateCallId}
-            updateCenterLat={updateCenterLat}
-            updateCenterLng={updateCenterLng}
-          />
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 1,
+        }}
+      >
+        {/* 맵 컨텐츠 */}
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          bottom: 15,
+          left: 30,
+          width: "500px",
+          background: "white",
+          boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+          zIndex: 2,
+        }}
+      >
+        {/* 클라이언트 리스트 컴포넌트 */}
+        <ClientList
+          callId={callId}
+          centerLat={centerLat}
+          centerLng={centerLng}
+          updateCallId={updateCallId}
+          updateCenterLat={updateCenterLat}
+          updateCenterLng={updateCenterLng}
+        />
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          bottom: 15,
+          right: 60,
+          width: "350px",
+          background: "white",
+          boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+          zIndex: 2,
+        }}
+      >
+        <DispatchDriverList updateDriverId={updateDriverId} />
+        <div>
+          <button
+            onClick={onClickDispatch}
+            style={{
+              width: "100%", // 버튼이 표 안에 가득 차도록 너비 설정
+              padding: "10px", // 원하는 패딩 설정
+              border: "none", // 테두리 제거
+              color: "black", // 글자색 설정
+              cursor: "pointer", // 커서 스타일 설정
+            }}
+          >
+            Dispatch
+          </button>
         </div>
-        <div style={{ flex: 2 }}></div>
-        <div style={{ flex: 40 }}>
-          <DispatchDriverList updateDriverId={updateDriverId} />
-          <div style={{ display: "flex" }}>
-            <button onClick={onClickDispatch}>Dispatch</button>
-          </div>
-        </div>
-        <div style={{ flex: 2 }}></div>
       </div>
     </div>
   );
