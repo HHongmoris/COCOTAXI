@@ -1,7 +1,6 @@
 import React, { useEffect, useState, Component } from "react";
 import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { setDriverFlag, setClientFlag } from "../redux/actions";
+import { useSelector } from 'react-redux';
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
@@ -44,8 +43,9 @@ const MapComponent = () => {
     setDriverId(driverId);
   };
 
-  const driverFlag = useSelector((state) => state.driver_flag);
-  const clientFlag = useSelector((state) => state.client_flag);
+  const driverFlag = useSelector(state => state.driver_flag)
+  const clientFlag = useSelector(state => state.client_flag)
+  const driverRouteFlag = useSelector(state => state.driver_route_flag)
   console.log("callId : " + callId);
   console.log("driverId : " + driverId);
 
@@ -91,6 +91,8 @@ const MapComponent = () => {
     }
   }, [centerLat, centerLng, driverLng, driverLat, map]);
 
+  
+
   // 시작하자마자 구글 맵 적용
   useEffect(() => {
     const loadGoogleMapsScript = () => {
@@ -134,27 +136,32 @@ const MapComponent = () => {
     }
   };
 
-  const getAndSetPolylineCoords = useCallback(() => {
+  console.log("driverRouterFlag : ", driverRouteFlag)
+
+  useEffect(() => {
+
+    if(driverRouteFlag){
     // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함 / 형식 추가
     const startLocation = `${centerLng},${centerLat}`; // 손님의 시작부분
     const endLocation = `${driverLng},${driverLat}`; // 드라이버 위치
-    console.log(startLocation + "그리고" + endLocation);
     const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
 
-    // console.log("아무거나");
-    //출발
-    // const marker1 = new google.maps.Marker({
-    //   position: { lat: centerLng, lng: centerLat },
-    //   map: map, // 마커를 지도에 추가
-    //   icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
-    // });
+    console.log("공습경보!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    console.log("driverRouterFlag : ", driverRouteFlag)
+    console.log("공습경보!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    // 출발
+    const marker1 = new window.google.maps.Marker({
+      position: { lat: centerLat, lng: centerLng },
+      map: map, // 마커를 지도에 추가
+      icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
+    });
 
-    // // 도착지점 마크 생성
-    // const marker2 = new google.maps.Marker({
-    //   position: { lat: driverLng, lng: driverLat },
-    //   map: map, // 마커를 지도에 추가
-    //   icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
-    // });
+    // 도착지점 마크 생성
+    const marker2 = new window.google.maps.Marker({
+      position: { lat: driverLat, lng: driverLng },
+      map: map, // 마커를 지도에 추가
+      icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
+    });
 
     axios
       .get(
@@ -192,7 +199,10 @@ const MapComponent = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, [centerLat, centerLng, driverLat, driverLng, map]);
+    }
+  }, [driverRouteFlag]);
+
+  
 
   const onClickDispatch = () => {
     axios
@@ -216,11 +226,9 @@ const MapComponent = () => {
 
   console.log("mapPage called");
 
-  // if (driverLat && driverLng) getAndSetPolylineCoords();
 
   return (
     <div>
-      <button onClick={getAndSetPolylineCoords}>경로 보기</button>
 
       <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
         <div
