@@ -70,16 +70,15 @@ const MapComponent = () => {
 
   useEffect(() => {
     if (map) {
-      if(clientFlag){
-      const latLng = new window.google.maps.LatLng(centerLat, centerLng);
-      map.setCenter(latLng);
-      map.setZoom(15);
-      
-      }
-      else if (driverFlag){
+      if (clientFlag) {
+        const latLng = new window.google.maps.LatLng(centerLat, centerLng);
+        map.setCenter(latLng);
+        map.setZoom(15);
+      } else if (driverFlag) {
         const latLng = new window.google.maps.LatLng(driverLat, driverLng);
         map.setCenter(latLng);
         map.setZoom(15);
+        circle.setMap(null);
       }
       if (circle) {
         circle.setMap(null);
@@ -208,7 +207,7 @@ const MapComponent = () => {
   const onClickDispatch = () => {
     axios
       .post("http://k9s101.p.ssafy.io:9000/api/dispatch", null, {
-      //.post("http://localhost:9000/api/dispatch", null, {
+        //.post("http://localhost:9000/api/dispatch", null, {
         params: {
           callId: callId,
           driverId: driverId,
@@ -216,6 +215,8 @@ const MapComponent = () => {
       })
       .then((response) => {
         console.log("Dispatch Activated", response);
+        alert("강제 배차가 완료되었습니다.");
+        window.location.reload();
       })
       .catch((error) => {
         console.error(error);
@@ -249,7 +250,7 @@ const MapComponent = () => {
             position: "absolute",
             bottom: 15,
             left: 30,
-            width: "500px",
+            width: "700px",
             background: "white",
             boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
             zIndex: 2,

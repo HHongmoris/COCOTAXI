@@ -44,9 +44,10 @@ const TableRow = styled.tr`
   height: 30px;
   cursor: pointer;
   transition: background-color 0.3s;
+  background-color: ${(props) => (props.isClicked ? "#e0e0e0" : "inherit")};
 
   &:hover {
-    background-color: #e0e0e0;
+    background-color: ${(props) => (props.isClicked ? "#e0e0e0" : "#e0e0e0")};
   }
 `;
 
@@ -64,6 +65,7 @@ function DispatchDriverList(props) {
   const clientFlag = useSelector(state => state.client_flag)
   const driverRouteFlag = useSelector (state => state.driver_route_flag)
   const dispatch = useDispatch();
+  const [clickedDriver, setClickedDriver] = useState(null);
 
   const handleRowClick = (driverId, driverLng, driverLat) => {
     updateDriverId(driverId);
@@ -171,6 +173,7 @@ function DispatchDriverList(props) {
                       row.original.driverLatitude
                     )
                   }
+                  isClicked={row.original.driverId === clickedDriver} // 클릭된 행에만 스타일 적용
                 >
                   {row.cells.map((cell) => (
                     <TableCell {...cell.getCellProps()}>
