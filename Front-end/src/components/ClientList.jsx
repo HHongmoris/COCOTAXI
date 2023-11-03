@@ -44,6 +44,7 @@ const TableRow = styled.tr`
   height: 30px;
   cursor: pointer;
   transition: background-color 0.3s;
+  background-color: ${(props) => (props.isClicked ? "#e0e0e0" : "inherit")};
 
   &:hover {
     background-color: #e0e0e0;
@@ -64,6 +65,7 @@ function ClientList(props) {
   const clientFlag = useSelector((state) => state.client_flag);
   const driverFlag = useSelector((state) => state.driver_flag);
   const dispatch = useDispatch();
+  const [clickedRow, setClickedRow] = useState(null);
 
   // let map;
 
@@ -73,8 +75,8 @@ function ClientList(props) {
     updateCenterLng(startPointLongitude);
     dispatch(setClientFlag(true));
     dispatch(setDriverFlag(false));
+    setClickedRow(callId);
   };
-
 
   const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
   //const url = `http://localhost:9000/api/callings`;
@@ -240,6 +242,7 @@ function ClientList(props) {
                       row.original.callId
                     )
                   }
+                  isClicked={row.original.callId === clickedRow} // 클릭된 행에만 스타일 적용
                 >
                   {row.cells.map((cell) => (
                     <TableCell {...cell.getCellProps()}>
