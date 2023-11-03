@@ -205,6 +205,8 @@ const MapComponent = () => {
       })
       .then((response) => {
         console.log("Dispatch Activated", response);
+        alert("강제 배차가 완료되었습니다.");
+        window.location.reload();
       })
       .catch((error) => {
         console.error(error);
