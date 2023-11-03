@@ -46,9 +46,6 @@ const MapComponent = () => {
 
   const driverFlag = useSelector(state => state.driver_flag)
   const clientFlag = useSelector(state => state.client_flag)
-  console.log("공습경보 !! driverFlag : " + driverFlag)
-  console.log("공습경보 !! clientFlag : " + clientFlag)
-
   console.log("callId : " + callId);
   console.log("driverId : " + driverId);
 
@@ -74,14 +71,12 @@ const MapComponent = () => {
   useEffect(() => {
     if (map) {
       if(clientFlag){
-        console.log("공습경보!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11")
       const latLng = new window.google.maps.LatLng(centerLat, centerLng);
       map.setCenter(latLng);
       map.setZoom(15);
       
       }
-      if (driverFlag){
-        console.log("공습경보!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11")
+      else if (driverFlag){
         const latLng = new window.google.maps.LatLng(driverLat, driverLng);
         map.setCenter(latLng);
         map.setZoom(15);
@@ -139,6 +134,8 @@ const MapComponent = () => {
       setCircle(newCircle);
     }
   };
+
+  
 
   const getAndSetPolylineCoords = useCallback(() => {
     // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함 / 형식 추가
@@ -202,8 +199,8 @@ const MapComponent = () => {
 
   const onClickDispatch = () => {
     axios
-      //.post("http://k9s101.p.ssafy.io:9000/api/dispatch", null, {
-      .post("http://localhost:9000/api/dispatch", null, {
+      .post("http://k9s101.p.ssafy.io:9000/api/dispatch", null, {
+      //.post("http://localhost:9000/api/dispatch", null, {
         params: {
           callId: callId,
           driverId: driverId,
