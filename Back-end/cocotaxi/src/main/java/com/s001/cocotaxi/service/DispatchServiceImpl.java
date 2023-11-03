@@ -61,8 +61,16 @@ public class DispatchServiceImpl implements DispatchService {
         double maxX = userLongitude -(RANGE_DISTANCE* kmForLongitude);
         double minX = userLongitude +(RANGE_DISTANCE* kmForLongitude);
 
-        //해당되는 좌표의 범위 안에 있는 택시
-        List<Driver>tempAroundDriverList = driverRepository.findDriverByDriverLatitudeAndDriverLongitude(maxX, minX, maxY, minY, vehicleType);
+        List<Driver> tempAroundDriverList = new ArrayList<Driver>();
+
+        //vehicleType별로 분류
+        if(vehicleType.equals("car")){  //car 일 때
+            //해당되는 좌표의 범위 안에 있는 택시
+            tempAroundDriverList = driverRepository.findCarDriverByDriverLatitudeAndDriverLongitude(maxX, minX, maxY, minY);
+        }else { //tuktuk 일 때
+            //해당되는 좌표의 범위 안에 있는 택시
+            tempAroundDriverList = driverRepository.findTuktukDriverByDriverLatitudeAndDriverLongitude(maxX, minX, maxY, minY);
+        }
 
         List<DispatchListResponse>resultAroundDriverList = new ArrayList<>();
 
@@ -74,13 +82,9 @@ public class DispatchServiceImpl implements DispatchService {
 
             if(distance < RANGE_DISTANCE && !flag){ // 6km 보다 작고 손님 없는 경우만
                 DispatchListResponse response = new DispatchListResponse();
-                response.setDriverName(aroundDriver.getDriverName());
-                response.setDriverId(aroundDriver.getDriverId());
-                response.setVehicleNo(aroundDriver.getVehicleNo());
-                response.setVehicleType(aroundDriver.getVehicleType());
+                response.DispatchListResponse(aroundDriver);
                 response.setDistance((double)Math.round(distance*1000)/1000);
-                response.setDriverLatitude(aroundDriver.getDriverLatitude());
-                response.setDriverLongitude(aroundDriver.getDriverLongitude());
+
                 resultAroundDriverList.add(response);
             }
         }
