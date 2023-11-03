@@ -38,7 +38,7 @@ const Tbody = styled.tbody`
   }
 `;
 
-const TableCell = styled.td`
+const TableRow = styled.tr`
   height: 30px;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -47,6 +47,12 @@ const TableCell = styled.td`
     background-color: #e0e0e0;
   }
 `;
+
+const TableCell = styled.td`
+  height: 30px;
+`;
+
+
 
 function DispatchDriverList(props) {
   const { callId } = props;
@@ -62,7 +68,8 @@ function DispatchDriverList(props) {
   };
   //[updateDriverId, updateDriveLng, updateDriverLat]
 
-  const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/${callId}`;
+  // const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/${callId}`;
+  const url = `http://localhost:9000/api/dispatch/${callId}`;
 
   const fetchData = async () => {
     try {
@@ -147,7 +154,7 @@ function DispatchDriverList(props) {
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr
+                <TableRow
                   {...row.getRowProps()}
                   onClick={() =>
                     handleRowClick(
@@ -162,7 +169,7 @@ function DispatchDriverList(props) {
                       {cell.render("Cell")}
                     </TableCell>
                   ))}
-                </tr>
+                </TableRow>
               );
             })}
             {Array(Math.max(0, maxRows - rows.length))
