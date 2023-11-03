@@ -133,6 +133,10 @@ function ClientList(props) {
         Header: "Distance",
         accessor: "distance",
       },
+      {
+        Header: "realTime",
+        accessor: "realTime",
+      },
     ],
     []
   );
@@ -176,6 +180,7 @@ function ClientList(props) {
             distance: item.distance,
             pickUpLocation: item.pickUpLocation,
             dropOffLocation: item.dropOffLocation,
+            realTime: item.realTime,
           };
         })
       );

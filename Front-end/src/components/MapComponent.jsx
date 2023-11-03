@@ -186,7 +186,7 @@ const MapComponent = () => {
   const onClickDispatch = () => {
     axios
       .post("http://k9s101.p.ssafy.io:9000/api/dispatch", null, {
-      //.post("http://localhost:9000/api/dispatch", null, {
+        //.post("http://localhost:9000/api/dispatch", null, {
         params: {
           callId: callId,
           driverId: driverId,
