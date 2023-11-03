@@ -38,7 +38,7 @@ const Tbody = styled.tbody`
   }
 `;
 
-const TableCell = styled.td`
+const TableRow = styled.tr`
   height: 30px;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -46,6 +46,10 @@ const TableCell = styled.td`
   &:hover {
     background-color: #e0e0e0;
   }
+`;
+
+const TableCell = styled.td`
+  height: 30px;
 `;
 
 function ClientList(props) {
@@ -65,6 +69,7 @@ function ClientList(props) {
   };
 
   const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
+  //const url = `http://localhost:9000/api/callings`;
   const fetchData = async () => {
     try {
       const response = await fetch(url, {
@@ -213,7 +218,7 @@ function ClientList(props) {
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr
+                <TableRow
                   {...row.getRowProps()}
                   onClick={() =>
                     handleRowClick(
@@ -228,7 +233,7 @@ function ClientList(props) {
                       {cell.render("Cell")}
                     </TableCell>
                   ))}
-                </tr>
+                </TableRow>
               );
             })}
             {Array(Math.max(0, maxRows - rows.length))
