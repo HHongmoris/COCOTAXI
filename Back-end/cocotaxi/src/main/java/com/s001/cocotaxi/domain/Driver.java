@@ -42,4 +42,12 @@ public class Driver {
     @Column(name = "driver_longitude")
     private double driverLongitude;
 
+    //기사 평점
+    @Column(name = "grade")
+    private double grade;
+
+    //기사 전화번호
+    @Column(name = "driver_phone_no")
+    private String driverPhoneNo;
+
 }
