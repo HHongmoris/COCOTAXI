@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { setDriverFlag, setClientFlag } from '../redux/actions';
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
@@ -52,24 +54,28 @@ const TableCell = styled.td`
   height: 30px;
 `;
 
-
-
 function DispatchDriverList(props) {
   const { callId } = props;
   const [driverList, setDriverList] = useState([]);
   const { updateDriverId } = props;
   const { driverLng, driverLat } = props;
   const { updateDriverLng, updateDriverLat } = props;
+  const driverFlag = useSelector(state => state.driver_flag)
+  const clientFlag = useSelector(state => state.client_flag)
+  const dispatch = useDispatch();
 
   const handleRowClick = (driverId, driverLng, driverLat) => {
     updateDriverId(driverId);
     updateDriverLng(driverLng);
     updateDriverLat(driverLat);
+    dispatch(setDriverFlag(true));
+    dispatch(setClientFlag(false));
   };
+
   //[updateDriverId, updateDriveLng, updateDriverLat]
 
-  const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/${callId}`;
-  //const url = `http://localhost:9000/api/dispatch/${callId}`;
+  //const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/${callId}`;
+  const url = `http://localhost:9000/api/dispatch/${callId}`;
 
   const fetchData = async () => {
     try {

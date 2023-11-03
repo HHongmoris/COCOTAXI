@@ -1,6 +1,7 @@
 import React, { useEffect, useState, Component } from "react";
 import { useParams } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
+import { setDriverFlag, setClientFlag } from "../redux/actions";
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
@@ -43,8 +44,13 @@ const MapComponent = () => {
     setDriverId(driverId);
   };
 
+  const driverFlag = useSelector((state) => state.driver_flag);
+  const clientFlag = useSelector((state) => state.client_flag);
+  console.log("공습경보 !! driverFlag : " + driverFlag);
+  console.log("공습경보 !! clientFlag : " + clientFlag);
+
   console.log("callId : " + callId);
-  console.log("DId : " + driverId);
+  console.log("driverId : " + driverId);
 
   // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
   useEffect(() => {
@@ -67,8 +73,18 @@ const MapComponent = () => {
 
   useEffect(() => {
     if (map) {
-      const latLng = new window.google.maps.LatLng(centerLat, centerLng);
-      map.setCenter(latLng);
+      if (clientFlag) {
+        console.log("공습경보!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11");
+        const latLng = new window.google.maps.LatLng(centerLat, centerLng);
+        map.setCenter(latLng);
+        map.setZoom(15);
+      }
+      if (driverFlag) {
+        console.log("공습경보!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11");
+        const latLng = new window.google.maps.LatLng(driverLat, driverLng);
+        map.setCenter(latLng);
+        map.setZoom(15);
+      }
       if (circle) {
         circle.setMap(null);
       }
@@ -78,7 +94,7 @@ const MapComponent = () => {
         setOpenPage(true);
       }
     }
-  }, [centerLat, centerLng, map]);
+  }, [centerLat, centerLng, driverLng, driverLat, map]);
 
   // 시작하자마자 구글 맵 적용
   useEffect(() => {
@@ -184,9 +200,11 @@ const MapComponent = () => {
   }, [centerLat, centerLng, driverLat, driverLng, map]);
 
   const onClickDispatch = () => {
-    axios
-      .post("http://k9s101.p.ssafy.io:9000/api/dispatch", null, {
-        //.post("http://localhost:9000/api/dispatch", null, {
+    axios;
+    HEAD
+
+      //.post("http://k9s101.p.ssafy.io:9000/api/dispatch", null, {
+      .post("http://localhost:9000/api/dispatch", null, {
         params: {
           callId: callId,
           driverId: driverId,
