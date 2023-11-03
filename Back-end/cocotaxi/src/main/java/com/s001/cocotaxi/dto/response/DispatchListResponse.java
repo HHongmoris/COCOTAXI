@@ -23,7 +23,7 @@ public class DispatchListResponse {
     private double driverLatitude;
 
 
-    public DispatchListResponse(Driver entity){
+    public void DispatchListResponse(Driver entity){
         this.driverId = entity.getDriverId();
         this.driverName = entity.getDriverName();
         this.vehicleNo = entity.getVehicleNo();
