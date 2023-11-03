@@ -54,4 +54,7 @@ public class Callings {
 
     @Column(name = "drop_off_location")
     private String dropOffLocation;
+
+    @Column(name = "real_time")
+    private String realTime;
 }
