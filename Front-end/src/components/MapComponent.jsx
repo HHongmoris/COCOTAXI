@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Component } from "react";
 import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
-import { setDriverFlag, setClientFlag } from '../redux/actions';
+import { useDispatch, useSelector } from "react-redux";
+import { setDriverFlag, setClientFlag } from "../redux/actions";
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
