@@ -1,6 +1,8 @@
 package com.s001.cocotaxi.service;
 
+import com.s001.cocotaxi.domain.Driver;
 import com.s001.cocotaxi.dto.response.AllDriverResponse;
+import com.s001.cocotaxi.dto.response.DriverDetailResponse;
 import com.s001.cocotaxi.repository.DriverRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,5 +26,15 @@ public class DriverServiceImpl implements DriverService{
         }
         return allDrivers;
 
+    }
+
+    @Override
+    public DriverDetailResponse selectDriverDetail(int driverId) {
+        Driver driver = driverRepository.findById(driverId).get();
+
+        DriverDetailResponse driverDetail = new DriverDetailResponse();
+        driverDetail.DriverDetailResponse(driver);
+
+        return driverDetail;
     }
 }
