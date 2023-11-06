@@ -4,7 +4,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://k9s101.p.ssafy.io:3306/cocotaxi
     username: root
-    password: 1234
+    password: rlatjddn
 
 #    # SSAFY MariaDB
 #    url: jdbc:mariadb://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S09P31S101?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
