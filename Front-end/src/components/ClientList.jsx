@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { setClientFlag, setDriverFlag, setClientRouteFlag, setDriverRouteFlag } from '../redux/actions';
+import { isClientChanged, setClientFlag, setClientId } from '../redux/actions';
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
@@ -64,11 +64,9 @@ function ClientList(props) {
   const { updateCenterLat, updateCenterLng } = props;
   const clientFlag = useSelector(state => state.client_flag);
   const driverFlag = useSelector(state => state.driver_flag);
-  const clientRouteFlag = useSelector (state => state.client_route_flag);
-  const driverRouteFlag = useSelector (state => state.driver_route_flag);
   const dispatch = useDispatch();
   const [clickedRow, setClickedRow] = useState(null);
-
+  const clientID = useSelector(state => state.client_id);
   // let map;
 
   const handleRowClick = (startPointLatitude, startPointLongitude, callId) => {
@@ -76,12 +74,14 @@ function ClientList(props) {
     updateCenterLat(startPointLatitude);
     updateCenterLng(startPointLongitude);
     dispatch(setClientFlag(true));
-    dispatch(setDriverFlag(false));
-    dispatch(setDriverRouteFlag(false));
+    if(clientID !== callId){
+      dispatch(setClientId(callId));
+      dispatch(isClientChanged(true));
+    }
   };
 
-  const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
-  //const url = `http://localhost:9000/api/callings`;
+  //const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
+  const url = `http://localhost:9000/api/callings`;
   const fetchData = async () => {
     try {
       const response = await fetch(url, {
