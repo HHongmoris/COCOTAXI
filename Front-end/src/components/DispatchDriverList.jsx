@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useDispatch, useSelector } from 'react-redux';
-import { setDriverFlag, setClientFlag, setDriverRouteFlag } from '../redux/actions';
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setDriverFlag,
+  setClientFlag,
+  setDriverRouteFlag,
+} from "../redux/actions";
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
@@ -61,9 +65,9 @@ function DispatchDriverList(props) {
   const { updateDriverId } = props;
   const { driverLng, driverLat } = props;
   const { updateDriverLng, updateDriverLat } = props;
-  const driverFlag = useSelector(state => state.driver_flag)
-  const clientFlag = useSelector(state => state.client_flag)
-  const driverRouteFlag = useSelector (state => state.driver_route_flag)
+  const driverFlag = useSelector((state) => state.driver_flag);
+  const clientFlag = useSelector((state) => state.client_flag);
+  const driverRouteFlag = useSelector((state) => state.driver_route_flag);
   const dispatch = useDispatch();
   const [clickedDriver, setClickedDriver] = useState(null);
 
@@ -73,7 +77,8 @@ function DispatchDriverList(props) {
     updateDriverLat(driverLat);
     dispatch(setDriverFlag(true));
     dispatch(setClientFlag(false));
-    dispatch(setDriverRouteFlag(true))
+    dispatch(setDriverRouteFlag(true));
+    setClickedDriver(driverId);
   };
 
   //[updateDriverId, updateDriveLng, updateDriverLat]

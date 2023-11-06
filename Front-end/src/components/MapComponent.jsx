@@ -60,24 +60,24 @@ const MapComponent = () => {
         let count = 0;
 
         window.setInterval(() => {
-          count = (count + 1) % 600;
+          count = (count + 1) % 3000;
 
           const icons = polyline2.get("icons");
 
-          icons[0].offset = count / 6 + "%";
+          icons[0].offset = count / 15 + "%";
           polyline2.set("icons", icons);
         }, 20);
       }
 
       const lineSymbol = {
         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        scale: 7,
+        scale: 5,
         fillColor: "#0004ff", // 채우기 색상 설정
         fillOpacity: 1,
         strokeWeight: 1, // 테두리 두께 설정
         strokeColor: "#10189f", // 테두리 색상 설정
         strokeOpacity: 1.0, // 테두리 불투명도 설정
-        strokeWeight: 3, // 테두리 굵기 설정
+        strokeWeight: 2, // 테두리 굵기 설정
       };
 
       multiPolylineCoordinates.forEach((coordinates) => {
