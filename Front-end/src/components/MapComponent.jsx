@@ -1,6 +1,7 @@
 import React, { useEffect, useState, Component } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
+import { setDriverFlag, setClientFlag } from "../redux/actions";
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
@@ -43,9 +44,8 @@ const MapComponent = () => {
     setDriverId(driverId);
   };
 
-  const driverFlag = useSelector(state => state.driver_flag)
-  const clientFlag = useSelector(state => state.client_flag)
-  const driverRouteFlag = useSelector(state => state.driver_route_flag)
+  const driverFlag = useSelector((state) => state.driver_flag);
+  const clientFlag = useSelector((state) => state.client_flag);
   console.log("callId : " + callId);
   console.log("driverId : " + driverId);
 
@@ -56,14 +56,54 @@ const MapComponent = () => {
       multiPolylineCoordinates.push(coords); // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정해야함
       console.log(multiPolylineCoordinates); // 지금 실행화면에서 경로보기 누르고 vscode 상에서 컨트롤 + s 눌러서 저장되어야지만 좌표나옴
 
+      function animateCircle(polyline2) {
+        let count = 0;
+
+        window.setInterval(() => {
+          count = (count + 1) % 600;
+
+          const icons = polyline2.get("icons");
+
+          icons[0].offset = count / 6 + "%";
+          polyline2.set("icons", icons);
+        }, 20);
+      }
+
+      const lineSymbol = {
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        scale: 7,
+        fillColor: "#0004ff", // 채우기 색상 설정
+        fillOpacity: 1,
+        strokeWeight: 1, // 테두리 두께 설정
+        strokeColor: "#10189f", // 테두리 색상 설정
+        strokeOpacity: 1.0, // 테두리 불투명도 설정
+        strokeWeight: 3, // 테두리 굵기 설정
+      };
+
       multiPolylineCoordinates.forEach((coordinates) => {
         const polyline = new window.google.maps.Polyline({
           path: coordinates,
-          strokeColor: "blue", // 선 색상 설정
-          strokeOpacity: 1.0, // 선 불투명도 설정
-          strokeWeight: 4, // 선 굵기 설정
+          strokeColor: "#0004ff",
+          strokeOpacity: 1.0,
+          strokeWeight: 10,
         });
+
+        const polyline2 = new google.maps.Polyline({
+          path: coordinates,
+          icons: [
+            {
+              icon: lineSymbol,
+              offset: "100%",
+            },
+          ],
+          strokeColor: "#5678ff",
+          strokeOpacity: 1.0,
+          strokeWeight: 5,
+          map: map,
+        });
+
         polyline.setMap(map);
+        animateCircle(polyline2);
       });
     }
   }, [coords, map]);
@@ -90,8 +130,6 @@ const MapComponent = () => {
       }
     }
   }, [centerLat, centerLng, driverLng, driverLat, map]);
-
-  
 
   // 시작하자마자 구글 맵 적용
   useEffect(() => {
@@ -136,32 +174,27 @@ const MapComponent = () => {
     }
   };
 
-  console.log("driverRouterFlag : ", driverRouteFlag)
-
-  useEffect(() => {
-
-    if(driverRouteFlag){
+  const getAndSetPolylineCoords = useCallback(() => {
     // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함 / 형식 추가
     const startLocation = `${centerLng},${centerLat}`; // 손님의 시작부분
     const endLocation = `${driverLng},${driverLat}`; // 드라이버 위치
+    console.log(startLocation + "그리고" + endLocation);
     const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
 
-    console.log("공습경보!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    console.log("driverRouterFlag : ", driverRouteFlag)
-    console.log("공습경보!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    // 출발
-    const marker1 = new window.google.maps.Marker({
-      position: { lat: centerLat, lng: centerLng },
-      map: map, // 마커를 지도에 추가
-      icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
-    });
+    // console.log("아무거나");
+    //출발
+    // const marker1 = new google.maps.Marker({
+    //   position: { lat: centerLng, lng: centerLat },
+    //   map: map, // 마커를 지도에 추가
+    //   icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
+    // });
 
-    // 도착지점 마크 생성
-    const marker2 = new window.google.maps.Marker({
-      position: { lat: driverLat, lng: driverLng },
-      map: map, // 마커를 지도에 추가
-      icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
-    });
+    // // 도착지점 마크 생성
+    // const marker2 = new google.maps.Marker({
+    //   position: { lat: driverLng, lng: driverLat },
+    //   map: map, // 마커를 지도에 추가
+    //   icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
+    // });
 
     axios
       .get(
@@ -199,10 +232,7 @@ const MapComponent = () => {
       .catch((error) => {
         console.error(error);
       });
-    }
-  }, [driverRouteFlag]);
-
-  
+  }, [centerLat, centerLng, driverLat, driverLng, map]);
 
   const onClickDispatch = () => {
     axios
@@ -226,9 +256,11 @@ const MapComponent = () => {
 
   console.log("mapPage called");
 
+  // if (driverLat && driverLng) getAndSetPolylineCoords();
 
   return (
     <div>
+      <button onClick={getAndSetPolylineCoords}>경로 보기</button>
 
       <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
         <div
