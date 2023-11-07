@@ -77,7 +77,7 @@ function ClientList(props) {
     setClickedRow(callId);
   };
 
-  const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
+  const url = `http://k9s101.p.ssafy.io:4000/api/callings`;
   // const url = `http://localhost:9000/api/callings`;
   const fetchData = async () => {
     try {
