@@ -59,14 +59,23 @@ const MapComponent = () => {
       console.log(multiPolylineCoordinates); // 지금 실행화면에서 경로보기 누르고 vscode 상에서 컨트롤 + s 눌러서 저장되어야지만 좌표나옴
 
       function animateCircle(polyline2) {
-        let count = 0;
+        const path = polyline2.getPath();
+        const reversedPath = new google.maps.MVCArray(); // 뒤집힌 경로를 저장할 새로운 배열
+
+        for (let i = path.getLength() - 1; i >= 0; i--) {
+          reversedPath.push(path.getAt(i)); // 경로를 거꾸로 뒤집어 새 배열에 추가
+        }
+
+        polyline2.setPath(reversedPath); // 뒤집힌 경로를 폴리라인에 설정
+
+        let count = 3000;
 
         window.setInterval(() => {
-          count = (count + 1) % 3000;
+          count = (count - 1 + 3000) % 3000;
 
           const icons = polyline2.get("icons");
 
-          icons[0].offset = count / 15 + "%";
+          icons[0].offset = (3000 - count) / 15 + "%"; // 방향을 반대로 변경
           polyline2.set("icons", icons);
         }, 20);
       }
@@ -130,6 +139,7 @@ const MapComponent = () => {
           zoom: 12,
         }
       );
+
       setMap(newMap);
     };
 
@@ -245,7 +255,7 @@ const MapComponent = () => {
 
   const onClickDispatch = () => {
     axios
-      .post("http://k9s101.p.ssafy.io:9000/api/dispatch", null, {
+      .post("http://k9s101.p.ssafy.io:4000/api/dispatch", null, {
         // .post("http://localhost:9000/api/dispatch", null, {
         params: {
           callId: callId,
