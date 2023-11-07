@@ -27,6 +27,7 @@ public class DispatchServiceImpl implements DispatchService {
     private final ClientRepository clientRepository;
     private final CallRepository callRepository;
     private final DriverRepository driverRepository;
+    private final MovingService movingService;
 
     //두 지점 사이의 거리 그하기
     public static double getDistance(double lat1, double lon1, double lat2, double lon2) {
@@ -85,6 +86,13 @@ public class DispatchServiceImpl implements DispatchService {
                 response.DispatchListResponse(aroundDriver);
                 response.setDistance((double)Math.round(distance*1000)/1000);
 
+                if(aroundDriver.getDriverId()==1){
+                    //TODO: 일정시간마다 차 위치 변경되게 로직 테스트
+                    List<Double> location = movingService.updateDriverLocation(aroundDriver.getDriverId());
+                    response.setDriverLatitude(location.get(0));
+                    response.setDriverLongitude(location.get(1));
+                }
+
                 resultAroundDriverList.add(response);
             }
         }
@@ -100,7 +108,6 @@ public class DispatchServiceImpl implements DispatchService {
         Callings callings = callRepository.findById(callId).orElseThrow();
         Driver driver = driverRepository.findById(driverId).orElseThrow();
         Client client = clientRepository.findById(callings.getClient().getClientId()).orElseThrow();
-
         //Dispatch 레코드 추가
         Dispatch dispatch = new Dispatch();
         dispatch.setCallings(callings);

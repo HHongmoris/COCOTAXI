@@ -20,7 +20,7 @@ public class DriverMoving {
 
     //기사 이름
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_name")
+    @JoinColumn(name = "driver_id")
     private Driver driver;
 
     //기사위치 위도
