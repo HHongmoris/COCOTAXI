@@ -30,3 +30,8 @@ spring:
 
 server:
   port: 9000
+
+
+openrouteservice:
+  api:
+    key: 5b3ce3597851110001cf6248e4f9c4790f51442babb69eaa1deca3d8
