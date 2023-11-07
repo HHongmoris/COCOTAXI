@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Component } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
@@ -15,11 +15,10 @@ const MapComponent = () => {
   const [driverLng, setDriverLng] = useState(null);
   const [circle, setCircle] = useState(null);
   const [openPage, setOpenPage] = useState(false);
-  const [coords, setcoords] = useState(null);
+  const [coords, setCoords] = useState(null);
   const [callId, setCallId] = useState(0);
   const [driverId, setDriverId] = useState(0);
-  const [marker1, setMarker1] = useState(null);
-  const [marker2, setMarker2] = useState(null);
+  const [polyline, setPolyline] = useState(false);
 
   const updateCenterLat = (startPointLatitude) => {
     setCenterLat(startPointLatitude);
@@ -45,70 +44,80 @@ const MapComponent = () => {
     setDriverId(driverId);
   };
 
-  const driverFlag = useSelector((state) => state.driver_flag);
-  const clientFlag = useSelector((state) => state.client_flag);
   console.log("callId : " + callId);
-  console.log("driverId : " + driverId);
+  console.log("DId : " + driverId);
+
+  // requestAnimationFrame 좌표 계산
+  const animateToLocation = (start, end, duration) => {
+    const startTime = Date.now();
+    const animate = () => {
+      const currentTime = Date.now();
+      const progress = (currentTime - startTime) / duration;
+
+      if (progress < 1) {
+        const newLat = start.lat() + (end.lat() - start.lat()) * progress;
+        const newLng = start.lng() + (end.lng() - start.lng()) * progress;
+
+        map.setCenter(new window.google.maps.LatLng(newLat, newLng));
+        requestAnimationFrame(animate);
+      } else {
+        map.setCenter(end); // 애니메이션이 끝나면 목표 좌표로 설정
+      }
+    };
+
+    animate();
+  };
 
   // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
-
   useEffect(() => {
     if (map) {
       const multiPolylineCoordinates = [];
-      multiPolylineCoordinates.push(coords); // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정해야함
+      multiPolylineCoordinates.push(coords);
+      // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정해야함
       console.log(multiPolylineCoordinates); // 지금 실행화면에서 경로보기 누르고 vscode 상에서 컨트롤 + s 눌러서 저장되어야지만 좌표나옴
-
-      function animateCircle(polyline2) {
-        let count = 0;
-
-        window.setInterval(() => {
-          count = (count + 1) % 3000;
-
-          const icons = polyline2.get("icons");
-
-          icons[0].offset = count / 15 + "%";
-          polyline2.set("icons", icons);
-        }, 20);
-      }
-
-      const lineSymbol = {
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        scale: 5,
-        fillColor: "#0004ff", // 채우기 색상 설정
-        fillOpacity: 1,
-        strokeWeight: 1, // 테두리 두께 설정
-        strokeColor: "#10189f", // 테두리 색상 설정
-        strokeOpacity: 1.0, // 테두리 불투명도 설정
-        strokeWeight: 2, // 테두리 굵기 설정
-      };
 
       multiPolylineCoordinates.forEach((coordinates) => {
         const polyline = new window.google.maps.Polyline({
           path: coordinates,
-          strokeColor: "#0004ff",
-          strokeOpacity: 1.0,
-          strokeWeight: 10,
+          strokeColor: "blue", // 선 색상 설정
+          strokeOpacity: 1.0, // 선 불투명도 설정
+          strokeWeight: 4, // 선 굵기 설정
         });
-
-        const polyline2 = new google.maps.Polyline({
-          path: coordinates,
-          icons: [
-            {
-              icon: lineSymbol,
-              offset: "100%",
-            },
-          ],
-          strokeColor: "#5678ff",
-          strokeOpacity: 1.0,
-          strokeWeight: 5,
-          map: map,
-        });
-
         polyline.setMap(map);
-        animateCircle(polyline2);
       });
     }
   }, [coords, map]);
+
+  // centerLat 또는 centerLng 값이 변경될 때 애니메이션 적용
+  useEffect(() => {
+    if (map) {
+      const latLng = new window.google.maps.LatLng(centerLat, centerLng);
+      const currentCenter = map.getCenter();
+
+      // 애니메이션 기간 (밀리초)
+      const animationDuration = 500;
+
+      // 중간 좌표로 애니메이션 적용
+      animateToLocation(currentCenter, latLng, animationDuration);
+    }
+  }, [centerLat, centerLng, map]);
+
+  useEffect(() => {
+    if (map) {
+      const latLng = new window.google.maps.LatLng(centerLat, centerLng);
+      map.setCenter(latLng);
+      if (circle) {
+        circle.setMap(null);
+      }
+      if (openPage) {
+        drawCircle(centerLat, centerLng);
+      } else {
+        setOpenPage(true);
+      }
+    }
+
+    getAndSetPolylineCoords();
+  }, [centerLat, centerLng, driverId, map]);
 
   // 시작하자마자 구글 맵 적용
   useEffect(() => {
@@ -126,7 +135,7 @@ const MapComponent = () => {
       const newMap = new window.google.maps.Map(
         document.getElementById("map"),
         {
-          center: { lat: centerLat, lng: centerLng },
+          center: { lat: centerLng, lng: centerLat },
           zoom: 12,
         }
       );
@@ -134,7 +143,7 @@ const MapComponent = () => {
     };
 
     loadGoogleMapsScript();
-  }, [centerLat, centerLng]);
+  }, []);
 
   // 원 그리기
   const drawCircle = (lat, lng) => {
@@ -153,34 +162,27 @@ const MapComponent = () => {
     }
   };
 
-  useEffect(() => {
+  const getAndSetPolylineCoords = useCallback(() => {
     // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함 / 형식 추가
     const startLocation = `${centerLng},${centerLat}`; // 손님의 시작부분
     const endLocation = `${driverLng},${driverLat}`; // 드라이버 위치
+    console.log(startLocation + "그리고" + endLocation);
     const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
-    // 출발
-    if (clientFlag) {
-      const marker1 = new window.google.maps.Marker({
-        position: { lat: centerLat, lng: centerLng },
-        map: map, // 마커를 지도에 추가
-        icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
-      });
-      setMarker1(() => marker1);
-    }
 
-    // if(!clientFlag) {
-    //   setMarker1(null);
-    //   marker1.setMap(null);
-    // }
-    if (driverFlag) {
-      // 도착지점 마크 생성
-      const marker2 = new window.google.maps.Marker({
-        position: { lat: driverLat, lng: driverLng },
-        map: map, // 마커를 지도에 추가
-        icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
-      });
-      setMarker2(() => marker2);
-    }
+    // console.log("아무거나");
+    //출발
+    // const marker1 = new google.maps.Marker({
+    //   position: { lat: centerLng, lng: centerLat },
+    //   map: map, // 마커를 지도에 추가
+    //   icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
+    // });
+
+    // // 도착지점 마크 생성
+    // const marker2 = new google.maps.Marker({
+    //   position: { lat: driverLng, lng: driverLat },
+    //   map: map, // 마커를 지도에 추가
+    //   icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
+    // });
 
     axios
       .get(
@@ -204,8 +206,8 @@ const MapComponent = () => {
 
         // setPolylineCoords(coords);
 
-        console.log("coords : ", coords);
-        setcoords(coords);
+        console.log(coords);
+        setCoords(coords);
 
         // 지도를 첫 번째 좌표로 이동
         const firstCoord = coords[0];
@@ -218,35 +220,11 @@ const MapComponent = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, [map, centerLat, centerLng, driverLat, driverLng, clientFlag, driverFlag]);
-
-  useEffect(() => {
-    if (map) {
-      if (clientFlag) {
-        const latLng = new window.google.maps.LatLng(centerLat, centerLng);
-        map.setCenter(latLng);
-        map.setZoom(15);
-      } else if (driverFlag) {
-        const latLng = new window.google.maps.LatLng(driverLat, driverLng);
-        map.setCenter(latLng);
-        map.setZoom(15);
-        circle.setMap(null);
-      }
-      if (circle) {
-        circle.setMap(null);
-      }
-      if (openPage) {
-        drawCircle(centerLat, centerLng);
-      } else {
-        setOpenPage(true);
-      }
-    }
-  }, [driverLat, driverLng, map]);
+  }, [centerLat, centerLng, driverLat, driverLng, map]);
 
   const onClickDispatch = () => {
     axios
       .post("http://k9s101.p.ssafy.io:9000/api/dispatch", null, {
-        // .post("http://localhost:9000/api/dispatch", null, {
         params: {
           callId: callId,
           driverId: driverId,
@@ -254,8 +232,6 @@ const MapComponent = () => {
       })
       .then((response) => {
         console.log("Dispatch Activated", response);
-        alert("강제 배차가 완료되었습니다.");
-        window.location.reload();
       })
       .catch((error) => {
         console.error(error);
@@ -265,8 +241,12 @@ const MapComponent = () => {
 
   console.log("mapPage called");
 
+  // if (driverLat && driverLng) getAndSetPolylineCoords();
+
   return (
     <div>
+      <button onClick={getAndSetPolylineCoords}>경로 보기</button>
+
       <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
         <div
           id="map"
@@ -287,7 +267,7 @@ const MapComponent = () => {
             position: "absolute",
             bottom: 15,
             left: 30,
-            width: "700px",
+            width: "500px",
             background: "white",
             boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
             zIndex: 2,
