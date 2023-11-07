@@ -1,6 +1,7 @@
 import React, { useEffect, useState, Component } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { isClientChanged, isDriverChanged } from '../redux/actions';
+import { useDispatch, useSelector } from 'react-redux';
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
@@ -20,6 +21,8 @@ const MapComponent = () => {
   const [driverId, setDriverId] = useState(0);
   const [marker1, setMarker1] = useState(null);
   const [marker2, setMarker2] = useState(null);
+  const [polylineobj, setPolylineobj] = useState(null);
+  const dispatch = useDispatch();
 
   const updateCenterLat = (startPointLatitude) => {
     setCenterLat(startPointLatitude);
@@ -47,8 +50,42 @@ const MapComponent = () => {
 
   const driverFlag = useSelector(state => state.driver_flag)
   const clientFlag = useSelector(state => state.client_flag)
+  const driverLocation = useSelector(state => state.driver_location) // driver의 위치
+  const clientLocation = useSelector(state => state.client_location) // client의 위치
+  const isClientLocationChanged = useSelector (state => state.is_client_changed)
+  const isDriverLocationChanged = useSelector (state => state.is_driver_changed)
   console.log("callId : " + callId);
-  console.log("driverId : " + driverId);
+  console.log("driverId : " + driverId)
+  
+  console.log("Redux Test : ",clientLocation, driverLocation, isClientLocationChanged, isDriverLocationChanged) // 확인
+
+// 시작하자마자 구글 맵 적용
+useEffect(() => {
+  const loadGoogleMapsScript = () => {
+    
+    const googleMapsScript = document.createElement("script");
+    googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAcpJXGOLDdWsqoSBrIUOZEDtSXNoGtTvw&libraries=geometry`;
+    googleMapsScript.async = true;
+    googleMapsScript.defer = true;
+    googleMapsScript.onload = initMap;
+    document.head.appendChild(googleMapsScript);
+    console.log("googleAPI called");
+    
+  };
+
+  const initMap = () => {
+    const newMap = new window.google.maps.Map(
+      document.getElementById("map"),
+      {
+        center: { lat: centerLat, lng: centerLng },
+        zoom: 12,
+      }
+    );
+    setMap(newMap); 
+  };
+  
+  loadGoogleMapsScript();
+}, [centerLat, centerLng]);
 
   // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
   useEffect(() => {
@@ -64,38 +101,13 @@ const MapComponent = () => {
           strokeOpacity: 1.0, // 선 불투명도 설정
           strokeWeight: 4, // 선 굵기 설정
         });
+        setPolylineobj(() => polyline);
         polyline.setMap(map);
       });
     }
   }, [coords, map]);
 
-  // 시작하자마자 구글 맵 적용
-  useEffect(() => {
-    const loadGoogleMapsScript = () => {
-      
-      const googleMapsScript = document.createElement("script");
-      googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAcpJXGOLDdWsqoSBrIUOZEDtSXNoGtTvw&libraries=geometry`;
-      googleMapsScript.async = true;
-      googleMapsScript.defer = true;
-      googleMapsScript.onload = initMap;
-      document.head.appendChild(googleMapsScript);
-      console.log("googleAPI called");
-      
-    };
-
-    const initMap = () => {
-      const newMap = new window.google.maps.Map(
-        document.getElementById("map"),
-        {
-          center: { lat: centerLat, lng: centerLng },
-          zoom: 12,
-        }
-      );
-      setMap(newMap);
-    };
-    
-    loadGoogleMapsScript();
-  }, [centerLat, centerLng]);
+  
 
   // 원 그리기
   const drawCircle = (lat, lng) => {
@@ -120,28 +132,43 @@ const MapComponent = () => {
     const endLocation = `${driverLng},${driverLat}`; // 드라이버 위치
     const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
     // 출발
-    if(clientFlag){
-    const marker1 = new window.google.maps.Marker({
-      position: { lat: centerLat, lng: centerLng },
-      map: map, // 마커를 지도에 추가
-      icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
-    });
-    setMarker1(() => marker1);
-  }
-
-    // if(!clientFlag) {
-    //   setMarker1(null);
-    //   marker1.setMap(null);
-    // }
-    if(driverFlag){
-    // 도착지점 마크 생성
-    const marker2 = new window.google.maps.Marker({
-      position: { lat: driverLat, lng: driverLng },
-      map: map, // 마커를 지도에 추가
-      icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
-    });
-    setMarker2(() => marker2);
+    // 시작지점 마크 생성
+    const createMarker1 = (newPosition) => {
+      const marker1 = new window.google.maps.Marker({
+        position: newPosition,
+        map: map, // 마커를 지도에 추가
+        icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
+      });
+      setMarker1(() => marker1);
     }
+    
+  // 도착지점 마크 생성
+    const createMarker2 = (newPosition) => {
+      const marker2 = new window.google.maps.Marker({
+        position: newPosition,
+        map: map, // 마커를 지도에 추가
+        icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
+      });
+      setMarker2(() => marker2);
+    }
+    
+    createMarker1({lat : centerLat, lng : centerLng})
+    createMarker2({lat : driverLat, lng : driverLng})
+
+    if(isClientLocationChanged){
+      marker2.setMap(null);
+      dispatch(isClientChanged(false));
+      polylineobj.setMap(null)
+    }
+
+    if(isDriverLocationChanged){
+      marker2.setMap(null);
+      dispatch(isDriverChanged(false));
+      setDriverLat(null);
+      setDriverLng(null);
+      polylineobj.setMap(null)
+    }
+    
     
     axios
       .get(
@@ -186,11 +213,11 @@ const MapComponent = () => {
       if (clientFlag) {
         const latLng = new window.google.maps.LatLng(centerLat, centerLng);
         map.setCenter(latLng);
-        map.setZoom(15);
+        map.setZoom(12);
       } else if (driverFlag) {
         const latLng = new window.google.maps.LatLng(driverLat, driverLng);
         map.setCenter(latLng);
-        map.setZoom(15);
+        map.setZoom(12);
         circle.setMap(null);
       }
       if (circle) {
@@ -206,8 +233,8 @@ const MapComponent = () => {
 
   const onClickDispatch = () => {
     axios
-      //.post("http://k9s101.p.ssafy.io:9000/api/dispatch", null, {
-      .post("http://localhost:9000/api/dispatch", null, {
+      .post("http://k9s101.p.ssafy.io:4000/api/dispatch", null, {
+      
         params: {
           callId: callId,
           driverId: driverId,

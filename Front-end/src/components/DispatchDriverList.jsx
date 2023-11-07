@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { setDriverFlag, setDriverId, isDriverChanged } from '../redux/actions';
+import { setDriverFlag, setDriverLocation, isDriverChanged } from '../redux/actions';
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
@@ -64,24 +64,26 @@ function DispatchDriverList(props) {
   const [clickedDriver, setClickedDriver] = useState(null);
   const driverFlag = useSelector(state => state.driver_flag)
   const clientFlag = useSelector(state => state.client_flag)
-  const driverIdStored = useSelector(state => state.driver_id)
+  const driverLocation = useSelector(state => state.driver_location) // driver redux 값 가져오기
+  const [location, setLocation] = useState("");
   const dispatch = useDispatch();
 
   const handleRowClick = (driverId, driverLng, driverLat) => {
     updateDriverId(driverId);
     updateDriverLng(driverLng);
     updateDriverLat(driverLat);
+    setLocation(() => `${driverLng},${driverLat}`);
     dispatch(setDriverFlag(true)); // 누르자마자 mark를 띄우기 위한 용도
-    if(driverId !== driverIdStored){
-      dispatch(setDriverId(driverId))
-      dispatch(isDriverChanged(true))
+    if(location !== driverLocation){
+      dispatch(setDriverLocation(location));
+      dispatch(isDriverChanged(true));
     }
   };
 
   //[updateDriverId, updateDriveLng, updateDriverLat]
 
-  //const url = `http://k9s101.p.ssafy.io:9000/api/dispatch/${callId}`;
-  const url = `http://localhost:9000/api/dispatch/${callId}`;
+  const url = `http://k9s101.p.ssafy.io:4000/api/dispatch/${callId}`;
+  
 
   const fetchData = async () => {
     try {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { isClientChanged, setClientFlag, setClientId } from '../redux/actions';
+import { isClientChanged, setClientFlag, setClientLocation } from '../redux/actions';
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
@@ -62,26 +62,28 @@ function ClientList(props) {
   const { updateCallId } = props;
   // MapComponent 갱신을 위한 콜백 함수
   const { updateCenterLat, updateCenterLng } = props;
+
+  const [location, setLocation] = useState(""); // 주소 저장
   const clientFlag = useSelector(state => state.client_flag);
   const driverFlag = useSelector(state => state.driver_flag);
   const dispatch = useDispatch();
   const [clickedRow, setClickedRow] = useState(null);
-  const clientID = useSelector(state => state.client_id);
+  const clientLocation = useSelector(state => state.client_location); // Redux에서 가져온 값
   // let map;
 
   const handleRowClick = (startPointLatitude, startPointLongitude, callId) => {
     updateCallId(callId);
     updateCenterLat(startPointLatitude);
     updateCenterLng(startPointLongitude);
+    setLocation(() => `${startPointLongitude},${startPointLatitude}`)
     dispatch(setClientFlag(true));
-    if(clientID !== callId){
-      dispatch(setClientId(callId));
+    if(location !== clientLocation){
       dispatch(isClientChanged(true));
+      dispatch(setClientLocation(location));
     }
   };
 
-  //const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
-  const url = `http://localhost:9000/api/callings`;
+  const url = `http://k9s101.p.ssafy.io:4000/api/callings`;
   const fetchData = async () => {
     try {
       const response = await fetch(url, {
@@ -104,7 +106,6 @@ function ClientList(props) {
   // 좌표를 주소로 변환하는 함수
   async function reverseGeocodeCoordinates(latitude, longitude) {
     // const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
-
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
@@ -178,6 +179,8 @@ function ClientList(props) {
             item.endPointLongitude
           );
           console.log(dropOffLocation);
+
+          
 
           return {
             callId: item.callId,

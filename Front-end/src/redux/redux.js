@@ -2,18 +2,18 @@
 
 import { SET_DRIVER_FLAG,
     SET_CLIENT_FLAG,
-    CLIENT_ID,
+    CLIENT_LOCATION,
     IS_CLIENT_CHANGED,
-    DRIVER_ID,
+    DRIVER_LOCATION,
     IS_DRIVER_CHANGED,
   } from './actions';
 
 const initialState = {
   driver_flag: false,
   client_flag: false,
-  client_id : "",
+  client_location : "",
   is_client_changed : false,
-  driver_id : "",
+  driver_location : "",
   is_driver_changed : false,
 };
 
@@ -29,20 +29,20 @@ const flagsReducer = (state = initialState, action) => {
         ...state,
         client_flag: action.payload,
       };
-    case CLIENT_ID:
+    case CLIENT_LOCATION:
       return {
         ...state,
-        client_id : action.payload,
+        client_location : action.payload,
       }
     case IS_CLIENT_CHANGED:
       return {
         ...state,
         is_client_changed : action.payload,
       }
-      case DRIVER_ID:
+      case DRIVER_LOCATION:
       return {
         ...state,
-        driver_id : action.payload,
+        driver_location : action.payload,
       }
     case IS_DRIVER_CHANGED:
       return {
