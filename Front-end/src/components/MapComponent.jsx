@@ -20,6 +20,7 @@ const MapComponent = () => {
   const [driverId, setDriverId] = useState(0);
   const [marker1, setMarker1] = useState(null);
   const [marker2, setMarker2] = useState(null);
+  const [infoWindow, setInfoWindow] = useState(null);
 
   const updateCenterLat = (startPointLatitude) => {
     setCenterLat(startPointLatitude);
@@ -50,8 +51,7 @@ const MapComponent = () => {
   console.log("callId : " + callId);
   console.log("driverId : " + driverId);
 
-  // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
-
+  // 마크 사진 적용
   useEffect(() => {
     if (map) {
       const multiPolylineCoordinates = [];
@@ -188,6 +188,28 @@ const MapComponent = () => {
         position: { lat: driverLat, lng: driverLng },
         map: map, // 마커를 지도에 추가
         icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
+      });
+
+      // 정보 창 내용 설정
+      const contentString = `
+          <div>
+            <h2>홍성민</h2>
+            <p>차번호: 12A 1242</p>
+            <p>평점: 0.1</p>
+            <p>전화 번호: 010-8299-8470</p>
+            <button id="callDriverButton">전화 걸기</button>
+          </div>
+          `;
+
+      // 정보 창 생성
+      const infoWindow = new window.google.maps.InfoWindow({
+        content: contentString,
+      });
+
+      // 마커 클릭 이벤트 리스너 추가
+      marker2.addListener("click", () => {
+        // 클릭 시 정보 창 열도록 설정
+        infoWindow.open(map, marker2);
       });
       setMarker2(() => marker2);
     }
