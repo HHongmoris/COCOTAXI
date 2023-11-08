@@ -24,6 +24,8 @@ const MapComponent = () => {
   const [clientMarker, setClientMarker] = useState(null);
   const [driverMarker, setDriverMarker] = useState(null);
   const [polylineData, setPolylineData] = useState(null);
+  const [polyline2, setPolyline2] = useState(null);
+
   // props update
   const updateCallId = (callId) => {
     setCallId(callId);
@@ -78,6 +80,8 @@ const MapComponent = () => {
   useEffect(() => {
     if (map) {
       if (polylineData) polylineData.setMap(null);
+      if (polyline2) polyline2.setMap(null);
+
       const multiPolylineCoordinates = [];
       multiPolylineCoordinates.push(coords);
       // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정해야함
@@ -138,6 +142,8 @@ const MapComponent = () => {
 
         polyline.setMap(map);
         animateCircle(polyline2);
+        setPolylineData(polyline);
+        setPolyline2(polyline2);
       });
     }
   }, [coords, map]);
