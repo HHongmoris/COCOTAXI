@@ -32,7 +32,7 @@ export const setDriverLocation = (location) => {
 };
 export const isDriverChanged = (flag) => {
   return {
-    type : IS_CLIENT_CHANGED,
+    type : IS_DRIVER_CHANGED,
     payload : flag,
   }
 }

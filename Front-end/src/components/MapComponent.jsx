@@ -21,6 +21,9 @@ const MapComponent = () => {
   const [coords, setCoords] = useState(null);
   const [callId, setCallId] = useState(0);
   const [driverId, setDriverId] = useState(0);
+  const [clientMarker, setClientMarker] = useState(null);
+  const [driverMarker, setDriverMarker] = useState(null);
+  const [polylineData, setPolylineData] = useState(null);
   // props update
   const updateCallId = (callId) => {
     setCallId(callId);
@@ -74,6 +77,7 @@ const MapComponent = () => {
   // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
   useEffect(() => {
     if (map) {
+      if(polylineData) polylineData.setMap(null);
       const multiPolylineCoordinates = [];
       multiPolylineCoordinates.push(coords);
       // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정해야함
@@ -87,6 +91,7 @@ const MapComponent = () => {
           strokeWeight: 4, // 선 굵기 설정
         });
         polyline.setMap(map);
+        setPolylineData(polyline);
       });
     }
   }, [coords, map]);
@@ -164,6 +169,51 @@ const MapComponent = () => {
       setCircle(newCircle);
     }
   };
+  
+const addClientMarker = (positionInfo, mapInfo) => {
+  const marker1 = new window.google.maps.Marker({
+    position: positionInfo,
+    map: mapInfo, // 마커를 지도에 추가
+    icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
+  });
+  return marker1
+}
+
+  //도착지점 마크 생성
+const addDriverMarker = (positionInfo, mapInfo) => {
+  const marker2 = new window.google.maps.Marker({
+    position: positionInfo,
+    map: mapInfo, // 마커를 지도에 추가
+    icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
+  });
+  return marker2
+}
+
+const removeMarker = (marker) => {
+  marker.setMap(null);
+}
+
+// 마킹
+  useEffect(() => {
+    //출발
+    if(map){
+    if(clientMarker) removeMarker(clientMarker);
+    if(driverMarker) removeMarker (driverMarker);
+    setClientMarker(() => addClientMarker({lat : centerLat, lng : centerLng}, map))
+    setDriverMarker(() => addDriverMarker({lat : driverLat, lng : driverLng}, map))
+    }
+    
+  },[driverLat, driverLng, centerLng, centerLat, map])
+
+  const onClickEvent1 = () => {
+    removeMarker(clientMarker);
+    }
+
+  const onClickEvent2 = () => {
+    removeMarker(driverMarker);
+    }
+
+
 
   const getAndSetPolylineCoords = useCallback(() => {
     // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함 / 형식 추가
@@ -171,21 +221,6 @@ const MapComponent = () => {
     const endLocation = `${driverLng},${driverLat}`; // 드라이버 위치
     console.log(startLocation + "그리고" + endLocation);
     const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
-
-    // console.log("아무거나");
-    //출발
-    // const marker1 = new google.maps.Marker({
-    //   position: { lat: centerLng, lng: centerLat },
-    //   map: map, // 마커를 지도에 추가
-    //   icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
-    // });
-
-    // // 도착지점 마크 생성
-    // const marker2 = new google.maps.Marker({
-    //   position: { lat: driverLng, lng: driverLat },
-    //   map: map, // 마커를 지도에 추가
-    //   icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
-    // });
 
     axios
       .get(
@@ -248,7 +283,8 @@ const MapComponent = () => {
 
   return (
     <div>
-      <button onClick={getAndSetPolylineCoords}>경로 보기</button>
+      <button onClick={onClickEvent1}>마크 지우기</button>
+      <button onClick={onClickEvent2}>드라이버 마크 지우기</button>
 
       <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
         <div
