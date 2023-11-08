@@ -16,7 +16,7 @@ public class DispatchListResponse {
     private String vehicleType;
 
     //TODO: 일단 int로 했는데 string이나 double로 바꿀수도 있음
-    private double distance;
+    private String distance;
 
     //TODO : 이거 나중에 따로 api 뺴서 하든 어찌하든 필요
     private double driverLongitude;
