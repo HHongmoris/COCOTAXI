@@ -21,7 +21,7 @@ public class CallAndDriverResponse {
     private double distance;
     private String realTime;
 
-    public CallAndDriverResponse(Callings callings, Driver driver){
+    public void CallAndDriverResponse(Callings callings, Driver driver){
         this.callId = callings.getCallId();
         this.callStartLatitude = callings.getStartPointLatitude();
         this.callStartLongitude = callings.getStartPointLongitude();

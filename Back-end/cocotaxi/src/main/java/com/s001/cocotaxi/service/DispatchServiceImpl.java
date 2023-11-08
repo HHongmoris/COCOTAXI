@@ -4,7 +4,10 @@ import com.s001.cocotaxi.domain.Callings;
 import com.s001.cocotaxi.domain.Client;
 import com.s001.cocotaxi.domain.Dispatch;
 import com.s001.cocotaxi.domain.Driver;
+import com.s001.cocotaxi.dto.response.CallAndDriverResponse;
 import com.s001.cocotaxi.dto.response.DispatchListResponse;
+import com.s001.cocotaxi.openRouteService.dto.RouteSummary;
+import com.s001.cocotaxi.openRouteService.service.OpenRouteService;
 import com.s001.cocotaxi.repository.CallRepository;
 import com.s001.cocotaxi.repository.ClientRepository;
 import com.s001.cocotaxi.repository.DispatchRepository;
@@ -27,6 +30,7 @@ public class DispatchServiceImpl implements DispatchService {
     private final ClientRepository clientRepository;
     private final CallRepository callRepository;
     private final DriverRepository driverRepository;
+    private final OpenRouteService openRouteService;
     private final MovingService movingService;
 
     //두 지점 사이의 직선거리 구하기
@@ -128,4 +132,30 @@ public class DispatchServiceImpl implements DispatchService {
 
         return dispatch;
     }
+
+
+
+    //손님과 차량 사이의 실제 경로 거리와 소요 시간 로직
+    @Override
+    public CallAndDriverResponse getDistanceAndRealTime(int callId, int driverId) {
+
+        Callings call = callRepository.findById(callId).get();
+        Driver driver = driverRepository.findById(driverId).get();
+
+        String callLocation = String.valueOf(call.getStartPointLongitude()) + "," + String.valueOf(call.getStartPointLatitude());
+        String driverLocation = String.valueOf(driver.getDriverLongitude()) + "," + String.valueOf(driver.getDriverLatitude());
+        RouteSummary summary = openRouteService.getSummary(callLocation, driverLocation);
+        Double distance = (double) (Math.round(((summary.getDistance())*0.001)*100)/100);
+//                    String  result = String.valueOf((double) (Math.round(distance*100))/100)+"km";
+        double duration = (summary.getDuration())/60;
+        String realTime = String.valueOf((double) (Math.round(duration*100))/100)+"min";
+
+        CallAndDriverResponse callAndDriverResponse = new CallAndDriverResponse();
+        callAndDriverResponse.CallAndDriverResponse(call, driver);
+        callAndDriverResponse.setDistance(distance);
+        callAndDriverResponse.setRealTime(realTime);
+        return callAndDriverResponse;
+    }
+
+
 }
