@@ -1,14 +1,18 @@
 package com.s001.cocotaxi.service;
 
 import com.s001.cocotaxi.domain.Callings;
+import com.s001.cocotaxi.domain.Client;
 import com.s001.cocotaxi.domain.Driver;
+import com.s001.cocotaxi.dto.response.CallingDetailResponse;
 import com.s001.cocotaxi.dto.response.CallingsResponse;
 import com.s001.cocotaxi.openRouteService.dto.RouteSummary;
 import com.s001.cocotaxi.openRouteService.service.OpenRouteService;
 import com.s001.cocotaxi.repository.CallRepository;
+import com.s001.cocotaxi.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +26,7 @@ import static java.util.Collections.sort;
 @RequiredArgsConstructor
 public class CallingsServiceImpl implements CallingsService {
     private final CallRepository callRepository;
+    private final ClientRepository clientRepository;
     private final OpenRouteService openRouteService;
 
     @Override
@@ -56,6 +61,17 @@ public class CallingsServiceImpl implements CallingsService {
         sort(resultAllCallings,comparator);
 
         return resultAllCallings;
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public CallingDetailResponse getCallingDetail(int callId) {
+        Callings calling = callRepository.findById(callId).get();
+        CallingDetailResponse callingDetailResponse = new CallingDetailResponse();
+        callingDetailResponse.callingDetail(calling);
+
+        return callingDetailResponse;
     }
 
 }

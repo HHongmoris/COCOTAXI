@@ -21,7 +21,7 @@ public class Callings {
     @Column(name = "call_id", nullable = false)
     private int callId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
     private Client client;
 
