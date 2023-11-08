@@ -20,7 +20,7 @@ public class CallingDetailResponse {
     private double endPointLatitude;
     private double startPointLongitude;
     private double endPointLongitude;
-    private double distance;
+    private String distance;
     private String pickUpLocation;
     private String dropOffLocation;
     private String realTime;
@@ -34,7 +34,7 @@ public class CallingDetailResponse {
         this.startPointLatitude = callings.getStartPointLatitude();
         this.endPointLongitude = callings.getEndPointLongitude();
         this.endPointLatitude = callings.getEndPointLatitude();
-        this.distance = callings.getDistance();
+        this.distance = callings.getDistance() + "km";
         this.pickUpLocation = callings.getPickUpLocation();
         this.dropOffLocation = callings.getDropOffLocation();
         this.realTime = callings.getRealTime();
