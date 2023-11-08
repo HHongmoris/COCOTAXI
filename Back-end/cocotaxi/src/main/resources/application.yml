@@ -2,9 +2,9 @@
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://k9s101.p.ssafy.io:3306/cocotaxi
-    username: root
-    password: rlatjddn
+#    url: jdbc:mariadb://k9s101.p.ssafy.io:3306/cocotaxi
+#    username: root
+#    password: rlatjddn
 
 #    # SSAFY MariaDB
 #    url: jdbc:mariadb://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S09P31S101?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
@@ -13,9 +13,9 @@ spring:
 
     # MySQL (비상용)
 #    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/cocotaxi?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
-#    username: root
-#    password: 1234
+    url: jdbc:mariadb://127.0.0.1:3305/cocot
+    username: root
+    password: 1234
 
   thymeleaf:
     cache: false

@@ -29,8 +29,8 @@ public class DispatchServiceImpl implements DispatchService {
     private final DriverRepository driverRepository;
     private final MovingService movingService;
 
-    //두 지점 사이의 거리 그하기
-    public static double getDistance(double lat1, double lon1, double lat2, double lon2) {
+    //두 지점 사이의 직선거리 구하기
+    public static double getLineDistance(double lat1, double lon1, double lat2, double lon2) {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
 
@@ -78,7 +78,7 @@ public class DispatchServiceImpl implements DispatchService {
         //정확한 거리 측정 -> 범위 반경보다 작으면 반올림해서 표시
         for(Driver aroundDriver : tempAroundDriverList) {
 
-            double distance = getDistance(userLatitude, userLongitude, aroundDriver.getDriverLatitude(), aroundDriver.getDriverLongitude());
+            double distance = getLineDistance(userLatitude, userLongitude, aroundDriver.getDriverLatitude(), aroundDriver.getDriverLongitude());
             boolean flag = aroundDriver.getIsVehicleMatched();
 
             if(distance < RANGE_DISTANCE && !flag){ // 6km 보다 작고 손님 없는 경우만
@@ -86,12 +86,13 @@ public class DispatchServiceImpl implements DispatchService {
                 response.DispatchListResponse(aroundDriver);
                 response.setDistance((double)Math.round(distance*1000)/1000);
 
-                if(aroundDriver.getDriverId()==1){
-                    //TODO: 일정시간마다 차 위치 변경되게 로직 테스트
-                    List<Double> location = movingService.updateDriverLocation(aroundDriver.getDriverId());
-                    response.setDriverLatitude(location.get(0));
-                    response.setDriverLongitude(location.get(1));
-                }
+                //TODO: 이거 나중에 차량 이동 보여줄 때 추가
+//                if(aroundDriver.getDriverId()==1){
+//                    //TODO: 일정시간마다 차 위치 변경되게 로직 테스트
+//                    List<Double> location = movingService.updateDriverLocation(aroundDriver.getDriverId());
+//                    response.setDriverLatitude(location.get(0));
+//                    response.setDriverLongitude(location.get(1));
+//                }
 
                 resultAroundDriverList.add(response);
             }
