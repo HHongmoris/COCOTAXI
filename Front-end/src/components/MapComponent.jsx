@@ -1,41 +1,21 @@
 import React, { useEffect, useState, Component } from "react";
 import { useParams } from "react-router-dom";
-
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import axios from "axios";
 import polyline from "@mapbox/polyline";
 import { useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setDriverLocation, isDriverChanged, setClientLocation, isClientChanged } from "../redux/actions";
 
 const MapComponent = () => {
   const [map, setMap] = useState(null);
-  const [centerLat, setCenterLat] = useState(35.092);
-  const [centerLng, setCenterLng] = useState(128.854);
-  const [driverLat, setDriverLat] = useState(null);
-  const [driverLng, setDriverLng] = useState(null);
   const [circle, setCircle] = useState(null);
   const [openPage, setOpenPage] = useState(false);
   const [coords, setCoords] = useState(null);
   const [callId, setCallId] = useState(0);
   const [driverId, setDriverId] = useState(0);
-  const [polyline, setPolyline] = useState(false);
-
-  const updateCenterLat = (startPointLatitude) => {
-    setCenterLat(startPointLatitude);
-  };
-
-  const updateCenterLng = (startPointLongitude) => {
-    setCenterLng(startPointLongitude);
-  };
-
-  const updateDriverLat = (driverLatitude) => {
-    setDriverLat(driverLatitude);
-  };
-
-  const updateDriverLng = (driverLongitude) => {
-    setDriverLng(driverLongitude);
-  };
-
+  // props update
   const updateCallId = (callId) => {
     setCallId(callId);
   };
@@ -44,6 +24,19 @@ const MapComponent = () => {
     setDriverId(driverId);
   };
 
+  // Redux에서 값 가져오기
+  const dispatch = useDispatch();
+  const driverLocation = useSelector((state) => state.driver_location);
+  const clientLocation = useSelector((state) => state.client_location);
+  const isDriverLocationChanged = useSelector ((state) => state.is_driver_location_changed);
+  const isClientLocationChanged = useSelector ((state) => state.is_client_location_changed);
+  const parsedDriverLocation = driverLocation.split(','); // 파싱을 위한 쓰레기값
+  const parsedClientLocation = clientLocation.split(','); // 파싱을 위한 쓰레기값
+  const centerLat = parseFloat(parsedClientLocation[0]);
+  const centerLng = parseFloat(parsedClientLocation[1]);
+  const driverLat = parseFloat(parsedDriverLocation[0]);
+  const driverLng = parseFloat(parsedDriverLocation[1]);
+  
   console.log("callId : " + callId);
   console.log("DId : " + driverId);
 
@@ -135,7 +128,7 @@ const MapComponent = () => {
       const newMap = new window.google.maps.Map(
         document.getElementById("map"),
         {
-          center: { lat: centerLng, lng: centerLat },
+          center: { lat: centerLat, lng: centerLng },
           zoom: 12,
         }
       );
@@ -276,11 +269,7 @@ const MapComponent = () => {
           {/* 클라이언트 리스트 컴포넌트 */}
           <ClientList
             callId={callId}
-            centerLat={centerLat}
-            centerLng={centerLng}
             updateCallId={updateCallId}
-            updateCenterLat={updateCenterLat}
-            updateCenterLng={updateCenterLng}
           />
         </div>
 
@@ -298,10 +287,6 @@ const MapComponent = () => {
           <DispatchDriverList
             callId={callId}
             updateDriverId={updateDriverId}
-            driverLat={driverLat}
-            driverLng={driverLng}
-            updateDriverLng={updateDriverLng}
-            updateDriverLat={updateDriverLat}
           />
           <div>
             <button

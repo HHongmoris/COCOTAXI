@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setClientFlag } from "../redux/actions";
+import { setClientLocation, isClientChanged } from "../redux/actions";
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
@@ -58,12 +58,9 @@ const TableCell = styled.td`
 function ClientList(props) {
   const { callId } = props;
   const [clientList, setClientList] = useState([]);
-  const { centerLat, centerLng } = props;
   const { updateCallId } = props;
   // MapComponent 갱신을 위한 콜백 함수
-  const { updateCenterLat, updateCenterLng } = props;
-  const clientFlag = useSelector((state) => state.client_flag);
-  const driverFlag = useSelector((state) => state.driver_flag);
+  const clientLocation = useSelector((state) => state.is_client_location_changed);
   const dispatch = useDispatch();
   const [clickedRow, setClickedRow] = useState(null);
 
@@ -71,10 +68,12 @@ function ClientList(props) {
 
   const handleRowClick = (startPointLatitude, startPointLongitude, callId) => {
     updateCallId(callId);
-    updateCenterLat(startPointLatitude);
-    updateCenterLng(startPointLongitude);
-    dispatch(setClientFlag(!clientFlag));
     setClickedRow(callId);
+    const location = `${startPointLatitude},${startPointLongitude}`;
+    if(location !== clientLocation){
+      dispatch(isClientChanged(true));
+      dispatch(setClientLocation(location));
+    }
   };
 
   const url = `http://k9s101.p.ssafy.io:4000/api/callings`;
