@@ -77,7 +77,7 @@ const MapComponent = () => {
   // 마크 사진 적용
   useEffect(() => {
     if (map) {
-      if(polylineData) polylineData.setMap(null);
+      if (polylineData) polylineData.setMap(null);
       const multiPolylineCoordinates = [];
       multiPolylineCoordinates.push(coords);
       // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정해야함
@@ -201,51 +201,70 @@ const MapComponent = () => {
       setCircle(newCircle);
     }
   };
-  
-const addClientMarker = (positionInfo, mapInfo) => {
-  const marker1 = new window.google.maps.Marker({
-    position: positionInfo,
-    map: mapInfo, // 마커를 지도에 추가
-    icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
-  });
-  return marker1
-}
 
+  const addClientMarker = (positionInfo, mapInfo) => {
+    const marker1 = new window.google.maps.Marker({
+      position: positionInfo,
+      map: mapInfo, // 마커를 지도에 추가
+      icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
+    });
+    return marker1;
+  };
   //도착지점 마크 생성
-const addDriverMarker = (positionInfo, mapInfo) => {
-  const marker2 = new window.google.maps.Marker({
-    position: positionInfo,
-    map: mapInfo, // 마커를 지도에 추가
-    icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
-  });
-  return marker2
-}
-
-const removeMarker = (marker) => {
-  marker.setMap(null);
-}
-
-// 마킹
+  const addDriverMarker = (positionInfo, mapInfo) => {
+    const marker2 = new window.google.maps.Marker({
+      position: positionInfo,
+      map: mapInfo, // 마커를 지도에 추가
+      icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
+    });
+    // 정보 창 내용 설정
+    const contentString = `
+<div>
+  <h2>Hong sung</h2>
+  <p>plate num: 12A 1242</p>
+  <p>grade: 0.1</p>
+  <p>phone: 010-8299-8470</p>
+  <a href="https://voice.google.com/" target="_blank">
+  <button>Calling</button>
+  </a>
+ </div>
+`;
+    // 정보 창 생성
+    const infoWindow = new window.google.maps.InfoWindow({
+      content: contentString,
+    });
+    // 마커 클릭 이벤트 리스너 추가
+    marker2.addListener("click", () => {
+      // 클릭 시 정보 창 열도록 설정
+      infoWindow.open(map, marker2);
+    });
+    return marker2;
+  };
+  const removeMarker = (marker) => {
+    marker.setMap(null);
+  };
+  // 마킹
   useEffect(() => {
     //출발
-    if(map){
-    if(clientMarker) removeMarker(clientMarker);
-    if(driverMarker) removeMarker (driverMarker);
-    setClientMarker(() => addClientMarker({lat : centerLat, lng : centerLng}, map))
-    setDriverMarker(() => addDriverMarker({lat : driverLat, lng : driverLng}, map))
+    if (map) {
+      if (clientMarker) removeMarker(clientMarker);
+      if (driverMarker) removeMarker(driverMarker);
+      setClientMarker(() =>
+        addClientMarker({ lat: centerLat, lng: centerLng }, map)
+      );
+      setDriverMarker(() =>
+        addDriverMarker({ lat: driverLat, lng: driverLng }, map)
+      );
     }
-    
-  },[driverLat, driverLng, centerLng, centerLat, map])
+  }, [driverLat, driverLng, centerLng, centerLat, map]);
 
   const onClickEvent1 = () => {
     removeMarker(clientMarker);
-    }
+  };
 
   const onClickEvent2 = () => {
     removeMarker(driverMarker);
-    }
-
-
+  };
 
   const getAndSetPolylineCoords = useCallback(() => {
     // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함 / 형식 추가
@@ -253,53 +272,6 @@ const removeMarker = (marker) => {
     const endLocation = `${driverLng},${driverLat}`; // 드라이버 위치
     console.log(startLocation + "그리고" + endLocation);
     const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
-    // 출발
-    if (clientFlag) {
-      const marker1 = new window.google.maps.Marker({
-        position: { lat: centerLat, lng: centerLng },
-        map: map, // 마커를 지도에 추가
-        icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
-      });
-      setMarker1(() => marker1);
-    }
-
-    // if(!clientFlag) {
-    //   setMarker1(null);
-    //   marker1.setMap(null);
-    // }
-    if (driverFlag) {
-      // 도착지점 마크 생성
-      const marker2 = new window.google.maps.Marker({
-        position: { lat: driverLat, lng: driverLng },
-        map: map, // 마커를 지도에 추가
-        icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
-      });
-
-      // 정보 창 내용 설정
-      const contentString = `
-          <div>
-            <h2>Hong sung</h2>
-            <p>plate num: 12A 1242</p>
-            <p>grade: 0.1</p>
-            <p>phone: 010-8299-8470</p>
-            <a href="https://voice.google.com/" target="_blank">
-            <button>Calling</button>
-            </a>
-           </div>
-          `;
-
-      // 정보 창 생성
-      const infoWindow = new window.google.maps.InfoWindow({
-        content: contentString,
-      });
-
-      // 마커 클릭 이벤트 리스너 추가
-      marker2.addListener("click", () => {
-        // 클릭 시 정보 창 열도록 설정
-        infoWindow.open(map, marker2);
-      });
-      setMarker2(() => marker2);
-    }
 
     axios
       .get(
@@ -363,9 +335,6 @@ const removeMarker = (marker) => {
 
   return (
     <div>
-      <button onClick={onClickEvent1}>마크 지우기</button>
-      <button onClick={onClickEvent2}>드라이버 마크 지우기</button>
-
       <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
         <div
           id="map"
