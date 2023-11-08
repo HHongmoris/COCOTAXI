@@ -2,11 +2,17 @@ import React, { useEffect, useState, Component } from "react";
 import { useParams } from "react-router-dom";
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
+import MatchingToast from "./MatchingToast";
 import axios from "axios";
 import polyline from "@mapbox/polyline";
 import { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setDriverLocation, isDriverChanged, setClientLocation, isClientChanged } from "../redux/actions";
+import {
+  setDriverLocation,
+  isDriverChanged,
+  setClientLocation,
+  isClientChanged,
+} from "../redux/actions";
 
 const MapComponent = () => {
   const [map, setMap] = useState(null);
@@ -28,15 +34,19 @@ const MapComponent = () => {
   const dispatch = useDispatch();
   const driverLocation = useSelector((state) => state.driver_location);
   const clientLocation = useSelector((state) => state.client_location);
-  const isDriverLocationChanged = useSelector ((state) => state.is_driver_location_changed);
-  const isClientLocationChanged = useSelector ((state) => state.is_client_location_changed);
-  const parsedDriverLocation = driverLocation.split(','); // 파싱을 위한 쓰레기값
-  const parsedClientLocation = clientLocation.split(','); // 파싱을 위한 쓰레기값
+  const isDriverLocationChanged = useSelector(
+    (state) => state.is_driver_location_changed
+  );
+  const isClientLocationChanged = useSelector(
+    (state) => state.is_client_location_changed
+  );
+  const parsedDriverLocation = driverLocation.split(","); // 파싱을 위한 쓰레기값
+  const parsedClientLocation = clientLocation.split(","); // 파싱을 위한 쓰레기값
   const centerLat = parseFloat(parsedClientLocation[0]);
   const centerLng = parseFloat(parsedClientLocation[1]);
   const driverLat = parseFloat(parsedDriverLocation[0]);
   const driverLng = parseFloat(parsedDriverLocation[1]);
-  
+
   console.log("callId : " + callId);
   console.log("DId : " + driverId);
 
@@ -260,6 +270,17 @@ const MapComponent = () => {
             position: "absolute",
             bottom: 15,
             left: 30,
+            zIndex: 2,
+          }}
+        >
+          <MatchingToast />
+        </div>
+
+        <div
+          style={{
+            position: "absolute",
+            bottom: 15,
+            left: 30,
             width: "500px",
             background: "white",
             boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
@@ -267,10 +288,7 @@ const MapComponent = () => {
           }}
         >
           {/* 클라이언트 리스트 컴포넌트 */}
-          <ClientList
-            callId={callId}
-            updateCallId={updateCallId}
-          />
+          <ClientList callId={callId} updateCallId={updateCallId} />
         </div>
 
         <div
@@ -284,10 +302,7 @@ const MapComponent = () => {
             zIndex: 2,
           }}
         >
-          <DispatchDriverList
-            callId={callId}
-            updateDriverId={updateDriverId}
-          />
+          <DispatchDriverList callId={callId} updateDriverId={updateDriverId} />
           <div>
             <button
               onClick={onClickDispatch}
