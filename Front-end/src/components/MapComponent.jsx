@@ -89,11 +89,11 @@ const MapComponent = () => {
 
       // 정보 창 내용 설정
       const contentString = `
-        <div>
-          <P>6KM</P>
-          <p>3min</p>
-        </div>
-      `;
+      <div style="max-height: 58px; overflow: auto;">
+        <h2 style="font-size: 12px;">3KM</h2>
+        <p style="font-size: 10px;">6min.</p>
+      </div>
+    `;
 
       // 정보 창 생성
       const infoWindow2 = new window.google.maps.InfoWindow({
@@ -141,7 +141,6 @@ const MapComponent = () => {
         strokeWeight: 1, // 테두리 두께 설정
         strokeColor: "#10189f", // 테두리 색상 설정
         strokeOpacity: 1.0, // 테두리 불투명도 설정
-        strokeWeight: 2, // 테두리 굵기 설정
       };
 
       multiPolylineCoordinates.forEach((coordinates) => {
