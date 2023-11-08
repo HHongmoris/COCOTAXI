@@ -18,7 +18,7 @@ public class CallAndDriverResponse {
     private String vehicleNo;
     private double driverLatitude;
     private double driverLongitude;
-    private double distance;
+    private String distance;
     private String realTime;
 
     public void CallAndDriverResponse(Callings callings, Driver driver){

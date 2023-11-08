@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -88,7 +89,7 @@ public class DispatchServiceImpl implements DispatchService {
             if(distance < RANGE_DISTANCE && !flag){ // 6km 보다 작고 손님 없는 경우만
                 DispatchListResponse response = new DispatchListResponse();
                 response.DispatchListResponse(aroundDriver);
-                response.setDistance((double)Math.round(distance*1000)/1000);
+                response.setDistance(((double)Math.round(distance*100)/100) + "km");
 
                 //TODO: 이거 나중에 차량 이동 보여줄 때 추가
 //                if(aroundDriver.getDriverId()==1){
@@ -101,8 +102,8 @@ public class DispatchServiceImpl implements DispatchService {
                 resultAroundDriverList.add(response);
             }
         }
-
-        Collections.sort(resultAroundDriverList, (driver1, driver2) -> Double.compare(driver1.getDistance(), driver2.getDistance()));
+//        Collections.sort(resultAroundDriverList, (driver1, driver2) -> Double.compare(Double.parseDouble(driver1.getDistance().replace("km", "").trim()), Double.parseDouble(driver2.getDistance().replace("km", "").trim())));
+        Collections.sort(resultAroundDriverList, Comparator.comparingDouble(driver -> Double.parseDouble(driver.getDistance().replace("km", "").trim())));
 
         return resultAroundDriverList;
     }
@@ -145,14 +146,19 @@ public class DispatchServiceImpl implements DispatchService {
         String callLocation = String.valueOf(call.getStartPointLongitude()) + "," + String.valueOf(call.getStartPointLatitude());
         String driverLocation = String.valueOf(driver.getDriverLongitude()) + "," + String.valueOf(driver.getDriverLatitude());
         RouteSummary summary = openRouteService.getSummary(callLocation, driverLocation);
-        Double distance = (double) (Math.round(((summary.getDistance())*0.001)*100)/100);
-//                    String  result = String.valueOf((double) (Math.round(distance*100))/100)+"km";
-        double duration = (summary.getDuration())/60;
-        String realTime = String.valueOf((double) (Math.round(duration*100))/100)+"min";
+//        Double distance = (double) (Math.round(((summary.getDistance())*0.001)*100)/100);
+////                    String  result = String.valueOf((double) (Math.round(distance*100))/100)+"km";
+//        double duration = (summary.getDuration())/60;
+//        String realTime = String.valueOf((double) (Math.round(duration*100))/100)+"min";
+
+        Double distance = (double) (Math.round(((summary.getDistance())*0.001)*100))/100;
+        String result = String.valueOf((double) (Math.round(distance*100))/100)+"km";
+        int duration = (int) ((summary.getDuration())/60);
+        String realTime = duration +"min";
 
         CallAndDriverResponse callAndDriverResponse = new CallAndDriverResponse();
         callAndDriverResponse.CallAndDriverResponse(call, driver);
-        callAndDriverResponse.setDistance(distance);
+        callAndDriverResponse.setDistance(result);
         callAndDriverResponse.setRealTime(realTime);
         return callAndDriverResponse;
     }

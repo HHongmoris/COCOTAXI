@@ -42,16 +42,17 @@ public class CallingsServiceImpl implements CallingsService {
                     String start = String.valueOf(call.getStartPointLongitude()) + "," + String.valueOf(call.getStartPointLatitude());
                     String end = String.valueOf(call.getEndPointLongitude()) + "," + String.valueOf(call.getEndPointLatitude());
                     RouteSummary summary = openRouteService.getSummary(start, end);
-                    Double distance = (summary.getDistance())*0.001;
-//                    String  result = String.valueOf((double) (Math.round(distance*100))/100)+"km";
-                    double duration = (summary.getDuration())/60;
-                    String realTime = String.valueOf((double) (Math.round(duration*100))/100)+"min";
+                    Double distance = (double) (Math.round(((summary.getDistance())*0.001)*100))/100;
+                    int duration = (int) ((summary.getDuration())/60);
+                    String realTime = duration +"min";
                     call.setDistance(distance);
                     call.setRealTime(realTime);
                     callRepository.save(call);
                 }
 
+                String result = call.getDistance() +"km";
                 response.callingsResponseList(call);
+                response.setDistance(result);
 
                 resultAllCallings.add(response);
             }
