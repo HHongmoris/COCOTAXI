@@ -1,39 +1,39 @@
 // reducers.js
 
 import {
-  SET_DRIVER_FLAG,
-  SET_CLIENT_FLAG,
-  SET_DRIVER_ROUTE_FLAG,
-  SET_CLIENT_ROUTE_FLAG,
+  CLIENT_LOCATION,
+  IS_CLIENT_CHANGED,
+  DRIVER_LOCATION,
+  IS_DRIVER_CHANGED
 } from "./actions";
 const initialState = {
-  driver_flag: false,
-  client_flag: false,
-  driver_route_flag: false,
-  client_route_flag: false,
+  driver_location: "",
+  client_location: "35.098,128.548",
+  is_client_location_changed: false,
+  is_driver_location_changed: false,
 };
 
 const flagsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_DRIVER_FLAG:
+    case CLIENT_LOCATION:
       return {
         ...state,
-        driver_flag: action.payload,
+        client_location: action.payload,
       };
-    case SET_CLIENT_FLAG:
+    case DRIVER_LOCATION:
       return {
         ...state,
-        client_flag: action.payload,
+        driver_location: action.payload,
       };
-    case SET_DRIVER_ROUTE_FLAG:
+    case IS_CLIENT_CHANGED:
       return {
         ...state,
-        driver_route_flag: action.payload,
+        is_client_location_changed: action.payload,
       };
-    case SET_CLIENT_ROUTE_FLAG:
+    case IS_DRIVER_CHANGED:
       return {
         ...state,
-        client_route_flag: action.payload,
+        is_driver_location_changed: action.payload,
       };
     default:
       return state;

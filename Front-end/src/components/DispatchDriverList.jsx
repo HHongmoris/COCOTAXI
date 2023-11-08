@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setDriverFlag } from "../redux/actions";
+import { setDriverLocation, isDriverChanged } from "../redux/actions";
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
@@ -59,19 +59,18 @@ function DispatchDriverList(props) {
   const { callId } = props;
   const [driverList, setDriverList] = useState([]);
   const { updateDriverId } = props;
-  const { driverLng, driverLat } = props;
-  const { updateDriverLng, updateDriverLat } = props;
-  const driverFlag = useSelector((state) => state.driver_flag);
-  const clientFlag = useSelector((state) => state.client_flag);
+  const driverLocation = useSelector((state) => state.driver_location);
   const dispatch = useDispatch();
   const [clickedDriver, setClickedDriver] = useState(null);
 
   const handleRowClick = (driverId, driverLng, driverLat) => {
     updateDriverId(driverId);
-    updateDriverLng(driverLng);
-    updateDriverLat(driverLat);
-    dispatch(setDriverFlag(true));
     setClickedDriver(driverId);
+    const location = `${driverLat},${driverLng}`;
+    if(location !== driverLocation){
+      dispatch(isDriverChanged(true));
+      dispatch(setDriverLocation(location))
+    }
   };
 
   //[updateDriverId, updateDriveLng, updateDriverLat]
