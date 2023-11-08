@@ -226,6 +226,9 @@ const MapComponent = () => {
           zoom: 13,
         }
       );
+      // 교통 레이어 추가
+      const trafficLayer = new google.maps.TrafficLayer();
+      trafficLayer.setMap(newMap);
 
       setMap(newMap);
     };
@@ -272,7 +275,7 @@ const MapComponent = () => {
   <p>plate num: 12A 1242</p>
   <p>grade: 0.1</p>
   <p>phone: 010-8299-8470</p>
-  <a href="https://voice.google.com/" target="_blank">
+  <a href="https://voice.google.com/u/0/signup" target="_blank">
   <button>Calling</button>
   </a>
  </div>
