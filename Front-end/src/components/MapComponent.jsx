@@ -169,7 +169,7 @@ const MapComponent = () => {
           ],
           strokeColor: "#FFFFFF",
           strokeOpacity: 1.0,
-          strokeWeight: 5,
+          strokeWeight: 3,
           map: map,
         });
         polyline.setMap(map);
@@ -220,7 +220,6 @@ const MapComponent = () => {
       googleMapsScript.defer = true;
       googleMapsScript.onload = initMap;
       document.head.appendChild(googleMapsScript);
-      console.log("googleAPI called");
     };
 
     const initMap = () => {
@@ -266,12 +265,14 @@ const MapComponent = () => {
     });
     return marker1;
   };
+
   //도착지점 마크 생성
-  const addDriverMarker = (positionInfo, mapInfo) => {
+  const addDriverMarker = (positionInfo, mapInfo, icontype) => {
+    const iconUrl = `https://sw-s3-bucket.s3.ap-northeast-2.amazonaws.com/${icontype}.png`;
     const marker2 = new window.google.maps.Marker({
       position: positionInfo,
       map: mapInfo, // 마커를 지도에 추가
-      icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
+      icon: iconUrl,
     });
     // 정보 창 내용 설정
     const contentString = `
@@ -323,15 +324,14 @@ const MapComponent = () => {
           "http://k9s101.p.ssafy.io:4000/api/drivers"
         );
         const data = response.data;
-        console.log("@@@@@@@@@@@@@@@@@@@drivers data : ", data);
         if (data) {
           data.forEach((driver) => {
             const driverPosition = {
               lat: driver.driverLatitude,
               lng: driver.driverLongitude,
             };
-            // console.log(driver, driverPosition);
-            addDriverMarker(driverPosition, map);
+            const icontype = driver.vehicleType;
+            addDriverMarker(driverPosition, map, icontype);
           });
         }
       } catch (error) {
