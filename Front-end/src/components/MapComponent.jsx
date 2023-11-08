@@ -275,16 +275,16 @@ const MapComponent = () => {
     });
     // 정보 창 내용 설정
     const contentString = `
-<div>
-  <h2>Hong sung</h2>
-  <p>plate num: 12A 1242</p>
-  <p>grade: 0.1</p>
-  <p>phone: 010-8299-8470</p>
-  <a href="https://voice.google.com/u/0/signup" target="_blank">
-  <button>Calling</button>
-  </a>
- </div>
-`;
+    <div>
+      <h2>Hong sung</h2>
+      <p>plate num: 12A 1242</p>
+      <p>grade: 0.1</p>
+      <p>phone: 010-8299-8470</p>
+      <a href="https://voice.google.com/u/0/signup" target="_blank">
+      <button>Calling</button>
+      </a>
+    </div>
+    `;
     // 정보 창 생성
     const infoWindow2 = new window.google.maps.InfoWindow({
       content: contentString,
@@ -369,7 +369,7 @@ const MapComponent = () => {
     const startLocation = `${centerLng},${centerLat}`; // 손님의 시작부분
     const endLocation = `${driverLng},${driverLat}`; // 드라이버 위치
     console.log(startLocation + "그리고" + endLocation);
-    const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
+    const apiKey = "5b3ce3597851110001cf62484d2ea0dd89de4bdf9db543da46626b16";
 
     axios
       .get(
