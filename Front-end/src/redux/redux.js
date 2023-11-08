@@ -20,16 +20,17 @@ const flagsReducer = (state = initialState, action) => {
         ...state,
         client_location: action.payload,
       };
+    case IS_CLIENT_CHANGED:
+    return {
+      ...state,
+      is_client_location_changed: action.payload,
+    };
     case DRIVER_LOCATION:
       return {
         ...state,
         driver_location: action.payload,
       };
-    case IS_CLIENT_CHANGED:
-      return {
-        ...state,
-        is_client_location_changed: action.payload,
-      };
+    
     case IS_DRIVER_CHANGED:
       return {
         ...state,
