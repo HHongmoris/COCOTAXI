@@ -190,12 +190,14 @@ const MapComponent = () => {
       // 정보 창 내용 설정
       const contentString = `
           <div>
-            <h2>홍성민</h2>
-            <p>차번호: 12A 1242</p>
-            <p>평점: 0.1</p>
-            <p>전화 번호: 010-8299-8470</p>
-            <button onClick={this.handleCallDriver}>전화 걸기</button>
-            </div>
+            <h2>Hong sung</h2>
+            <p>plate num: 12A 1242</p>
+            <p>grade: 0.1</p>
+            <p>phone: 010-8299-8470</p>
+            <a href="https://voice.google.com/" target="_blank">
+            <button>Calling</button>
+            </a>
+           </div>
           `;
 
       // 정보 창 생성
