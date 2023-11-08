@@ -210,7 +210,7 @@ const MapComponent = () => {
   useEffect(() => {
     const loadGoogleMapsScript = () => {
       const googleMapsScript = document.createElement("script");
-      googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAcpJXGOLDdWsqoSBrIUOZEDtSXNoGtTvw&libraries=geometry`;
+      googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAcpJXGOLDdWsqoSBrIUOZEDtSXNoGtTvw&libraries=geometry&language=en`;
       googleMapsScript.async = true;
       googleMapsScript.defer = true;
       googleMapsScript.onload = initMap;
