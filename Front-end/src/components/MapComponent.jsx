@@ -74,7 +74,7 @@ const MapComponent = () => {
     animate();
   };
 
-  // useeffect 말고 다른 걸로 버튼 눌럿을때 적용되는 방식으로 바꿔야함
+  // 마크 사진 적용
   useEffect(() => {
     if (map) {
       if(polylineData) polylineData.setMap(null);
@@ -82,6 +82,37 @@ const MapComponent = () => {
       multiPolylineCoordinates.push(coords);
       // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정해야함
       console.log(multiPolylineCoordinates); // 지금 실행화면에서 경로보기 누르고 vscode 상에서 컨트롤 + s 눌러서 저장되어야지만 좌표나옴
+
+      function animateCircle(polyline2) {
+        const path = polyline2.getPath();
+        const reversedPath = new google.maps.MVCArray(); // 뒤집힌 경로를 저장할 새로운 배열
+
+        for (let i = path.getLength() - 1; i >= 0; i--) {
+          reversedPath.push(path.getAt(i)); // 경로를 거꾸로 뒤집어 새 배열에 추가
+        }
+
+        polyline2.setPath(reversedPath); // 뒤집힌 경로를 폴리라인에 설정
+
+        let count = 3000;
+
+        window.setInterval(() => {
+          count = (count - 1 + 3000) % 3000;
+          const icons = polyline2.get("icons");
+          icons[0].offset = (3000 - count) / 15 + "%"; // 방향을 반대로 변경
+          polyline2.set("icons", icons);
+        }, 20);
+      }
+
+      const lineSymbol = {
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        scale: 5,
+        fillColor: "#0004ff", // 채우기 색상 설정
+        fillOpacity: 1,
+        strokeWeight: 1, // 테두리 두께 설정
+        strokeColor: "#10189f", // 테두리 색상 설정
+        strokeOpacity: 1.0, // 테두리 불투명도 설정
+        strokeWeight: 2, // 테두리 굵기 설정
+      };
 
       multiPolylineCoordinates.forEach((coordinates) => {
         const polyline = new window.google.maps.Polyline({
@@ -147,6 +178,7 @@ const MapComponent = () => {
           zoom: 12,
         }
       );
+
       setMap(newMap);
     };
 
@@ -157,10 +189,10 @@ const MapComponent = () => {
   const drawCircle = (lat, lng) => {
     if (map) {
       const newCircle = new window.google.maps.Circle({
-        strokeColor: "#4158c1",
+        strokeColor: "#e9c026",
         strokeOpacity: 0.9,
         strokeWeight: 2,
-        fillColor: "#6c8fe8",
+        fillColor: "#faf5c7",
         fillOpacity: 0.2,
         map,
         center: { lat, lng },
@@ -221,6 +253,53 @@ const removeMarker = (marker) => {
     const endLocation = `${driverLng},${driverLat}`; // 드라이버 위치
     console.log(startLocation + "그리고" + endLocation);
     const apiKey = "5b3ce3597851110001cf624888240bdfef7d494bb8e36cbbd1683d77";
+    // 출발
+    if (clientFlag) {
+      const marker1 = new window.google.maps.Marker({
+        position: { lat: centerLat, lng: centerLng },
+        map: map, // 마커를 지도에 추가
+        icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
+      });
+      setMarker1(() => marker1);
+    }
+
+    // if(!clientFlag) {
+    //   setMarker1(null);
+    //   marker1.setMap(null);
+    // }
+    if (driverFlag) {
+      // 도착지점 마크 생성
+      const marker2 = new window.google.maps.Marker({
+        position: { lat: driverLat, lng: driverLng },
+        map: map, // 마커를 지도에 추가
+        icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
+      });
+
+      // 정보 창 내용 설정
+      const contentString = `
+          <div>
+            <h2>Hong sung</h2>
+            <p>plate num: 12A 1242</p>
+            <p>grade: 0.1</p>
+            <p>phone: 010-8299-8470</p>
+            <a href="https://voice.google.com/" target="_blank">
+            <button>Calling</button>
+            </a>
+           </div>
+          `;
+
+      // 정보 창 생성
+      const infoWindow = new window.google.maps.InfoWindow({
+        content: contentString,
+      });
+
+      // 마커 클릭 이벤트 리스너 추가
+      marker2.addListener("click", () => {
+        // 클릭 시 정보 창 열도록 설정
+        infoWindow.open(map, marker2);
+      });
+      setMarker2(() => marker2);
+    }
 
     axios
       .get(
@@ -270,6 +349,7 @@ const removeMarker = (marker) => {
       })
       .then((response) => {
         console.log("Dispatch Activated", response);
+        alert("강제 배차가 완료되었습니다.");
       })
       .catch((error) => {
         console.error(error);
