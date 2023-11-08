@@ -25,6 +25,7 @@ const MapComponent = () => {
   const [driverMarker, setDriverMarker] = useState(null);
   const [polylineData, setPolylineData] = useState(null);
   const [polyline2, setPolyline2] = useState(null);
+  const [infowindow2, setInfowindow2] = useState(null);
 
   // props update
   const updateCallId = (callId) => {
@@ -78,9 +79,34 @@ const MapComponent = () => {
 
   // 마크 사진 적용
   useEffect(() => {
-    if (map) {
+    if (map && coords && coords.length > 0) {
       if (polylineData) polylineData.setMap(null);
       if (polyline2) polyline2.setMap(null);
+      if (infowindow2) infowindow2.setMap(null);
+
+      const midIndex = Math.floor(coords.length / 2);
+      const midCoord = coords[midIndex];
+
+      // 정보 창 내용 설정
+      const contentString = `
+        <div>
+          <P>6KM</P>
+          <p>3min</p>
+        </div>
+      `;
+
+      // 정보 창 생성
+      const infoWindow2 = new window.google.maps.InfoWindow({
+        content: contentString,
+      });
+
+      // 폴리라인의 중간 지점 위치 설정
+      const polylineMidpoint = new window.google.maps.LatLng(
+        midCoord.lat,
+        midCoord.lng
+      );
+      infoWindow2.setPosition(polylineMidpoint); // 정보 창을 중간 지점으로
+      infoWindow2.open(map);
 
       const multiPolylineCoordinates = [];
       multiPolylineCoordinates.push(coords);
@@ -133,6 +159,7 @@ const MapComponent = () => {
               icon: lineSymbol,
               offset: "100%",
             },
+            5,
           ],
           strokeColor: "#5678ff",
           strokeOpacity: 1.0,
@@ -144,9 +171,10 @@ const MapComponent = () => {
         animateCircle(polyline2);
         setPolylineData(polyline);
         setPolyline2(polyline2);
+        setInfowindow2(infowindow2);
       });
     }
-  }, [coords, map]);
+  }, [coords, map, driverLocation]);
 
   // centerLat 또는 centerLng 값이 변경될 때 애니메이션 적용
   useEffect(() => {
@@ -196,7 +224,7 @@ const MapComponent = () => {
         document.getElementById("map"),
         {
           center: { lat: centerLat, lng: centerLng },
-          zoom: 12,
+          zoom: 13,
         }
       );
 
@@ -251,13 +279,13 @@ const MapComponent = () => {
  </div>
 `;
     // 정보 창 생성
-    const infoWindow = new window.google.maps.InfoWindow({
+    const infoWindow2 = new window.google.maps.InfoWindow({
       content: contentString,
     });
     // 마커 클릭 이벤트 리스너 추가
     marker2.addListener("click", () => {
       // 클릭 시 정보 창 열도록 설정
-      infoWindow.open(map, marker2);
+      infoWindow2.open(map, marker2);
     });
     return marker2;
   };
