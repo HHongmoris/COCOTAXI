@@ -145,14 +145,19 @@ public class DispatchServiceImpl implements DispatchService {
         String callLocation = String.valueOf(call.getStartPointLongitude()) + "," + String.valueOf(call.getStartPointLatitude());
         String driverLocation = String.valueOf(driver.getDriverLongitude()) + "," + String.valueOf(driver.getDriverLatitude());
         RouteSummary summary = openRouteService.getSummary(callLocation, driverLocation);
-        Double distance = (double) (Math.round(((summary.getDistance())*0.001)*100)/100);
-//                    String  result = String.valueOf((double) (Math.round(distance*100))/100)+"km";
-        double duration = (summary.getDuration())/60;
-        String realTime = String.valueOf((double) (Math.round(duration*100))/100)+"min";
+//        Double distance = (double) (Math.round(((summary.getDistance())*0.001)*100)/100);
+////                    String  result = String.valueOf((double) (Math.round(distance*100))/100)+"km";
+//        double duration = (summary.getDuration())/60;
+//        String realTime = String.valueOf((double) (Math.round(duration*100))/100)+"min";
+
+        Double distance = (double) (Math.round(((summary.getDistance())*0.001)*100))/100;
+        String result = String.valueOf((double) (Math.round(distance*100))/100)+"km";
+        int duration = (int) ((summary.getDuration())/60);
+        String realTime = duration +"min";
 
         CallAndDriverResponse callAndDriverResponse = new CallAndDriverResponse();
         callAndDriverResponse.CallAndDriverResponse(call, driver);
-        callAndDriverResponse.setDistance(distance);
+        callAndDriverResponse.setDistance(result);
         callAndDriverResponse.setRealTime(realTime);
         return callAndDriverResponse;
     }
