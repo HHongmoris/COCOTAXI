@@ -4,7 +4,7 @@ import {
   CLIENT_LOCATION,
   IS_CLIENT_CHANGED,
   DRIVER_LOCATION,
-  IS_DRIVER_CHANGED
+  IS_DRIVER_CHANGED,
 } from "./actions";
 const initialState = {
   driver_location: "",
@@ -36,6 +36,7 @@ const flagsReducer = (state = initialState, action) => {
         ...state,
         is_driver_location_changed: action.payload,
       };
+
     default:
       return state;
   }

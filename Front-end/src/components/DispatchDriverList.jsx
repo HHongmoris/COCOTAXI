@@ -4,6 +4,7 @@ import { setDriverLocation, isDriverChanged } from "../redux/actions";
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
+import axios from "axios";
 
 const TableContainer = styled.div`
   max-height: 190px;
@@ -62,8 +63,10 @@ function DispatchDriverList(props) {
   const driverLocation = useSelector((state) => state.driver_location);
   const dispatch = useDispatch();
   const [clickedDriver, setClickedDriver] = useState(null);
+  const [driverId, setDriverId] = useState(null);
 
   const handleRowClick = (driverId, driverLng, driverLat) => {
+    setDriverId(() => driverId);
     updateDriverId(driverId);
     setClickedDriver(driverId);
     const location = `${driverLat},${driverLng}`;
@@ -137,12 +140,32 @@ function DispatchDriverList(props) {
     data,
   });
 
+  const onClickDispatch = () => {
+    axios
+      .post("http://k9s101.p.ssafy.io:4000/api/dispatch", null, {
+        params: {
+          callId: callId,
+          driverId: driverId,
+        },
+      })
+      .then((response) => {
+        console.log("Dispatch Activated", response);
+        alert("강제 배차가 완료되었습니다.");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    console.log("Dispatch Activated");
+  };
+
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
   const maxRows = 99;
 
   console.log("driverList called");
 
   return (
+    <div>
+    <div>
     <TableContainer>
       <Table {...getTableProps()}>
         <Thead>
@@ -193,6 +216,22 @@ function DispatchDriverList(props) {
         </Table>
       </TbodyContainer>
     </TableContainer>
+    </div>
+    <div>
+    <button
+    onClick={onClickDispatch}
+    style={{
+      width: "100%", // 버튼이 표 안에 가득 차도록 너비 설정
+      padding: "10px", // 원하는 패딩 설정
+      border: "none", // 테두리 제거
+      color: "black", // 글자색 설정
+      cursor: "pointer", // 커서 스타일 설정
+    }}
+  >
+    Dispatch
+  </button>
+  </div>
+  </div>
   );
 }
 
