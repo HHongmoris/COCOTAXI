@@ -24,7 +24,7 @@ function MatchingToast() {
       // 랜덤한 숫자 및 차량 배치 정보 생성
       const passengerNumber = Math.floor(Math.random() * 100000) + 1;
       const vehicleNumber = Math.floor(Math.random() * 100000) + 1;
-      const message = `${passengerNumber}번 승객이 ${vehicleNumber}번 차량에 배차 완료되었습니다.`;
+      const message = `The passenger number ${passengerNumber} has been dispatched to vehicle number ${vehicleNumber}.`;
 
       // 토스트 메시지 표시
       toast.info(<CustomToast>{message}</CustomToast>, {
@@ -35,7 +35,7 @@ function MatchingToast() {
       });
 
       // 랜덤한 시간 간격 생성
-      const delay = Math.floor(Math.random() * 4000) + 2000000;
+      const delay = Math.floor(Math.random() * 4000) + 20000;
 
       setTimeout(showToastWithDelay, delay);
     };
