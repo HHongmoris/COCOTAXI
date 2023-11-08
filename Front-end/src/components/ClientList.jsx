@@ -60,7 +60,9 @@ function ClientList(props) {
   const [clientList, setClientList] = useState([]);
   const { updateCallId } = props;
   // MapComponent 갱신을 위한 콜백 함수
-  const clientLocation = useSelector((state) => state.is_client_location_changed);
+  const clientLocation = useSelector(
+    (state) => state.is_client_location_changed
+  );
   const dispatch = useDispatch();
   const [clickedRow, setClickedRow] = useState(null);
 
@@ -70,7 +72,7 @@ function ClientList(props) {
     updateCallId(callId);
     setClickedRow(callId);
     const location = `${startPointLatitude},${startPointLongitude}`;
-    if(location !== clientLocation){
+    if (location !== clientLocation) {
       dispatch(isClientChanged(true));
       dispatch(setClientLocation(location));
     }
@@ -208,7 +210,7 @@ function ClientList(props) {
   });
 
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
-  const maxRows = 6;
+  const maxRows = 99;
 
   console.log("clientList called");
 

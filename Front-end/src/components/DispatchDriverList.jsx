@@ -67,9 +67,9 @@ function DispatchDriverList(props) {
     updateDriverId(driverId);
     setClickedDriver(driverId);
     const location = `${driverLat},${driverLng}`;
-    if(location !== driverLocation){
+    if (location !== driverLocation) {
       dispatch(isDriverChanged(true));
-      dispatch(setDriverLocation(location))
+      dispatch(setDriverLocation(location));
     }
   };
 
@@ -138,7 +138,7 @@ function DispatchDriverList(props) {
   });
 
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
-  const maxRows = 4;
+  const maxRows = 99;
 
   console.log("driverList called");
 
