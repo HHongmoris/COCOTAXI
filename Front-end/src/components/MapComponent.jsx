@@ -117,12 +117,27 @@ const MapComponent = () => {
       multiPolylineCoordinates.forEach((coordinates) => {
         const polyline = new window.google.maps.Polyline({
           path: coordinates,
-          strokeColor: "blue", // 선 색상 설정
-          strokeOpacity: 1.0, // 선 불투명도 설정
-          strokeWeight: 4, // 선 굵기 설정
+          strokeColor: "#0004ff",
+          strokeOpacity: 1.0,
+          strokeWeight: 10,
         });
+
+        const polyline2 = new google.maps.Polyline({
+          path: coordinates,
+          icons: [
+            {
+              icon: lineSymbol,
+              offset: "100%",
+            },
+          ],
+          strokeColor: "#5678ff",
+          strokeOpacity: 1.0,
+          strokeWeight: 5,
+          map: map,
+        });
+
         polyline.setMap(map);
-        setPolylineData(polyline);
+        animateCircle(polyline2);
       });
     }
   }, [coords, map]);
