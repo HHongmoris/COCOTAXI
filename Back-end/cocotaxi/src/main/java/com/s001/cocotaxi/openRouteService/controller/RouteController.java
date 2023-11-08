@@ -45,4 +45,12 @@ public class RouteController {
         String  result = String.valueOf((double) (Math.round(duration*100))/100)+"min";
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    @GetMapping("/getAddress")
+    public ResponseEntity<String> getAddress(@RequestParam double longitude, @RequestParam double latitude) {
+        String address = openRouteService.getAddress(longitude, latitude);
+
+        return ResponseEntity.status(HttpStatus.OK).body(address);
+    }
+
 }
