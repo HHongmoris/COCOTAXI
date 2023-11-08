@@ -20,7 +20,6 @@ const MapComponent = () => {
   const [driverId, setDriverId] = useState(0);
   const [marker1, setMarker1] = useState(null);
   const [marker2, setMarker2] = useState(null);
-  const [infoWindow, setInfoWindow] = useState(null);
 
   const updateCenterLat = (startPointLatitude) => {
     setCenterLat(startPointLatitude);
@@ -72,9 +71,7 @@ const MapComponent = () => {
 
         window.setInterval(() => {
           count = (count - 1 + 3000) % 3000;
-
           const icons = polyline2.get("icons");
-
           icons[0].offset = (3000 - count) / 15 + "%"; // 방향을 반대로 변경
           polyline2.set("icons", icons);
         }, 20);
@@ -150,10 +147,10 @@ const MapComponent = () => {
   const drawCircle = (lat, lng) => {
     if (map) {
       const newCircle = new window.google.maps.Circle({
-        strokeColor: "#4158c1",
+        strokeColor: "#e9c026",
         strokeOpacity: 0.9,
         strokeWeight: 2,
-        fillColor: "#6c8fe8",
+        fillColor: "#faf5c7",
         fillOpacity: 0.2,
         map,
         center: { lat, lng },
@@ -197,8 +194,8 @@ const MapComponent = () => {
             <p>차번호: 12A 1242</p>
             <p>평점: 0.1</p>
             <p>전화 번호: 010-8299-8470</p>
-            <button id="callDriverButton">전화 걸기</button>
-          </div>
+            <button onClick={this.handleCallDriver}>전화 걸기</button>
+            </div>
           `;
 
       // 정보 창 생성
@@ -287,7 +284,6 @@ const MapComponent = () => {
       .then((response) => {
         console.log("Dispatch Activated", response);
         alert("강제 배차가 완료되었습니다.");
-        window.location.reload();
       })
       .catch((error) => {
         console.error(error);
