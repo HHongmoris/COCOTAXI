@@ -11,9 +11,8 @@ spring:
 #    username: S09P31S101
 #    password: vCLYNcqE0x
 
-    # MySQL (비상용)
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/cocotaxi?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+#    # 로컬 디비 (비상용)
+#    url: jdbc:mariadb://127.0.0.1:3305/cocot
 #    username: root
 #    password: 1234
 

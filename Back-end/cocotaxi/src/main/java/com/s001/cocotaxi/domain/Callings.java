@@ -46,8 +46,8 @@ public class Callings {
     @Column(name = "vehicle_type")
     private String vehicleType;
 
-    @Column(name = "distance")
-    private double distance;
+    @Column(name = "distance", nullable = true)
+    private Double distance;
 
     @Column(name = "pick_up_location")
     private String pickUpLocation;
@@ -55,6 +55,6 @@ public class Callings {
     @Column(name = "drop_off_location")
     private String dropOffLocation;
 
-    @Column(name = "real_time")
+    @Column(name = "real_time", nullable = true)
     private String realTime;
 }
