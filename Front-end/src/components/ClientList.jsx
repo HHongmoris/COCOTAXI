@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setClientLocation, isClientChanged, setDriverLocation } from "../redux/actions";
+import {
+  setClientLocation,
+  isClientChanged,
+  setDriverLocation,
+} from "../redux/actions";
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";

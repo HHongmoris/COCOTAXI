@@ -82,13 +82,13 @@ const MapComponent = () => {
     if (map && coords && coords.length > 0) {
       if (polylineData) polylineData.setMap(null);
       if (polyline2) polyline2.setMap(null);
-      console.log(isClientLocationChanged)
-      if (isClientLocationChanged){
-        polylineData.setMap(null);
-        polyline2.setMap(null);
-        dispatch(isClientChanged(false));
-      }
-      
+      console.log(isClientLocationChanged);
+      // if (isClientLocationChanged) {
+      //   polylineData.setMap(null);
+      //   polyline2.setMap(null);
+      //   dispatch(isClientChanged(false));
+      // }
+
       if (infowindow2) infowindow2.setMap(null);
 
       const midIndex = Math.floor(coords.length / 2);
@@ -143,17 +143,17 @@ const MapComponent = () => {
       const lineSymbol = {
         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
         scale: 5,
-        fillColor: "#0004ff", // 채우기 색상 설정
+        fillColor: "#3B1877", // 채우기 색상 설정
         fillOpacity: 1,
         strokeWeight: 1, // 테두리 두께 설정
-        strokeColor: "#10189f", // 테두리 색상 설정
+        strokeColor: "#1018", // 테두리 색상 설정
         strokeOpacity: 1.0, // 테두리 불투명도 설정
       };
 
       multiPolylineCoordinates.forEach((coordinates) => {
         const polyline = new window.google.maps.Polyline({
           path: coordinates,
-          strokeColor: "#0004ff",
+          strokeColor: "#F95700",
           strokeOpacity: 1.0,
           strokeWeight: 10,
         });
@@ -167,7 +167,7 @@ const MapComponent = () => {
             },
             5,
           ],
-          strokeColor: "#5678ff",
+          strokeColor: "#FFFFFF",
           strokeOpacity: 1.0,
           strokeWeight: 5,
           map: map,
@@ -176,8 +176,7 @@ const MapComponent = () => {
         animateCircle(polyline2);
         setPolylineData(() => polyline);
         setPolyline2(() => polyline2);
-      }); 
-      
+      });
     }
   }, [coords, map, driverLocation]);
 
@@ -312,57 +311,58 @@ const MapComponent = () => {
       setDriverMarker(() =>
         addDriverMarker({ lat: driverLat, lng: driverLng }, map)
       );
-
-  }
- }, [driverLat, driverLng, centerLng, centerLat, map]);
-
- // 기사 다 띄우기 (렌더링 막기 위해 useEffect 분리, 최초 렌더링때만 기사 호출)
-
- useEffect(() => {
-
-  const getDriverData = async () => {
-    try {
-      const response = await axios.get('http://k9s101.p.ssafy.io:4000/api/drivers');
-      const data = response.data;
-      console.log("@@@@@@@@@@@@@@@@@@@drivers data : ", data)
-      if(data){
-      data.forEach(driver => {
-        const driverPosition = {lat : driver.driverLatitude, lng : driver.driverLongitude}
-        // console.log(driver, driverPosition);
-        addDriverMarker(driverPosition, map);
-      })
     }
-  }
-    catch(error){
-      console.error('drivers api error :', error);
-    }
-  
-  }
-  
+  }, [driverLat, driverLng, centerLng, centerLat, map]);
 
-  const getClientData = async () => {
-    try {
-      const response = await axios.get('http://k9s101.p.ssafy.io:4000/api/callings');
-      const data = response.data;
-      console.log("@@@@@@@@@@@@@@@@@@@drivers data : ", data)
-      if(data){
-      data.forEach(clients => {
-        const clientPosition = {lat : clients.startPointLatitude, lng : clients.startPointLongitude}
-        // console.log(clients, clientPosition);
-        addClientMarker(clientPosition, map);
-      })
-    }
-  }
-    catch(error){
-      console.error('drivers api error :', error);
-    }
-  
-  }
-  getDriverData();
-  getClientData();
+  // 기사 다 띄우기 (렌더링 막기 위해 useEffect 분리, 최초 렌더링때만 기사 호출)
 
- },[map]);
+  useEffect(() => {
+    const getDriverData = async () => {
+      try {
+        const response = await axios.get(
+          "http://k9s101.p.ssafy.io:4000/api/drivers"
+        );
+        const data = response.data;
+        console.log("@@@@@@@@@@@@@@@@@@@drivers data : ", data);
+        if (data) {
+          data.forEach((driver) => {
+            const driverPosition = {
+              lat: driver.driverLatitude,
+              lng: driver.driverLongitude,
+            };
+            // console.log(driver, driverPosition);
+            addDriverMarker(driverPosition, map);
+          });
+        }
+      } catch (error) {
+        console.error("drivers api error :", error);
+      }
+    };
 
+    const getClientData = async () => {
+      try {
+        const response = await axios.get(
+          "http://k9s101.p.ssafy.io:4000/api/callings"
+        );
+        const data = response.data;
+        console.log("@@@@@@@@@@@@@@@@@@@drivers data : ", data);
+        if (data) {
+          data.forEach((clients) => {
+            const clientPosition = {
+              lat: clients.startPointLatitude,
+              lng: clients.startPointLongitude,
+            };
+            // console.log(clients, clientPosition);
+            addClientMarker(clientPosition, map);
+          });
+        }
+      } catch (error) {
+        console.error("drivers api error :", error);
+      }
+    };
+    getDriverData();
+    getClientData();
+  }, [map]);
 
   const getAndSetPolylineCoords = useCallback(() => {
     // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함 / 형식 추가
