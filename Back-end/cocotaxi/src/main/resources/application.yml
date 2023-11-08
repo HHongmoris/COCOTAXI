@@ -29,7 +29,7 @@ spring:
       ddl-auto: update
 
 server:
-  port: 4000
+  port: 4100
 
 
 openrouteservice:
