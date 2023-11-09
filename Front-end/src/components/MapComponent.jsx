@@ -173,6 +173,7 @@ const MapComponent = () => {
           map: map,
         });
         polyline.setMap(map);
+        removeCircle();
         animateCircle(polyline2);
         setPolylineData(() => polyline);
         setPolyline2(() => polyline2);
@@ -254,6 +255,14 @@ const MapComponent = () => {
         radius: 6000,
       });
       setCircle(newCircle);
+    }
+  };
+
+  // 원 지우기
+  const removeCircle = () => {
+    if (circle) {
+      circle.setMap(null);
+      setCircle(null);
     }
   };
 
@@ -408,8 +417,6 @@ const MapComponent = () => {
         console.error(error);
       });
   }, [centerLat, centerLng, driverLat, driverLng, map]);
-
-  
 
   console.log("mapPage called");
 
