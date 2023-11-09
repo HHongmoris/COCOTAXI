@@ -268,15 +268,11 @@ const MapComponent = () => {
     }
   };
 
-
   // 클라이언트 마커와 callId를 매핑하는 함수
   const addClientMarkerToMap = (callId, marker) => {
-    setClientMarkers((prevMarkers) => [
-      ...prevMarkers,
-      { callId, marker }
-    ]);
+    setClientMarkers((prevMarkers) => [...prevMarkers, { callId, marker }]);
   };
-  
+
   // // 특정 callId에 해당하는 클라이언트 마커 정보를 가져오는 함수
   // const getClientMarkerByCallId = (callId) => {
   //   return clientMarkers.find(markerInfo => markerInfo.callId === callId)?.marker || null;
@@ -288,7 +284,7 @@ const MapComponent = () => {
       } else if (marker.marker) {
         marker.marker.setVisible(true);
       }
-    })
+    });
   };
 
   const addClientMarker = (positionInfo, mapInfo, callId) => {
@@ -298,7 +294,6 @@ const MapComponent = () => {
       icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
     });
 
-    
     marker1.addListener("click", () => {
       const clickedCallId = callId; // 클릭한 마커의 callId 가져오기
       // 이제 clickedCallId를 활용하여 원하는 작업을 수행할 수 있음
@@ -306,7 +301,6 @@ const MapComponent = () => {
       setCallId(() => clickedCallId);
       setMarkerSelect(() => true);
     });
-
 
     addClientMarkerToMap(callId, marker1);
     return marker1;
@@ -324,12 +318,12 @@ const MapComponent = () => {
     // 정보 창 내용 설정
     const contentString = `
     <div>
-      <h2>Hong sung</h2>
-      <p>plate num: 12A 1242</p>
-      <p>grade: 0.1</p>
-      <p>phone: 010-8299-8470</p>
+      <h2>12A 1242</h2>
+      <p>★★★★☆</p>
+      <p>hong bungsin</p>
+      <p>☎ : 010-8299-8470</p>
       <a href="https://voice.google.com/u/0/signup" target="_blank">
-      <button>Calling</button>
+      <button style="width: 100%">📞</button>
       </a>
     </div>
     `;
@@ -345,18 +339,16 @@ const MapComponent = () => {
     return marker2;
   };
 
-  
-
-  useEffect(()=>{
-    console.log(isClientLocationChanged)
-    if(isClientLocationChanged || markerSelect)
-    selectMarkerByCallId(callId);
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-  },[callId, isClientLocationChanged])
+  useEffect(() => {
+    console.log(isClientLocationChanged);
+    if (isClientLocationChanged || markerSelect) selectMarkerByCallId(callId);
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+  }, [callId, isClientLocationChanged]);
 
   const removeMarker = (marker) => {
     marker.setMap(marker);
- marker };
+    marker;
+  };
   // 마킹
   useEffect(() => {
     //출발
@@ -419,7 +411,6 @@ const MapComponent = () => {
     };
     getDriverData();
     getClientData();
-
   }, [map]);
 
   const getAndSetPolylineCoords = useCallback(() => {
