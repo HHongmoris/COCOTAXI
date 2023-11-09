@@ -1,6 +1,7 @@
 package com.s001.cocotaxi.service;
 
 import com.s001.cocotaxi.domain.Dispatch;
+import com.s001.cocotaxi.dto.request.DispatchRequest;
 import com.s001.cocotaxi.dto.response.CallAndDriverResponse;
 import com.s001.cocotaxi.dto.response.DispatchListResponse;
 
@@ -11,7 +12,7 @@ public interface DispatchService {
     List<DispatchListResponse> getDispatchList(int callId);
 
     //강제 배차
-    Dispatch makeDispatch(int callId, int driverId);
+    DispatchRequest makeDispatch(int callId, int driverId);
 
     //손님과 차량 사이의 실제 경로 거리와 소요 시간 로직
     CallAndDriverResponse getDistanceAndRealTime(int callId, int driverId);

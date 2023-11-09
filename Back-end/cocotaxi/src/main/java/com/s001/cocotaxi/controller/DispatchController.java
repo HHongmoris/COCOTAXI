@@ -30,11 +30,8 @@ public class DispatchController {
     //배차 시스템
     @PostMapping
     public ResponseEntity<DispatchRequest> makeDispatch(@RequestParam(value = "callId") int callId, @RequestParam(value = "driverId") int driverId){
-        Dispatch dispatch = new Dispatch();
-        dispatch = dispatchService.makeDispatch(callId, driverId);
-        int dispatchId = dispatch.getDriverId();
         DispatchRequest dispatchRequest = new DispatchRequest();
-        dispatchRequest.setDispatchId(dispatchId);
+        dispatchRequest = dispatchService.makeDispatch(callId, driverId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(dispatchRequest);
     }
