@@ -4,6 +4,7 @@ import com.s001.cocotaxi.domain.Callings;
 import com.s001.cocotaxi.domain.Client;
 import com.s001.cocotaxi.domain.Dispatch;
 import com.s001.cocotaxi.domain.Driver;
+import com.s001.cocotaxi.dto.request.DispatchRequest;
 import com.s001.cocotaxi.dto.response.CallAndDriverResponse;
 import com.s001.cocotaxi.dto.response.DispatchListResponse;
 import com.s001.cocotaxi.openRouteService.dto.RouteSummary;
@@ -110,7 +111,7 @@ public class DispatchServiceImpl implements DispatchService {
 
     //배차 진행 로직
     @Override
-    public Dispatch makeDispatch(int callId, int driverId) {
+    public DispatchRequest makeDispatch(int callId, int driverId) {
         Callings callings = callRepository.findById(callId).orElseThrow();
         Driver driver = driverRepository.findById(driverId).orElseThrow();
         Client client = clientRepository.findById(callings.getClient().getClientId()).orElseThrow();
@@ -124,14 +125,22 @@ public class DispatchServiceImpl implements DispatchService {
 
         //driver에서 isVehicleMatched true로 변환(빈차->운행중)
         driver.setIsVehicleMatched(true);
-        System.out.println("이거 봐 : "+ driver.getIsVehicleMatched());
+
         driverRepository.save(driver);
 
         //callings에서 호출 성공으로 call에서 on_board로 변경
         callings.setCallStatus("on_board");
         callRepository.save(callings);
 
-        return dispatch;
+        DispatchRequest request = new DispatchRequest();
+        request.setDispatchId(dispatch.getDispatchId());
+        request.setCallId(callId);
+        request.setClientName(client.getClientName());
+        request.setDriverId(driverId);
+        request.setDriverName(driver.getDriverName());
+        request.setVehicleNo(driver.getVehicleNo());
+
+        return request;
     }
 
 
