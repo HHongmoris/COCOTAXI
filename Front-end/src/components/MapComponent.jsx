@@ -27,6 +27,7 @@ const MapComponent = () => {
   const [polyline2, setPolyline2] = useState(null);
   const [infowindow2, setInfowindow2] = useState(null);
   const [clientMarkers, setClientMarkers] = useState([]);
+  const [markerSelect, setMarkerSelect] = useState(false);
 
   // props update
   const updateCallId = (callId) => {
@@ -280,6 +281,15 @@ const MapComponent = () => {
   // const getClientMarkerByCallId = (callId) => {
   //   return clientMarkers.find(markerInfo => markerInfo.callId === callId)?.marker || null;
   // };
+  const selectMarkerByCallId = (callId) => {
+    clientMarkers.forEach((marker) => {
+      if (marker.callId !== callId && marker.marker) {
+        marker.marker.setVisible(false);
+      } else if (marker.marker) {
+        marker.marker.setVisible(true);
+      }
+    })
+  };
 
   const addClientMarker = (positionInfo, mapInfo, callId) => {
     const marker1 = new window.google.maps.Marker({
@@ -287,6 +297,17 @@ const MapComponent = () => {
       map: mapInfo, // 마커를 지도에 추가
       icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
     });
+
+    
+    marker1.addListener("click", () => {
+      const clickedCallId = callId; // 클릭한 마커의 callId 가져오기
+      // 이제 clickedCallId를 활용하여 원하는 작업을 수행할 수 있음
+      console.log("Clicked Marker's callId:", clickedCallId);
+      setCallId(() => clickedCallId);
+      setMarkerSelect(() => true);
+    });
+
+
     addClientMarkerToMap(callId, marker1);
     return marker1;
   };
@@ -324,19 +345,11 @@ const MapComponent = () => {
     return marker2;
   };
 
-  const selectMarkerByCallId = (callId) => {
-    clientMarkers.forEach((marker) => {
-      if (marker.callId !== callId && marker.marker) {
-        marker.marker.setVisible(false);
-      } else if (marker.marker) {
-        marker.marker.setVisible(true);
-      }
-    })
-  };
+  
 
   useEffect(()=>{
     console.log(isClientLocationChanged)
-    if(isClientLocationChanged)
+    if(isClientLocationChanged || markerSelect)
     selectMarkerByCallId(callId);
     console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
   },[callId, isClientLocationChanged])
