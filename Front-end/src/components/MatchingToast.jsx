@@ -35,7 +35,7 @@ function MatchingToast() {
       });
 
       // 랜덤한 시간 간격 생성
-      const delay = Math.floor(Math.random() * 4000) + 20000;
+      const delay = Math.floor(Math.random() * 4000) + 2000;
 
       setTimeout(showToastWithDelay, delay);
     };
