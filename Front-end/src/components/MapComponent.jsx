@@ -409,23 +409,7 @@ const MapComponent = () => {
       });
   }, [centerLat, centerLng, driverLat, driverLng, map]);
 
-  const onClickDispatch = () => {
-    axios
-      .post("http://k9s101.p.ssafy.io:4000/api/dispatch", null, {
-        params: {
-          callId: callId,
-          driverId: driverId,
-        },
-      })
-      .then((response) => {
-        console.log("Dispatch Activated", response);
-        alert("강제 배차가 완료되었습니다.");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    console.log("Dispatch Activated");
-  };
+  
 
   console.log("mapPage called");
 
@@ -486,20 +470,6 @@ const MapComponent = () => {
           }}
         >
           <DispatchDriverList callId={callId} updateDriverId={updateDriverId} />
-          <div>
-            <button
-              onClick={onClickDispatch}
-              style={{
-                width: "100%", // 버튼이 표 안에 가득 차도록 너비 설정
-                padding: "10px", // 원하는 패딩 설정
-                border: "none", // 테두리 제거
-                color: "black", // 글자색 설정
-                cursor: "pointer", // 커서 스타일 설정
-              }}
-            >
-              Dispatch
-            </button>
-          </div>
         </div>
       </div>
     </div>
