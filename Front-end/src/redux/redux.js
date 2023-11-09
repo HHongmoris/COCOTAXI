@@ -8,7 +8,7 @@ import {
 } from "./actions";
 const initialState = {
   driver_location: "",
-  client_location: "35.098,128.548",
+  client_location: "17.96594,102.61451",
   is_client_location_changed: false,
   is_driver_location_changed: false,
 };

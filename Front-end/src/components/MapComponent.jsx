@@ -26,6 +26,7 @@ const MapComponent = () => {
   const [polylineData, setPolylineData] = useState(null);
   const [polyline2, setPolyline2] = useState(null);
   const [infowindow2, setInfowindow2] = useState(null);
+  const [clientMarkers, setClientMarkers] = useState([]);
 
   // props update
   const updateCallId = (callId) => {
@@ -231,7 +232,7 @@ const MapComponent = () => {
         }
       );
       // 교통 레이어 추가
-      const trafficLayer = new google.maps.TrafficLayer();
+      const trafficLayer = new window.google.maps.TrafficLayer();
       trafficLayer.setMap(newMap);
 
       setMap(newMap);
@@ -257,12 +258,27 @@ const MapComponent = () => {
     }
   };
 
-  const addClientMarker = (positionInfo, mapInfo) => {
+
+  // 클라이언트 마커와 callId를 매핑하는 함수
+  const addClientMarkerToMap = (callId, marker) => {
+    setClientMarkers((prevMarkers) => [
+      ...prevMarkers,
+      { callId, marker }
+    ]);
+  };
+  
+  // // 특정 callId에 해당하는 클라이언트 마커 정보를 가져오는 함수
+  // const getClientMarkerByCallId = (callId) => {
+  //   return clientMarkers.find(markerInfo => markerInfo.callId === callId)?.marker || null;
+  // };
+
+  const addClientMarker = (positionInfo, mapInfo, callId) => {
     const marker1 = new window.google.maps.Marker({
       position: positionInfo,
       map: mapInfo, // 마커를 지도에 추가
       icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
     });
+    addClientMarkerToMap(callId, marker1);
     return marker1;
   };
 
@@ -274,6 +290,7 @@ const MapComponent = () => {
       map: mapInfo, // 마커를 지도에 추가
       icon: iconUrl,
     });
+
     // 정보 창 내용 설정
     const contentString = `
     <div>
@@ -297,9 +314,27 @@ const MapComponent = () => {
     });
     return marker2;
   };
-  const removeMarker = (marker) => {
-    marker.setMap(null);
+
+  const selectMarkerByCallId = (callId) => {
+    clientMarkers.forEach((marker) => {
+      if (marker.callId !== callId && marker.marker) {
+        marker.marker.setVisible(false);
+      } else if (marker.marker) {
+        marker.marker.setVisible(true);
+      }
+    })
   };
+
+  useEffect(()=>{
+    console.log(isClientLocationChanged)
+    if(isClientLocationChanged)
+    selectMarkerByCallId(callId);
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+  },[callId, isClientLocationChanged])
+
+  const removeMarker = (marker) => {
+    marker.setMap(marker);
+ marker };
   // 마킹
   useEffect(() => {
     //출발
@@ -307,7 +342,7 @@ const MapComponent = () => {
       if (clientMarker) removeMarker(clientMarker);
       if (driverMarker) removeMarker(driverMarker);
       setClientMarker(() =>
-        addClientMarker({ lat: centerLat, lng: centerLng }, map)
+        addClientMarker({ lat: centerLat, lng: centerLng }, map, callId)
       );
       setDriverMarker(() =>
         addDriverMarker({ lat: driverLat, lng: driverLng }, map)
@@ -316,7 +351,7 @@ const MapComponent = () => {
   }, [driverLat, driverLng, centerLng, centerLat, map]);
 
   // 기사 다 띄우기 (렌더링 막기 위해 useEffect 분리, 최초 렌더링때만 기사 호출)
-
+  // 실제로 띄우는 부분
   useEffect(() => {
     const getDriverData = async () => {
       try {
@@ -353,7 +388,7 @@ const MapComponent = () => {
               lng: clients.startPointLongitude,
             };
             // console.log(clients, clientPosition);
-            addClientMarker(clientPosition, map);
+            addClientMarker(clientPosition, map, clients.callId);
           });
         }
       } catch (error) {
@@ -362,6 +397,7 @@ const MapComponent = () => {
     };
     getDriverData();
     getClientData();
+
   }, [map]);
 
   const getAndSetPolylineCoords = useCallback(() => {
