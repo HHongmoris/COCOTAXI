@@ -8,10 +8,13 @@ import polyline from "@mapbox/polyline";
 import { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  setDriverLocation,
+  setDriverLatitude,
+  setDriverLongitude,
   isDriverChanged,
-  setClientLocation,
+  setClientLatitude,
+  setClientLongitude,
   isClientChanged,
+  setCallId,
 } from "../redux/actions";
 
 import CoCoGreen from "../assets/CoCoGreen.png";
@@ -22,7 +25,6 @@ const MapComponent = () => {
   const [circle, setCircle] = useState(null);
   const [openPage, setOpenPage] = useState(false);
   const [coords, setCoords] = useState(null);
-  const [callId, setCallId] = useState(0);
   const [driverId, setDriverId] = useState(0);
   const [clientMarker, setClientMarker] = useState(null);
   const [driverMarker, setDriverMarker] = useState(null);
@@ -33,31 +35,22 @@ const MapComponent = () => {
   const [markerSelect, setMarkerSelect] = useState(false);
   const [isTableVisible, setIsTableVisible] = useState(false);
 
-  // props update
-  const updateCallId = (callId) => {
-    setCallId(callId);
-  };
-
-  const updateDriverId = (driverId) => {
-    setDriverId(driverId);
-  };
 
   // Redux에서 값 가져오기
   const dispatch = useDispatch();
-  const driverLocation = useSelector((state) => state.driver_location);
-  const clientLocation = useSelector((state) => state.client_location);
+  const centerLat = useSelector((state)=>state.client_latitude)
+  const centerLng = useSelector((state)=>state.client_longitude)
+  const driverLat = useSelector((state)=>state.driver_latitude)
+  const driverLng = useSelector((state)=>state.driver_longitude)
+  const callId = useSelector((state) => state.call_id)
+  const driverLocation = `${driverLat},${driverLng}`
+  const clientLocation = `${centerLat},${centerLng}`
   const isDriverLocationChanged = useSelector(
     (state) => state.is_driver_location_changed
   );
   const isClientLocationChanged = useSelector(
     (state) => state.is_client_location_changed
   );
-  const parsedDriverLocation = driverLocation.split(","); // 파싱을 위한 쓰레기값
-  const parsedClientLocation = clientLocation.split(","); // 파싱을 위한 쓰레기값
-  const centerLat = parseFloat(parsedClientLocation[0]);
-  const centerLng = parseFloat(parsedClientLocation[1]);
-  const driverLat = parseFloat(parsedDriverLocation[0]);
-  const driverLng = parseFloat(parsedDriverLocation[1]);
 
   console.log("callId : " + callId);
   console.log("DId : " + driverId);
@@ -147,7 +140,7 @@ const MapComponent = () => {
       }
 
       const lineSymbol = {
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        path: window.google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
         scale: 5,
         fillColor: "#3B1877", // 채우기 색상 설정
         fillOpacity: 1,
@@ -273,8 +266,11 @@ const MapComponent = () => {
   };
 
   // 클라이언트 마커와 callId를 매핑하는 함수
-  const addClientMarkerToMap = (callId, marker) => {
-    setClientMarkers((prevMarkers) => [...prevMarkers, { callId, marker }]);
+  const addClientMarkerToMap = (callId, marker, position) => {
+    setClientMarkers((prevMarkers) => [
+      ...prevMarkers,
+      { callId, marker, position }
+    ]);
   };
 
   // // 특정 callId에 해당하는 클라이언트 마커 정보를 가져오는 함수
@@ -287,6 +283,8 @@ const MapComponent = () => {
         marker.marker.setVisible(false);
       } else if (marker.marker) {
         marker.marker.setVisible(true);
+        dispatch(setClientLatitude(marker.position.lat));
+        dispatch(setClientLongitude(marker.position.lng));
       }
     });
   };
@@ -300,15 +298,21 @@ const MapComponent = () => {
 
     marker1.addListener("click", () => {
       const clickedCallId = callId; // 클릭한 마커의 callId 가져오기
+      const latitude = positionInfo.lat;
+      const longitude = positionInfo.lng;
+      console.log("마크 클릭한 위치 반환 : ", positionInfo.lat, positionInfo.lng);
       // 이제 clickedCallId를 활용하여 원하는 작업을 수행할 수 있음
       console.log("Clicked Marker's callId:", clickedCallId);
-      setCallId(() => clickedCallId);
+      dispatch(setCallId(clickedCallId));
       setMarkerSelect(() => true);
+      dispatch(setClientLatitude(latitude));
+      dispatch(setClientLongitude(longitude));
     });
 
-    addClientMarkerToMap(callId, marker1);
+    addClientMarkerToMap(callId, marker1, positionInfo);
     return marker1;
-  };
+
+  }
 
   //도착지점 마크 생성
   const addDriverMarker = (positionInfo, mapInfo, icontype) => {
@@ -343,11 +347,14 @@ const MapComponent = () => {
     return marker2;
   };
 
-  useEffect(() => {
-    console.log(isClientLocationChanged);
-    if (isClientLocationChanged || markerSelect) selectMarkerByCallId(callId);
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-  }, [callId, isClientLocationChanged]);
+  
+  // 여기서 마크를 만들고 없앤다
+  useEffect(()=>{
+    console.log(isClientLocationChanged)
+    if(isClientLocationChanged || markerSelect)
+    selectMarkerByCallId(callId);
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+  },[callId, isClientLocationChanged])
 
   const removeMarker = (marker) => {
     marker.setMap(marker);
@@ -473,14 +480,16 @@ const MapComponent = () => {
 
   return (
     <div>
+      <div style={{position : "absolute", display : "flex", zIndex : 2}}>
       <img
         src={isTableVisible ? CoCoGreen : CoCoRed}
         alt={isTableVisible ? "CoCoGreen" : "CoCoRed"}
         onClick={toggleTable}
-        style={{ cursor: "pointer", width: "70px", height: "70px" }}
+        style={{cursor: "pointer", width: "70px", height: "70px"}}
       />
+      </div>
 
-      <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
+      <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
         <div
           id="map"
           style={{
@@ -521,7 +530,7 @@ const MapComponent = () => {
           }}
         >
           {/* 클라이언트 리스트 컴포넌트 */}
-          <ClientList callId={callId} updateCallId={updateCallId} />
+          <ClientList />
         </div>
 
         <div
@@ -538,7 +547,7 @@ const MapComponent = () => {
             transition: "transform 0.3s, opacity 0.3s",
           }}
         >
-          <DispatchDriverList callId={callId} updateDriverId={updateDriverId} />
+          <DispatchDriverList />
         </div>
       </div>
     </div>
