@@ -22,8 +22,8 @@ public class DriverDetailResponse {
         this.driverId = entity.getDriverId();
         this.driverName = entity.getDriverName();
         this.vehicleType = entity.getVehicleType();
-        this.driverLongitude = entity.getDriverLongitude();
-        this.driverLatitude = entity.getDriverLatitude();
+//        this.driverLongitude = entity.getDriverLongitude();
+//        this.driverLatitude = entity.getDriverLatitude();
         this.vehicleNo = entity.getVehicleNo();
         this.grade = entity.getGrade();
         this.driverPhoneNo = entity.getDriverPhoneNo();
