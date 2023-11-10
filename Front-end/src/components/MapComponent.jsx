@@ -17,6 +17,9 @@ import {
   setCallId,
 } from "../redux/actions";
 
+import CoCoGreen from "../assets/CoCoGreen.png";
+import CoCoRed from "../assets/CoCoRed.png";
+
 const MapComponent = () => {
   const [map, setMap] = useState(null);
   const [circle, setCircle] = useState(null);
@@ -30,6 +33,7 @@ const MapComponent = () => {
   const [infowindow2, setInfowindow2] = useState(null);
   const [clientMarkers, setClientMarkers] = useState([]);
   const [markerSelect, setMarkerSelect] = useState(false);
+  const [isTableVisible, setIsTableVisible] = useState(false);
 
 
   // Redux에서 값 가져오기
@@ -261,7 +265,6 @@ const MapComponent = () => {
     }
   };
 
-
   // 클라이언트 마커와 callId를 매핑하는 함수
   const addClientMarkerToMap = (callId, marker, position) => {
     setClientMarkers((prevMarkers) => [
@@ -269,7 +272,7 @@ const MapComponent = () => {
       { callId, marker, position }
     ]);
   };
-  
+
   // // 특정 callId에 해당하는 클라이언트 마커 정보를 가져오는 함수
   // const getClientMarkerByCallId = (callId) => {
   //   return clientMarkers.find(markerInfo => markerInfo.callId === callId)?.marker || null;
@@ -283,7 +286,7 @@ const MapComponent = () => {
         dispatch(setClientLatitude(marker.position.lat));
         dispatch(setClientLongitude(marker.position.lng));
       }
-    })
+    });
   };
 
   const addClientMarker = (positionInfo, mapInfo, callId) => {
@@ -293,7 +296,6 @@ const MapComponent = () => {
       icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
     });
 
-    
     marker1.addListener("click", () => {
       const clickedCallId = callId; // 클릭한 마커의 callId 가져오기
       const latitude = positionInfo.lat;
@@ -324,12 +326,12 @@ const MapComponent = () => {
     // 정보 창 내용 설정
     const contentString = `
     <div>
-      <h2>Hong sung</h2>
-      <p>plate num: 12A 1242</p>
-      <p>grade: 0.1</p>
-      <p>phone: 010-8299-8470</p>
+      <h2>12A 1242</h2>
+      <p>★★★★☆</p>
+      <p>hong bungsin</p>
+      <p>☎ : 010-8299-8470</p>
       <a href="https://voice.google.com/u/0/signup" target="_blank">
-      <button>Calling</button>
+      <button style="width: 100%">📞</button>
       </a>
     </div>
     `;
@@ -356,7 +358,8 @@ const MapComponent = () => {
 
   const removeMarker = (marker) => {
     marker.setMap(marker);
- marker };
+    marker;
+  };
   // 마킹
   useEffect(() => {
     //출발
@@ -419,7 +422,6 @@ const MapComponent = () => {
     };
     getDriverData();
     getClientData();
-
   }, [map]);
 
   const getAndSetPolylineCoords = useCallback(() => {
@@ -471,9 +473,23 @@ const MapComponent = () => {
 
   // if (driverLat && driverLng) getAndSetPolylineCoords();
 
+  // 테이블 애니메이션
+  const toggleTable = () => {
+    setIsTableVisible(!isTableVisible);
+  };
+
   return (
     <div>
-      <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
+      <div style={{position : "absolute", display : "flex", zIndex : 2}}>
+      <img
+        src={isTableVisible ? CoCoGreen : CoCoRed}
+        alt={isTableVisible ? "CoCoGreen" : "CoCoRed"}
+        onClick={toggleTable}
+        style={{cursor: "pointer", width: "70px", height: "70px"}}
+      />
+      </div>
+
+      <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
         <div
           id="map"
           style={{
@@ -507,7 +523,10 @@ const MapComponent = () => {
             width: "500px",
             background: "white",
             boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
-            zIndex: 2,
+            zIndex: isTableVisible ? 2 : -1,
+            transform: isTableVisible ? "translateY(0)" : "transLateY(100%)",
+            opacity: isTableVisible ? 1 : 0,
+            transition: "transform 0.3s, opacity 0.3s",
           }}
         >
           {/* 클라이언트 리스트 컴포넌트 */}
@@ -522,7 +541,10 @@ const MapComponent = () => {
             width: "350px",
             background: "white",
             boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
-            zIndex: 2,
+            zIndex: isTableVisible ? 2 : -1,
+            transform: isTableVisible ? "translateY(0)" : "transLateY(100%)",
+            opacity: isTableVisible ? 1 : 0,
+            transition: "transform 0.3s, opacity 0.3s",
           }}
         >
           <DispatchDriverList />
