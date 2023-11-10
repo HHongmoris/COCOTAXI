@@ -34,17 +34,16 @@ const MapComponent = () => {
   const [markerSelect, setMarkerSelect] = useState(false);
   const [isTableVisible, setIsTableVisible] = useState(false);
 
-
   // Redux에서 값 가져오기
   const dispatch = useDispatch();
-  const centerLat = useSelector((state)=>state.client_latitude)
-  const centerLng = useSelector((state)=>state.client_longitude)
-  const driverLat = useSelector((state)=>state.driver_latitude)
-  const driverLng = useSelector((state)=>state.driver_longitude)
-  const callId = useSelector((state) => state.call_id)
-  const driverId = useSelector((state)=> state.driver_id)
-  const driverLocation = `${driverLat},${driverLng}`
-  const clientLocation = `${centerLat},${centerLng}`
+  const centerLat = useSelector((state) => state.client_latitude);
+  const centerLng = useSelector((state) => state.client_longitude);
+  const driverLat = useSelector((state) => state.driver_latitude);
+  const driverLng = useSelector((state) => state.driver_longitude);
+  const callId = useSelector((state) => state.call_id);
+  const driverId = useSelector((state) => state.driver_id);
+  const driverLocation = `${driverLat},${driverLng}`;
+  const clientLocation = `${centerLat},${centerLng}`;
   const isDriverLocationChanged = useSelector(
     (state) => state.is_driver_location_changed
   );
@@ -269,7 +268,7 @@ const MapComponent = () => {
   const addClientMarkerToMap = (callId, marker, position) => {
     setClientMarkers((prevMarkers) => [
       ...prevMarkers,
-      { callId, marker, position }
+      { callId, marker, position },
     ]);
   };
 
@@ -300,7 +299,11 @@ const MapComponent = () => {
       const clickedCallId = callId; // 클릭한 마커의 callId 가져오기
       const latitude = positionInfo.lat;
       const longitude = positionInfo.lng;
-      console.log("마크 클릭한 위치 반환 : ", positionInfo.lat, positionInfo.lng);
+      console.log(
+        "마크 클릭한 위치 반환 : ",
+        positionInfo.lat,
+        positionInfo.lng
+      );
       // 이제 clickedCallId를 활용하여 원하는 작업을 수행할 수 있음
       console.log("Clicked Marker's callId:", clickedCallId);
       dispatch(setCallId(clickedCallId));
@@ -311,23 +314,22 @@ const MapComponent = () => {
 
     addClientMarkerToMap(callId, marker1, positionInfo);
     return marker1;
+  };
 
-  }
-  
   let infoWindow2 = null;
-  useEffect(() => {if(map) infoWindow2 = new window.google.maps.InfoWindow()},[map])
-  
-  function markerClickHandler(marker, contentString){
-    infoWindow2.close()
+  useEffect(() => {
+    if (map) infoWindow2 = new window.google.maps.InfoWindow();
+  }, [map]);
+
+  function markerClickHandler(marker, contentString) {
+    infoWindow2.close();
     infoWindow2.setContent(contentString);
     infoWindow2.open(map, marker);
-    }
+  }
 
   //도착지점 마크 생성
-  
-  const addDriverMarker = (positionInfo, mapInfo, icontype) => {
 
-    
+  const addDriverMarker = (positionInfo, mapInfo, icontype) => {
     const iconUrl = `https://sw-s3-bucket.s3.ap-northeast-2.amazonaws.com/${icontype}.png`;
     const marker2 = new window.google.maps.Marker({
       position: positionInfo,
@@ -348,8 +350,7 @@ const MapComponent = () => {
     </div>
     `;
     // 정보 창 생성
-    
-    
+
     // 마커 클릭 이벤트 리스너 추가
     marker2.addListener("click", () => {
       // 클릭 시 정보 창 열도록 설정
@@ -358,14 +359,12 @@ const MapComponent = () => {
     return marker2;
   };
 
-  
   // 여기서 마크를 만들고 없앤다
-  useEffect(()=>{
-    console.log(isClientLocationChanged)
-    if(isClientLocationChanged || markerSelect)
-    selectMarkerByCallId(callId);
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-  },[callId, isClientLocationChanged])
+  useEffect(() => {
+    console.log(isClientLocationChanged);
+    if (isClientLocationChanged || markerSelect) selectMarkerByCallId(callId);
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+  }, [callId, isClientLocationChanged]);
 
   const removeMarker = (marker) => {
     marker.setMap(marker);
@@ -491,13 +490,13 @@ const MapComponent = () => {
 
   return (
     <div>
-      <div style={{position : "absolute", display : "flex", zIndex : 2}}>
-      <img
-        src={isTableVisible ? CoCoGreen : CoCoRed}
-        alt={isTableVisible ? "CoCoGreen" : "CoCoRed"}
-        onClick={toggleTable}
-        style={{cursor: "pointer", width: "70px", height: "70px"}}
-      />
+      <div style={{ position: "absolute", top: "5%", right: "5%", zIndex: 2 }}>
+        <img
+          src={isTableVisible ? CoCoGreen : CoCoRed}
+          alt={isTableVisible ? "CoCoGreen" : "CoCoRed"}
+          onClick={toggleTable}
+          style={{ cursor: "pointer", width: "70px", height: "70px" }}
+        />
       </div>
 
       <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
