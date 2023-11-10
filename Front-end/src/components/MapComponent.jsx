@@ -321,9 +321,9 @@ const MapComponent = () => {
         positionInfo.lat,
         positionInfo.lng
       );
-      marker.setAnimation(window.google.maps.Animation.BOUNCE);
+      marker1.setAnimation(window.google.maps.Animation.BOUNCE);
       setTimeout(() => {
-        marker.setAnimation(null);
+        marker1.setAnimation(null);
       }, 3000); // 3초 후 중지 (원하는 시간으로 변경 가능)
 
       // 이제 clickedCallId를 활용하여 원하는 작업을 수행할 수 있음
