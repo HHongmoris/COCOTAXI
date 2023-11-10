@@ -14,6 +14,9 @@ import {
   isClientChanged,
 } from "../redux/actions";
 
+import CoCoGreen from "../assets/CoCoGreen.png";
+import CoCoRed from "../assets/CoCoRed.png";
+
 const MapComponent = () => {
   const [map, setMap] = useState(null);
   const [circle, setCircle] = useState(null);
@@ -28,6 +31,7 @@ const MapComponent = () => {
   const [infowindow2, setInfowindow2] = useState(null);
   const [clientMarkers, setClientMarkers] = useState([]);
   const [markerSelect, setMarkerSelect] = useState(false);
+  const [isTableVisible, setIsTableVisible] = useState(false);
 
   // props update
   const updateCallId = (callId) => {
@@ -462,8 +466,20 @@ const MapComponent = () => {
 
   // if (driverLat && driverLng) getAndSetPolylineCoords();
 
+  // 테이블 애니메이션
+  const toggleTable = () => {
+    setIsTableVisible(!isTableVisible);
+  };
+
   return (
     <div>
+      <img
+        src={isTableVisible ? CoCoGreen : CoCoRed}
+        alt={isTableVisible ? "CoCoGreen" : "CoCoRed"}
+        onClick={toggleTable}
+        style={{ cursor: "pointer", width: "70px", height: "70px" }}
+      />
+
       <div style={{ position: "relative", height: "100vh", width: "180vh" }}>
         <div
           id="map"
@@ -498,7 +514,10 @@ const MapComponent = () => {
             width: "500px",
             background: "white",
             boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
-            zIndex: 2,
+            zIndex: isTableVisible ? 2 : -1,
+            transform: isTableVisible ? "translateY(0)" : "transLateY(100%)",
+            opacity: isTableVisible ? 1 : 0,
+            transition: "transform 0.3s, opacity 0.3s",
           }}
         >
           {/* 클라이언트 리스트 컴포넌트 */}
@@ -513,7 +532,10 @@ const MapComponent = () => {
             width: "350px",
             background: "white",
             boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
-            zIndex: 2,
+            zIndex: isTableVisible ? 2 : -1,
+            transform: isTableVisible ? "translateY(0)" : "transLateY(100%)",
+            opacity: isTableVisible ? 1 : 0,
+            transition: "transform 0.3s, opacity 0.3s",
           }}
         >
           <DispatchDriverList callId={callId} updateDriverId={updateDriverId} />
