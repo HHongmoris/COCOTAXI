@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setDriverLatitude ,setDriverLongitude, isDriverChanged } from "../redux/actions";
+import { setDriverLatitude ,setDriverLongitude, isDriverChanged, setDriverId, setCallId } from "../redux/actions";
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
@@ -56,19 +56,17 @@ const TableCell = styled.td`
   height: 30px;
 `;
 
-function DispatchDriverList(props) {
-  const { callId } = props;
+function DispatchDriverList() {
   const [driverList, setDriverList] = useState([]);
-  const { updateDriverId } = props;
   const driverLatitude = useSelector((state)=>state.driver_latitude)
   const driverLongitude = useSelector((state)=>state.driver_longitude)
+  const callId = useSelector((state)=>state.call_id)
+  const driverId = useSelector((state)=>state.driver_id)
   const dispatch = useDispatch();
   const [clickedDriver, setClickedDriver] = useState(null);
-  const [driverId, setDriverId] = useState(null);
 
   const handleRowClick = (driverId, driverLng, driverLat) => {
-    setDriverId(() => driverId);
-    updateDriverId(driverId);
+    dispatch(setDriverId(driverId));
     setClickedDriver(driverId);
     if (driverLng !== driverLongitude && driverLat !== driverLatitude) {
       dispatch(isDriverChanged(true));

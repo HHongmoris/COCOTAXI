@@ -6,6 +6,7 @@ import {
   isClientChanged,
   setDriverLatitude,
   setDriverLongitude,
+  setCallId,
 } from "../redux/actions";
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
@@ -62,20 +63,19 @@ const TableCell = styled.td`
   height: 30px;
 `;
 
-function ClientList(props) {
-  const { callId } = props;
+function ClientList() {
   const [clientList, setClientList] = useState([]);
-  const { updateCallId } = props;
   // MapComponent 갱신을 위한 콜백 함수
   const clientLatitude = useSelector((state) => state.client_latitude);
   const clientLongitude = useSelector((state) => state.client_longitude);
+  const callId = useSelector((state) => state.call_id);
   const dispatch = useDispatch();
   const [clickedRow, setClickedRow] = useState(null);
 
   // let map;
 
   const handleRowClick = (startPointLatitude, startPointLongitude, callId) => {
-    updateCallId(callId);
+    dispatch(setCallId(callId))
     setClickedRow(callId);
     if (startPointLatitude !== clientLatitude && startPointLongitude !== clientLongitude) {
       dispatch(isClientChanged(true));

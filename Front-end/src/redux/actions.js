@@ -4,7 +4,8 @@ export const IS_CLIENT_CHANGED = 'IS_CLIENT_CHANGED';
 export const DRIVER_LATITUDE = 'DRIVER_LATITUDE';
 export const DRIVER_LONGITUDE = 'DRIVER_LONGITUDE';
 export const IS_DRIVER_CHANGED = 'IS_DRIVER_CHANGED';
-
+export const SET_CALL_ID = 'SET_CALL_ID';
+export const SET_DRIVER_ID = 'SET_DRIVER_ID';
 
 // 승객 변경시 -> driver, clientLocation 둘다 받아야 한다
 // driverflag, clientflag 둘다 false로 처리한다
@@ -50,5 +51,19 @@ export const isDriverChanged = (flag) => {
   return {
     type : IS_DRIVER_CHANGED,
     payload : flag,
+  }
+}
+
+export const setCallId = (id) => {
+  return {
+    type : SET_CALL_ID,
+    payload : id,
+  }
+}
+
+export const setDriverId = (id) => {
+  return {
+    type : SET_DRIVER_ID,
+    payload : id,
   }
 }

@@ -14,6 +14,7 @@ import {
   setClientLatitude,
   setClientLongitude,
   isClientChanged,
+  setCallId,
 } from "../redux/actions";
 
 const MapComponent = () => {
@@ -21,7 +22,6 @@ const MapComponent = () => {
   const [circle, setCircle] = useState(null);
   const [openPage, setOpenPage] = useState(false);
   const [coords, setCoords] = useState(null);
-  const [callId, setCallId] = useState(0);
   const [driverId, setDriverId] = useState(0);
   const [clientMarker, setClientMarker] = useState(null);
   const [driverMarker, setDriverMarker] = useState(null);
@@ -31,14 +31,6 @@ const MapComponent = () => {
   const [clientMarkers, setClientMarkers] = useState([]);
   const [markerSelect, setMarkerSelect] = useState(false);
 
-  // props update
-  const updateCallId = (callId) => {
-    setCallId(callId);
-  };
-
-  const updateDriverId = (driverId) => {
-    setDriverId(driverId);
-  };
 
   // Redux에서 값 가져오기
   const dispatch = useDispatch();
@@ -46,6 +38,7 @@ const MapComponent = () => {
   const centerLng = useSelector((state)=>state.client_longitude)
   const driverLat = useSelector((state)=>state.driver_latitude)
   const driverLng = useSelector((state)=>state.driver_longitude)
+  const callId = useSelector((state) => state.call_id)
   const driverLocation = `${driverLat},${driverLng}`
   const clientLocation = `${centerLat},${centerLng}`
   const isDriverLocationChanged = useSelector(
@@ -308,10 +301,10 @@ const MapComponent = () => {
       console.log("마크 클릭한 위치 반환 : ", positionInfo.lat, positionInfo.lng);
       // 이제 clickedCallId를 활용하여 원하는 작업을 수행할 수 있음
       console.log("Clicked Marker's callId:", clickedCallId);
-      setCallId(() => clickedCallId);
+      dispatch(setCallId(clickedCallId));
       setMarkerSelect(() => true);
       dispatch(setClientLatitude(latitude));
-      dispatch(setClientLatitude(longitude));
+      dispatch(setClientLongitude(longitude));
     });
 
     addClientMarkerToMap(callId, marker1, positionInfo);
@@ -518,7 +511,7 @@ const MapComponent = () => {
           }}
         >
           {/* 클라이언트 리스트 컴포넌트 */}
-          <ClientList callId={callId} updateCallId={updateCallId} />
+          <ClientList />
         </div>
 
         <div
@@ -532,7 +525,7 @@ const MapComponent = () => {
             zIndex: 2,
           }}
         >
-          <DispatchDriverList callId={callId} updateDriverId={updateDriverId} />
+          <DispatchDriverList />
         </div>
       </div>
     </div>
