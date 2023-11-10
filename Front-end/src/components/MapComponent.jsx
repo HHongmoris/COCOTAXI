@@ -115,11 +115,11 @@ const MapComponent = () => {
 
       const multiPolylineCoordinates = [];
       multiPolylineCoordinates.push(coords);
-      // 리스트를 눌렀을 때 coords 에 값이 저장되어 있게 코드 수정해야함
-      console.log(multiPolylineCoordinates); // 지금 실행화면에서 경로보기 누르고 vscode 상에서 컨트롤 + s 눌러서 저장되어야지만 좌표나옴
+      console.log(multiPolylineCoordinates);
 
       function animateCircle(polyline2) {
         const path = polyline2.getPath();
+
         const reversedPath = new window.google.maps.MVCArray(); // 뒤집힌 경로를 저장할 새로운 배열
 
         for (let i = path.getLength() - 1; i >= 0; i--) {
@@ -133,14 +133,14 @@ const MapComponent = () => {
         window.setInterval(() => {
           count = (count - 1 + 3000) % 3000;
           const icons = polyline2.get("icons");
-          icons[0].offset = (3000 - count) / 15 + "%"; // 방향을 반대로 변경
+          icons[0].offset = (3000 - count) / 8 + "%"; // 방향을 반대로 변경
           polyline2.set("icons", icons);
         }, 20);
       }
 
       const lineSymbol = {
-        path: window.google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-        scale: 5,
+        path: window.google.maps.SymbolPath.CIRCLE,
+        scale: 10,
         fillColor: "#3B1877", // 채우기 색상 설정
         fillOpacity: 1,
         strokeWeight: 1, // 테두리 두께 설정
@@ -151,7 +151,7 @@ const MapComponent = () => {
       multiPolylineCoordinates.forEach((coordinates) => {
         const polyline = new window.google.maps.Polyline({
           path: coordinates,
-          strokeColor: "#F95700",
+          strokeColor: "#FF5500",
           strokeOpacity: 1.0,
           strokeWeight: 10,
         });
@@ -293,6 +293,7 @@ const MapComponent = () => {
       position: positionInfo,
       map: mapInfo, // 마커를 지도에 추가
       icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
+      animation: window.google.maps.Animation.DROP, // 바운스(drop) 애니메이션 활성화
     });
 
     marker1.addListener("click", () => {
@@ -304,6 +305,11 @@ const MapComponent = () => {
         positionInfo.lat,
         positionInfo.lng
       );
+      marker.setAnimation(window.google.maps.Animation.BOUNCE);
+      setTimeout(() => {
+        marker.setAnimation(null);
+      }, 3000); // 3초 후 중지 (원하는 시간으로 변경 가능)
+
       // 이제 clickedCallId를 활용하여 원하는 작업을 수행할 수 있음
       console.log("Clicked Marker's callId:", clickedCallId);
       dispatch(setCallId(clickedCallId));
@@ -491,7 +497,6 @@ const MapComponent = () => {
   return (
     <div>
       <div style={{ position: "absolute", top: "5%", right: "5%", zIndex: 2 }}>
-
         <img
           src={isTableVisible ? CoCoGreen : CoCoRed}
           alt={isTableVisible ? "CoCoGreen" : "CoCoRed"}
