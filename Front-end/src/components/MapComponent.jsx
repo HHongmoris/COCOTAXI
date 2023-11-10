@@ -25,7 +25,6 @@ const MapComponent = () => {
   const [circle, setCircle] = useState(null);
   const [openPage, setOpenPage] = useState(false);
   const [coords, setCoords] = useState(null);
-  const [driverId, setDriverId] = useState(0);
   const [clientMarker, setClientMarker] = useState(null);
   const [driverMarker, setDriverMarker] = useState(null);
   const [polylineData, setPolylineData] = useState(null);
@@ -43,6 +42,7 @@ const MapComponent = () => {
   const driverLat = useSelector((state)=>state.driver_latitude)
   const driverLng = useSelector((state)=>state.driver_longitude)
   const callId = useSelector((state) => state.call_id)
+  const driverId = useSelector((state)=> state.driver_id)
   const driverLocation = `${driverLat},${driverLng}`
   const clientLocation = `${centerLat},${centerLng}`
   const isDriverLocationChanged = useSelector(
@@ -313,9 +313,21 @@ const MapComponent = () => {
     return marker1;
 
   }
+  
+  let infoWindow2 = null;
+  useEffect(() => {if(map) infoWindow2 = new window.google.maps.InfoWindow()},[map])
+  
+  function markerClickHandler(marker, contentString){
+    infoWindow2.close()
+    infoWindow2.setContent(contentString);
+    infoWindow2.open(map, marker);
+    }
 
   //도착지점 마크 생성
+  
   const addDriverMarker = (positionInfo, mapInfo, icontype) => {
+
+    
     const iconUrl = `https://sw-s3-bucket.s3.ap-northeast-2.amazonaws.com/${icontype}.png`;
     const marker2 = new window.google.maps.Marker({
       position: positionInfo,
@@ -336,13 +348,12 @@ const MapComponent = () => {
     </div>
     `;
     // 정보 창 생성
-    const infoWindow2 = new window.google.maps.InfoWindow({
-      content: contentString,
-    });
+    
+    
     // 마커 클릭 이벤트 리스너 추가
     marker2.addListener("click", () => {
       // 클릭 시 정보 창 열도록 설정
-      infoWindow2.open(map, marker2);
+      markerClickHandler(marker2, contentString);
     });
     return marker2;
   };
