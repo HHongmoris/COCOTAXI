@@ -23,6 +23,7 @@ public class CallingsResponse implements Comparable<CallingsResponse> {
     private String pickUpLocation;
     private String dropOffLocation;
     private String realTime;
+    private String lineColor;
 
     public void callingsResponseList(Callings entity){
         this.callId = entity.getCallId();
@@ -35,6 +36,7 @@ public class CallingsResponse implements Comparable<CallingsResponse> {
         this.pickUpLocation = entity.getPickUpLocation();
         this.dropOffLocation = entity.getDropOffLocation();
         this.realTime = entity.getRealTime();
+        this.lineColor = entity.getLineColor();
     }
 
     @Override

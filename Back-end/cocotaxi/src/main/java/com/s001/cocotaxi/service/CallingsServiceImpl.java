@@ -47,6 +47,15 @@ public class CallingsServiceImpl implements CallingsService {
                     String realTime = duration +"min";
                     call.setDistance(distance);
                     call.setRealTime(realTime);
+
+                    if(distance < 20){
+                        call.setLineColor("call_green");
+                    }else if(distance >= 20 && distance < 50){
+                        call.setLineColor("call_orange");
+                    }else if(distance >= 50){
+                        call.setLineColor("call_red");
+                    }
+
                     callRepository.save(call);
                 }
 

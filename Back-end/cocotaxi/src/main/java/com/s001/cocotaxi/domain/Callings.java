@@ -57,4 +57,7 @@ public class Callings {
 
     @Column(name = "real_time", nullable = true)
     private String realTime;
+
+    @Column(name = "line_color")
+    private String lineColor;
 }
