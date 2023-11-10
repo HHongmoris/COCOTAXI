@@ -8,9 +8,11 @@ import polyline from "@mapbox/polyline";
 import { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  setDriverLocation,
+  setDriverLatitude,
+  setDriverLongitude,
   isDriverChanged,
-  setClientLocation,
+  setClientLatitude,
+  setClientLongitude,
   isClientChanged,
 } from "../redux/actions";
 
@@ -40,20 +42,18 @@ const MapComponent = () => {
 
   // Redux에서 값 가져오기
   const dispatch = useDispatch();
-  const driverLocation = useSelector((state) => state.driver_location);
-  const clientLocation = useSelector((state) => state.client_location);
+  const centerLat = useSelector((state)=>state.client_latitude)
+  const centerLng = useSelector((state)=>state.client_longitude)
+  const driverLat = useSelector((state)=>state.driver_latitude)
+  const driverLng = useSelector((state)=>state.driver_longitude)
+  const driverLocation = `${driverLat},${driverLng}`
+  const clientLocation = `${centerLat},${centerLng}`
   const isDriverLocationChanged = useSelector(
     (state) => state.is_driver_location_changed
   );
   const isClientLocationChanged = useSelector(
     (state) => state.is_client_location_changed
   );
-  const parsedDriverLocation = driverLocation.split(","); // 파싱을 위한 쓰레기값
-  const parsedClientLocation = clientLocation.split(","); // 파싱을 위한 쓰레기값
-  const centerLat = parseFloat(parsedClientLocation[0]);
-  const centerLng = parseFloat(parsedClientLocation[1]);
-  const driverLat = parseFloat(parsedDriverLocation[0]);
-  const driverLng = parseFloat(parsedDriverLocation[1]);
 
   console.log("callId : " + callId);
   console.log("DId : " + driverId);
@@ -143,7 +143,7 @@ const MapComponent = () => {
       }
 
       const lineSymbol = {
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        path: window.google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
         scale: 5,
         fillColor: "#3B1877", // 채우기 색상 설정
         fillOpacity: 1,
@@ -270,10 +270,10 @@ const MapComponent = () => {
 
 
   // 클라이언트 마커와 callId를 매핑하는 함수
-  const addClientMarkerToMap = (callId, marker) => {
+  const addClientMarkerToMap = (callId, marker, position) => {
     setClientMarkers((prevMarkers) => [
       ...prevMarkers,
-      { callId, marker }
+      { callId, marker, position }
     ]);
   };
   
@@ -287,6 +287,8 @@ const MapComponent = () => {
         marker.marker.setVisible(false);
       } else if (marker.marker) {
         marker.marker.setVisible(true);
+        dispatch(setClientLatitude(marker.position.lat));
+        dispatch(setClientLongitude(marker.position.lng));
       }
     })
   };
@@ -301,16 +303,21 @@ const MapComponent = () => {
     
     marker1.addListener("click", () => {
       const clickedCallId = callId; // 클릭한 마커의 callId 가져오기
+      const latitude = positionInfo.lat;
+      const longitude = positionInfo.lng;
+      console.log("마크 클릭한 위치 반환 : ", positionInfo.lat, positionInfo.lng);
       // 이제 clickedCallId를 활용하여 원하는 작업을 수행할 수 있음
       console.log("Clicked Marker's callId:", clickedCallId);
       setCallId(() => clickedCallId);
       setMarkerSelect(() => true);
+      dispatch(setClientLatitude(latitude));
+      dispatch(setClientLatitude(longitude));
     });
 
-
-    addClientMarkerToMap(callId, marker1);
+    addClientMarkerToMap(callId, marker1, positionInfo);
     return marker1;
-  };
+
+  }
 
   //도착지점 마크 생성
   const addDriverMarker = (positionInfo, mapInfo, icontype) => {
@@ -346,7 +353,7 @@ const MapComponent = () => {
   };
 
   
-
+  // 여기서 마크를 만들고 없앤다
   useEffect(()=>{
     console.log(isClientLocationChanged)
     if(isClientLocationChanged || markerSelect)

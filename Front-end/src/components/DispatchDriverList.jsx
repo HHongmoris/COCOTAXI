@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setDriverLocation, isDriverChanged } from "../redux/actions";
+import { setDriverLatitude ,setDriverLongitude, isDriverChanged } from "../redux/actions";
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
@@ -60,7 +60,8 @@ function DispatchDriverList(props) {
   const { callId } = props;
   const [driverList, setDriverList] = useState([]);
   const { updateDriverId } = props;
-  const driverLocation = useSelector((state) => state.driver_location);
+  const driverLatitude = useSelector((state)=>state.driver_latitude)
+  const driverLongitude = useSelector((state)=>state.driver_longitude)
   const dispatch = useDispatch();
   const [clickedDriver, setClickedDriver] = useState(null);
   const [driverId, setDriverId] = useState(null);
@@ -69,10 +70,10 @@ function DispatchDriverList(props) {
     setDriverId(() => driverId);
     updateDriverId(driverId);
     setClickedDriver(driverId);
-    const location = `${driverLat},${driverLng}`;
-    if (location !== driverLocation) {
+    if (driverLng !== driverLongitude && driverLat !== driverLatitude) {
       dispatch(isDriverChanged(true));
-      dispatch(setDriverLocation(location));
+      dispatch(setDriverLatitude(driverLat));
+      dispatch(setDriverLongitude(driverLng));
     }
   };
 
