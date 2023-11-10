@@ -15,7 +15,7 @@ public class DriverDetailResponse {
     private double driverLongitude;
     private double driverLatitude;
     private String vehicleNo;
-    private double grade;
+    private String grade;
     private String driverPhoneNo;
 
     public void DriverDetailResponse(Driver entity){
