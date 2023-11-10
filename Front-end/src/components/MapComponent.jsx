@@ -338,7 +338,6 @@ const MapComponent = () => {
     return marker1;
   };
 
-  }
   
 
   // infoWindow 함수
