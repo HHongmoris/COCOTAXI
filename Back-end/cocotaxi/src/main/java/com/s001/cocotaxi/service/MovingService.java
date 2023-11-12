@@ -15,7 +15,7 @@ public class MovingService {
     private final MovingRepository movingRepository;
     private int movingCount = 0; // 초기값 0
 
-    @Scheduled(fixedRate = 3000)    //1초(1000밀리초)
+    @Scheduled(fixedRate = 1000)    //1초(1000밀리초)
     public List<Double> updateDriverLocation(int driverId){
         // 0과 1을 번갈아가며 변경
         movingCount = (movingCount == 0) ? 1 : 0;

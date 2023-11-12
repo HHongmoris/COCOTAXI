@@ -19,8 +19,9 @@ public class AllDriverResponse {
         this.driverId = entity.getDriverId();
         this.driverName = entity.getDriverName();
         this.vehicleType = entity.getVehicleType();
-        this.driverLongitude = entity.getDriverLongitude();
-        this.driverLatitude = entity.getDriverLatitude();
+        //TODO : 이동하는 좌표 적용
+//        this.driverLongitude = entity.getDriverLongitude();
+//        this.driverLatitude = entity.getDriverLatitude();
     }
 
 }
