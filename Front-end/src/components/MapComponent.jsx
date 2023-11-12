@@ -37,8 +37,6 @@ const MapComponent = () => {
   const [driverMarkerSelect, setDriverMarkerSelect] = useState(false);
   const [isTableVisible, setIsTableVisible] = useState(false);
 
-
-
   // Redux에서 값 가져오기
   const dispatch = useDispatch();
   const centerLat = useSelector((state) => state.client_latitude);
@@ -58,27 +56,6 @@ const MapComponent = () => {
 
   console.log("callId : " + callId);
   console.log("DId : " + driverId);
-
-  // requestAnimationFrame 좌표 계산
-  const animateToLocation = (start, end, duration) => {
-    const startTime = Date.now();
-    const animate = () => {
-      const currentTime = Date.now();
-      const progress = (currentTime - startTime) / duration;
-
-      if (progress < 1) {
-        const newLat = start.lat() + (end.lat() - start.lat()) * progress;
-        const newLng = start.lng() + (end.lng() - start.lng()) * progress;
-
-        map.setCenter(new window.google.maps.LatLng(newLat, newLng));
-        requestAnimationFrame(animate);
-      } else {
-        map.setCenter(end); // 애니메이션이 끝나면 목표 좌표로 설정
-      }
-    };
-
-    animate();
-  };
 
   // 마크 사진 적용
   useEffect(() => {
@@ -300,7 +277,7 @@ const MapComponent = () => {
   //   driverMarkerList.forEach((marker) => {
   //     if (marker.driverId === driverId && marker.marker) {
   //       marker.driverInfo
-  //     } 
+  //     }
   //   });
   // };
 
@@ -338,8 +315,6 @@ const MapComponent = () => {
     return marker1;
   };
 
-  
-
   // infoWindow 함수
   let infoWindow2 = null;
   useEffect(() => {
@@ -353,7 +328,6 @@ const MapComponent = () => {
   }
 
   const addDriverMarker = (positionInfo, mapInfo, icontype, driverId) => {
-
     const iconUrl = `https://sw-s3-bucket.s3.ap-northeast-2.amazonaws.com/${icontype}.png`;
     const marker2 = new window.google.maps.Marker({
       position: positionInfo,
@@ -365,12 +339,14 @@ const MapComponent = () => {
 
     let driverInfo;
     const fetchData = async () => {
-        const res = await axios.get(`http://k9s101.p.ssafy.io:4000/api/drivers/${driverId}`);
-        
-        // 성공적으로 데이터를 불러왔을 때의 처리
-        // console.log('데이터:', res.data);
-        // 정보 창 내용 설정
-        driverInfo =`
+      const res = await axios.get(
+        `http://k9s101.p.ssafy.io:4000/api/drivers/${driverId}`
+      );
+
+      // 성공적으로 데이터를 불러왔을 때의 처리
+      // console.log('데이터:', res.data);
+      // 정보 창 내용 설정
+      driverInfo = `
         <div>
           <h2>${res.data.vehicleNo}</h2>
           <p>${res.data.grade}</p>
@@ -380,11 +356,10 @@ const MapComponent = () => {
           <button style="width: 100%">📞</button>
           </a>
         </div>
-        `
-      
+        `;
     };
-  
-  fetchData()
+
+    fetchData();
     // 드라이버 마커 클릭 이벤트 리스너 추가
     marker2.addListener("click", () => {
       const clickedDriverId = driverId;
@@ -393,18 +368,18 @@ const MapComponent = () => {
       // 클릭 시 정보 창 열도록 설정
       markerClickHandler(marker2, driverInfo);
     });
-    
+
     return marker2;
   };
 
   // 여기서 마크를 만들고 없앤다
-  useEffect(()=>{
-    console.log(isClientLocationChanged)
-    if(isClientLocationChanged || clientMarkerSelect)
-    selectMarkerByCallId(callId);
+  useEffect(() => {
+    console.log(isClientLocationChanged);
+    if (isClientLocationChanged || clientMarkerSelect)
+      selectMarkerByCallId(callId);
     // if(isDriverLocationChanged || driverMarkerSelect)
     // selectMarkerByDriverId(driverId)
-  },[callId, isClientLocationChanged])
+  }, [callId, isClientLocationChanged]);
 
   const removeMarker = (marker) => {
     marker.setMap(marker);
@@ -422,7 +397,6 @@ const MapComponent = () => {
       setDriverMarker(() =>
         addDriverMarker({ lat: driverLat, lng: driverLng }, map, driverId)
       );
-      
     }
   }, [driverLat, driverLng, centerLng, centerLat, map]);
 
@@ -528,8 +502,6 @@ const MapComponent = () => {
   const toggleTable = () => {
     setIsTableVisible(!isTableVisible);
   };
-
-
 
   return (
     <div>
