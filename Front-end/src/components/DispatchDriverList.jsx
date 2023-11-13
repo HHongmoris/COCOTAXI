@@ -77,8 +77,8 @@ function DispatchDriverList() {
 
   //[updateDriverId, updateDriveLng, updateDriverLat]
 
-  const url = `http://k9s101.p.ssafy.io:4000/api/dispatch/${callId}`;
-  // const url = `http://localhost:9000/api/dispatch/${callId}`;
+  // const url = `http://k9s101.p.ssafy.io:4000/api/dispatch/${callId}`;
+  const url = `http://localhost:4000/api/dispatch/${callId}`;
 
   const fetchData = async () => {
     try {

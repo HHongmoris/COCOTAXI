@@ -33,6 +33,7 @@ const MapComponent = () => {
   const [infowindow2, setInfowindow2] = useState(null);
   const [clientMarkers, setClientMarkers] = useState([]);
   const [driverMarkerList, setDriverMarkerList] = useState([]);
+  const [driverBoundaryList, setDriverBoundaryList] = useState([]);
   const [clientMarkerSelect, setClientMarkerSelect] = useState(false);
   const [driverMarkerSelect, setDriverMarkerSelect] = useState(false);
   const [isTableVisible, setIsTableVisible] = useState(false);
@@ -255,21 +256,42 @@ const MapComponent = () => {
   };
 
   // 드라이버 마커와 callId를 매핑하는 함수
-  // const addDriverMarkerToMap = (driverId, marker) => {
-  //   setDriverMarkerList((prevMarkers) => [
-  //     ...prevMarkers,
-  //     { driverId, marker }
-  //   ]);
-  // };
+  const addDriverMarkerToMap = (driverId, marker, position) => {
+    setDriverMarkerList((prevMarkers) => [
+      ...prevMarkers,
+      { driverId, marker, position}
+    ]);
+  };
+  
+  // api에서 6km 이내의 드라이버 리스트를 불러오는 함수
+  useEffect(() => {
+  const getDriversInBoundary = async () => {
+    setDriverBoundaryList([]);
+    const res = await axios.get(
+      // `http://k9s101.p.ssafy.io:4000/api/dispatch/${callId}`
+      `http://localhost:4000/api/dispatch/${callId}`
+    );
+    const data = res.data;
+    data.forEach((data) => setDriverBoundaryList(prevList => [...prevList,data.driverId]))
+  }
+  getDriversInBoundary();
+},[map, callId])
+  
 
-  // const selectMarkerByCallId = (driverId) => {
-  //   driverMarkerList.forEach((marker) => {
-  //     if (marker.driverId === driverId && marker.marker) {
-  //       marker.driverInfo
-  //     }
-  //   });
-  // };
+  const setDriverMarkerByCallId = () => {
+    console.log("@@driverBoundaryList Data : ", driverBoundaryList)
+    // 일단 다 투명하게
+    driverMarkerList.forEach((driver) => driver.marker.setOpacity(0.2));
+    driverBoundaryList.forEach((driverId) => 
+    getDriverMarkerToOpaque(driverId))
+}
 
+  const getDriverMarkerToOpaque = (driverId) => {
+    driverMarkerList.forEach((driver) => {
+      if(driver.driverId === driverId) driver.marker.setOpacity(1);
+    })
+  }
+  
   const addClientMarker = (positionInfo, mapInfo, callId) => {
     const marker1 = new window.google.maps.Marker({
       position: positionInfo,
@@ -291,6 +313,7 @@ const MapComponent = () => {
       setTimeout(() => {
         marker1.setAnimation(null);
       }, 3000); // 3초 후 중지 (원하는 시간으로 변경 가능)
+      
 
       // 이제 clickedCallId를 활용하여 원하는 작업을 수행할 수 있음
       console.log("Clicked Marker's callId:", clickedCallId);
@@ -327,9 +350,10 @@ const MapComponent = () => {
     // 기사 정보 불러오는 함수
 
     let driverInfo;
-    const fetchData = async () => {
+    const getDriverInfo = async () => {
       const res = await axios.get(
-        `http://k9s101.p.ssafy.io:4000/api/drivers/${driverId}`
+        // `http://k9s101.p.ssafy.io:4000/api/drivers/${driverId}`
+        `http://localhost:4000/api/drivers/${driverId}`
       );
 
       // 성공적으로 데이터를 불러왔을 때의 처리
@@ -348,7 +372,7 @@ const MapComponent = () => {
         `;
     };
 
-    fetchData();
+    getDriverInfo();
     // 드라이버 마커 클릭 이벤트 리스너 추가
     marker2.addListener("click", () => {
       const clickedDriverId = driverId;
@@ -359,7 +383,7 @@ const MapComponent = () => {
       // 클릭 시 정보 창 열도록 설정
       markerClickHandler(marker2, driverInfo);
     });
-
+    addDriverMarkerToMap(driverId, marker2, positionInfo);
     return marker2;
   };
 
@@ -368,13 +392,12 @@ const MapComponent = () => {
     console.log(isClientLocationChanged);
     if (isClientLocationChanged || clientMarkerSelect)
       selectMarkerByCallId(callId);
-    // if(isDriverLocationChanged || driverMarkerSelect)
-    // selectMarkerByDriverId(driverId)
+      setDriverMarkerByCallId();
+      
   }, [callId, isClientLocationChanged]);
 
   const removeMarker = (marker) => {
-    marker.setMap(marker);
-    marker;
+    marker.setVisible(false);
   };
 
   const setMarkerToTransparent = (marker) => {
@@ -406,7 +429,8 @@ const MapComponent = () => {
     const getDriverData = async () => {
       try {
         const response = await axios.get(
-          "http://k9s101.p.ssafy.io:4000/api/drivers"
+          // "http://k9s101.p.ssafy.io:4000/api/drivers"
+          "http://localhost:4000/api/drivers"
         );
         const data = response.data;
         if (data) {
@@ -427,7 +451,8 @@ const MapComponent = () => {
     const getClientData = async () => {
       try {
         const response = await axios.get(
-          "http://k9s101.p.ssafy.io:4000/api/callings"
+          // "http://k9s101.p.ssafy.io:4000/api/callings"
+          "http://localhost:4000/api/callings"
         );
         const data = response.data;
         console.log("@@@@@@@@@@@@@@@@@@@drivers data : ", data);
