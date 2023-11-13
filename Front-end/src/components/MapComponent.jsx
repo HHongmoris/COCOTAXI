@@ -207,6 +207,59 @@ const MapComponent = () => {
     loadGoogleMapsScript();
   }, []);
 
+  useEffect(() => {
+    const initialLat = 17.95747; // 초기 경도
+    const initialLng = 102.64313; // 초기 위도
+    const moveDistance = 0.00005; // 이동 거리 (조절 가능)
+
+    // 초기 위치 생성
+    const initialPosition = new window.google.maps.LatLng(
+      initialLat,
+      initialLng
+    );
+
+    // const iconUrl = `https://sw-s3-bucket.s3.ap-northeast-2.amazonaws.com/${icontype}.png`;
+    // const marker2 = new window.google.maps.Marker({
+    //   position: positionInfo,
+    //   map: mapInfo, // 마커를 지도에 추가
+    //   icon: iconUrl,
+    // });
+
+    // 초기 마커 생성
+    const initialMarker = new window.google.maps.Marker({
+      position: initialPosition,
+      icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/car.png",
+      map: map,
+      // 다른 옵션들
+    });
+
+    // 이동 방향 설정 (예: 오른쪽으로 이동)
+    let latDirection = 1; // 양수는 위쪽으로 이동, 음수는 아래쪽으로 이동
+    let lngDirection = -0.1; // 양수는 오른쪽으로 이동, 음수는 왼쪽으로 이동
+
+    // 마커를 이동하는 함수
+    const moveMarker = () => {
+      const newLat =
+        initialMarker.getPosition().lat() + latDirection * moveDistance;
+      const newLng =
+        initialMarker.getPosition().lng() + lngDirection * moveDistance;
+      const newPosition = new window.google.maps.LatLng(newLat, newLng);
+
+      console.log(newLat, newLng);
+
+      // 마커의 위치를 업데이트
+      initialMarker.setPosition(newPosition);
+    };
+
+    // 1초마다 새로운 위치로 이동
+    const intervalId = setInterval(moveMarker, 1000); // 1초마다 이동 (조절 가능)
+
+    // 컴포넌트가 언마운트되면 interval 정리
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [map]);
+
   // 원 그리기
   const drawCircle = (lat, lng) => {
     if (map) {
@@ -277,7 +330,6 @@ const MapComponent = () => {
       icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
       animation: window.google.maps.Animation.DROP, // 바운스(drop) 애니메이션 활성화
     });
-
     marker1.addListener("click", () => {
       const clickedCallId = callId; // 클릭한 마커의 callId 가져오기
       const latitude = positionInfo.lat;
