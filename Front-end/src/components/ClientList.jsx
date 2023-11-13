@@ -12,11 +12,11 @@ import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
 
-
 const TableContainer = styled.div`
   max-height: 240px;
-  width: 100%;
+  width: 170%;
   overflow: hidden;
+  border-radius: 10px;
 `;
 
 const Table = styled.table`
@@ -25,12 +25,13 @@ const Table = styled.table`
 `;
 
 const Thead = styled.thead`
-  background-color: #f2f2f2;
+  background-color: #fa7d0b;
   th {
     padding: 6px;
     border-bottom: 1px solid #ddd;
     font-size: 12px;
     text-align: left;
+    color: white;
   }
 `;
 
@@ -41,11 +42,17 @@ const TbodyContainer = styled.div`
 `;
 
 const Tbody = styled.tbody`
+  background-color: white;
   td {
     padding: 6px;
     border-bottom: 1px solid #ddd;
     font-size: 14px;
+    text-align: left;
   }
+`;
+
+const ExtendedCell = styled(Tbody)`
+  width: 200px;
 `;
 
 const TableRow = styled.tr`
@@ -75,9 +82,12 @@ function ClientList() {
   // let map;
 
   const handleRowClick = (startPointLatitude, startPointLongitude, callId) => {
-    dispatch(setCallId(callId))
+    dispatch(setCallId(callId));
     setClickedRow(callId);
-    if (startPointLatitude !== clientLatitude && startPointLongitude !== clientLongitude) {
+    if (
+      startPointLatitude !== clientLatitude &&
+      startPointLongitude !== clientLongitude
+    ) {
       dispatch(isClientChanged(true));
       dispatch(setClientLatitude(startPointLatitude));
       dispatch(setClientLongitude(startPointLongitude));
@@ -132,11 +142,11 @@ function ClientList() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "callTime",
+        Header: "CallTime",
         accessor: "callCreatedTime",
       },
       {
-        Header: "vehicleType",
+        Header: "VehicleType",
         accessor: "vehicleType",
       },
       {
@@ -152,7 +162,7 @@ function ClientList() {
         accessor: "distance",
       },
       {
-        Header: "realTime",
+        Header: "RealTime",
         accessor: "realTime",
       },
     ],
@@ -250,13 +260,39 @@ function ClientList() {
                       row.original.callId
                     )
                   }
-                  isClicked={row.original.callId === clickedRow} // 클릭된 행에만 스타일 적용
+                  isClicked={row.original.callId === clickedRow}
                 >
-                  {row.cells.map((cell) => (
-                    <TableCell {...cell.getCellProps()}>
-                      {cell.render("Cell")}
-                    </TableCell>
-                  ))}
+                  {row.cells.map((cell, index) => {
+                    let cellWidth;
+                    switch (index) {
+                      case 1:
+                        cellWidth = "16.5%";
+                        break;
+                      case 2:
+                        cellWidth = "22.5%";
+                        break;
+                      case 3:
+                        cellWidth = "24%";
+                        break;
+                      case 4:
+                        cellWidth = "13%";
+                        break;
+                      case 5:
+                        cellWidth = "11%";
+                        break;
+                      default:
+                        cellWidth = "auto";
+                    }
+
+                    return (
+                      <TableCell
+                        {...cell.getCellProps()}
+                        style={{ width: cellWidth }}
+                      >
+                        {cell.render("Cell")}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               );
             })}
