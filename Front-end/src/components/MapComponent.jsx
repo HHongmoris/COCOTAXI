@@ -273,9 +273,12 @@ const MapComponent = () => {
   const selectMarkerByCallId = (callId) => {
     clientMarkers.forEach((marker) => {
       if (marker.callId !== callId && marker.marker) {
-        marker.marker.setVisible(false);
+        // 클릭 안된 마커들
+        // 여기에다가만 마커들 다 모션멈추게
+        setMarkerToTransparent(marker.marker);
       } else if (marker.marker) {
-        marker.marker.setVisible(true);
+        // 클릭된 마커들
+        setMarkerToOpaque(marker.marker);
         dispatch(setClientLatitude(marker.position.lat));
         dispatch(setClientLongitude(marker.position.lng));
       }
@@ -404,6 +407,15 @@ const MapComponent = () => {
     marker.setMap(marker);
     marker;
   };
+
+  const setMarkerToTransparent = (marker) => {
+    marker.setOpacity(0.3);
+  };
+  // marker의 투명도를 올리기
+  const setMarkerToOpaque = (marker) => {
+    marker.setOpacity(1);
+  };
+  
   // 마킹
   useEffect(() => {
     //출발
