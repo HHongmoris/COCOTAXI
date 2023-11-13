@@ -415,7 +415,7 @@ const MapComponent = () => {
   const setMarkerToOpaque = (marker) => {
     marker.setOpacity(1);
   };
-  
+
   // 마킹
   useEffect(() => {
     //출발
@@ -534,9 +534,7 @@ const MapComponent = () => {
     setIsTableVisible(!isTableVisible);
   };
 
-  console.log("location : " ,driverLng, driverLat )
-
-
+  console.log("location : ", driverLng, driverLat);
 
   return (
     <div>
@@ -583,8 +581,9 @@ const MapComponent = () => {
             width: "500px",
             background: "white",
             boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+            borderRadius: "10px",
             zIndex: isTableVisible ? 2 : -1,
-            transform: isTableVisible ? "translateY(0)" : "transLateY(100%)",
+            transform: isTableVisible ? "translateY(0)" : "translateY(100%)",
             opacity: isTableVisible ? 1 : 0,
             transition: "transform 0.3s, opacity 0.3s",
           }}
