@@ -59,7 +59,6 @@ public class DriverServiceImpl implements DriverService{
         List<Double> location = movingService.updateDriverLocation(driver.getDriverId());
         driverDetail.setDriverLatitude(location.get(0));
         driverDetail.setDriverLongitude(location.get(1));
-
         driverDetail.DriverDetailResponse(driver);
 
         return driverDetail;
