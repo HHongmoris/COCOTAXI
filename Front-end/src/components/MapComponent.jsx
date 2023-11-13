@@ -382,6 +382,8 @@ const MapComponent = () => {
       const clickedDriverId = driverId;
       setDriverMarkerSelect(() => true);
       dispatch(setDriverId(clickedDriverId));
+      dispatch(setDriverLatitude(positionInfo.lat));
+      dispatch(setDriverLongitude(positionInfo.lng));
       // 클릭 시 정보 창 열도록 설정
       markerClickHandler(marker2, driverInfo);
     });
@@ -519,6 +521,10 @@ const MapComponent = () => {
   const toggleTable = () => {
     setIsTableVisible(!isTableVisible);
   };
+
+  console.log("location : " ,driverLng, driverLat )
+
+
 
   return (
     <div>
