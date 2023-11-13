@@ -57,6 +57,23 @@ const MapComponent = () => {
   console.log("callId : " + callId);
   console.log("DId : " + driverId);
 
+  const animateToLocation = (start, end, duration) => {
+    const startTime = Date.now();
+    const animate = () => {
+      const currentTime = Date.now();
+      const progress = (currentTime - startTime) / duration;
+      if (progress < 1) {
+        const newLat = start.lat() + (end.lat() - start.lat()) * progress;
+        const newLng = start.lng() + (end.lng() - start.lng()) * progress;
+        map.setCenter(new window.google.maps.LatLng(newLat, newLng));
+        requestAnimationFrame(animate);
+      } else {
+        map.setCenter(end); // 애니메이션이 끝나면 목표 좌표로 설정
+      }
+    };
+    animate();
+  };
+
   // 마크 사진 적용
   useEffect(() => {
     if (map && coords && coords.length > 0) {
