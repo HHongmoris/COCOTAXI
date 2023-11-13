@@ -142,7 +142,7 @@ function ClientList() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "CallTime",
+        Header: "Request Time",
         accessor: "callCreatedTime",
       },
       {
@@ -266,19 +266,19 @@ function ClientList() {
                     let cellWidth;
                     switch (index) {
                       case 1:
-                        cellWidth = "16.5%";
+                        cellWidth = "15.5%";
                         break;
                       case 2:
-                        cellWidth = "22.5%";
+                        cellWidth = "21%";
                         break;
                       case 3:
-                        cellWidth = "24%";
+                        cellWidth = "23%";
                         break;
                       case 4:
-                        cellWidth = "13%";
+                        cellWidth = "12%";
                         break;
                       case 5:
-                        cellWidth = "11%";
+                        cellWidth = "10.5%";
                         break;
                       default:
                         cellWidth = "auto";
