@@ -57,23 +57,6 @@ const MapComponent = () => {
   console.log("callId : " + callId);
   console.log("DId : " + driverId);
 
-  const animateToLocation = (start, end, duration) => {
-    const startTime = Date.now();
-    const animate = () => {
-      const currentTime = Date.now();
-      const progress = (currentTime - startTime) / duration;
-      if (progress < 1) {
-        const newLat = start.lat() + (end.lat() - start.lat()) * progress;
-        const newLng = start.lng() + (end.lng() - start.lng()) * progress;
-        map.setCenter(new window.google.maps.LatLng(newLat, newLng));
-        requestAnimationFrame(animate);
-      } else {
-        map.setCenter(end); // 애니메이션이 끝나면 목표 좌표로 설정
-      }
-    };
-    animate();
-  };
-
   // 마크 사진 적용
   useEffect(() => {
     if (map && coords && coords.length > 0) {
@@ -177,20 +160,6 @@ const MapComponent = () => {
       });
     }
   }, [coords, map, driverLocation]);
-
-  // centerLat 또는 centerLng 값이 변경될 때 애니메이션 적용
-  useEffect(() => {
-    if (map) {
-      const latLng = new window.google.maps.LatLng(centerLat, centerLng);
-      const currentCenter = map.getCenter();
-
-      // 애니메이션 기간 (밀리초)
-      const animationDuration = 500;
-
-      // 중간 좌표로 애니메이션 적용
-      animateToLocation(currentCenter, latLng, animationDuration);
-    }
-  }, [centerLat, centerLng, map]);
 
   useEffect(() => {
     if (map) {
@@ -415,7 +384,7 @@ const MapComponent = () => {
   const setMarkerToOpaque = (marker) => {
     marker.setOpacity(1);
   };
-  
+
   // 마킹
   useEffect(() => {
     //출발
@@ -534,9 +503,7 @@ const MapComponent = () => {
     setIsTableVisible(!isTableVisible);
   };
 
-  console.log("location : " ,driverLng, driverLat )
-
-
+  console.log("location : ", driverLng, driverLat);
 
   return (
     <div>
