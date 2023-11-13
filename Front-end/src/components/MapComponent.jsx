@@ -598,7 +598,7 @@ const MapComponent = () => {
           style={{
             position: "absolute",
             bottom: 15,
-            left: 30,
+            left: "5%",
             width: "500px",
             background: "white",
             boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
@@ -617,10 +617,11 @@ const MapComponent = () => {
           style={{
             position: "absolute",
             bottom: 15,
-            right: 60,
+            right: "10%",
             width: "350px",
             background: "white",
             boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+            borderRadius: "10px",
             zIndex: isTableVisible ? 2 : -1,
             transform: isTableVisible ? "translateY(0)" : "transLateY(100%)",
             opacity: isTableVisible ? 1 : 0,
