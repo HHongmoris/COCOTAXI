@@ -10,6 +10,9 @@ const CustomToast = styled.div`
     padding: 16px 28px;
     color: #fff;
     background: rgba(107, 115, 135, 0.8);
+    /* position: fixed;
+    top: 5%;
+    left: 10%; */
   }
 
   .Toastify__toast-icon {
@@ -29,6 +32,7 @@ function MatchingToast() {
       // 토스트 메시지 표시
       toast.info(<CustomToast>{message}</CustomToast>, {
         position: "top-left",
+        className: "custom-toast",
         autoClose: 4000,
         closeButton: false,
         hideProgressBar: true,
@@ -45,7 +49,7 @@ function MatchingToast() {
 
   return (
     <div>
-      <ToastContainer />
+      <ToastContainer style={{ top: "8%", left: "1.5%" }} />
     </div>
   );
 }

@@ -587,7 +587,7 @@ const MapComponent = () => {
           style={{
             position: "absolute",
             bottom: 15,
-            left: 30,
+            left: "10%",
             zIndex: 2,
           }}
         >
