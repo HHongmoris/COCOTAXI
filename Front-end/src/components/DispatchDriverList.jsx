@@ -20,7 +20,7 @@ const RoundedDiv = styled.div`
 
 const TableContainer = styled.div`
   max-height: 200px;
-  width: 110%;
+  width: 11 0%;
   overflow: hidden;
   border-radius: 10px 10px 0 0;
 `;
