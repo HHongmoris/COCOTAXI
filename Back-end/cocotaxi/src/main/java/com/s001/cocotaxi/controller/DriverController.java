@@ -39,7 +39,7 @@ public class DriverController {
     @GetMapping
     public ResponseEntity<SseEmitter> getDriverList() {
         //1초씩 갱신되게
-        SseEmitter emitter = new SseEmitter(2000L);
+        SseEmitter emitter = new SseEmitter(1000L);
         sseEmitters.add(emitter);
 
         try {

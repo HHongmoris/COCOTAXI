@@ -41,7 +41,7 @@ public class MovingService {
 
 
     // movingCount 오류 수정 버전
-    @Scheduled(fixedRate =2000)    //1초(1000밀리초)
+    @Scheduled(fixedRate =1000)    //1초(1000밀리초)
     public List<Location> updateDriverLocationList(){
         // 0~10을 순서대로 변경
         movingCount = movingCount%11;
