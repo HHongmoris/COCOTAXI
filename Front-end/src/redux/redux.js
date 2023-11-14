@@ -9,6 +9,7 @@ import {
   IS_DRIVER_CHANGED,
   SET_CALL_ID,
   SET_DRIVER_ID,
+  SET_DRIVER_BOUNDARY,
 } from "./actions";
 const initialState = {
   driver_latitude: 0.0,
@@ -19,6 +20,7 @@ const initialState = {
   is_driver_location_changed: false,
   driver_id : 0,
   call_id : 0,
+  driver_boundary : [],
 };
 
 const flagsReducer = (state = initialState, action) => {
@@ -64,6 +66,12 @@ const flagsReducer = (state = initialState, action) => {
           driver_id: action.payload,
         };
 
+      // 6km 내에 driver 배열
+      case SET_DRIVER_BOUNDARY :
+        return {
+          ...state,
+          driver_boundary : action.payload,
+        }
     default:
       return state;
   }

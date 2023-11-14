@@ -6,6 +6,7 @@ export const DRIVER_LONGITUDE = 'DRIVER_LONGITUDE';
 export const IS_DRIVER_CHANGED = 'IS_DRIVER_CHANGED';
 export const SET_CALL_ID = 'SET_CALL_ID';
 export const SET_DRIVER_ID = 'SET_DRIVER_ID';
+export const SET_DRIVER_BOUNDARY = 'SET_DRIVER_BOUNDARY';
 
 // 승객 변경시 -> driver, clientLocation 둘다 받아야 한다
 // driverflag, clientflag 둘다 false로 처리한다
@@ -65,5 +66,13 @@ export const setDriverId = (id) => {
   return {
     type : SET_DRIVER_ID,
     payload : id,
+  }
+}
+
+// driverBoundaryList를 저장하는 창고
+export const setDriverBoundary = (items) => {
+  return {
+    type : SET_DRIVER_BOUNDARY,
+    payload : items
   }
 }
