@@ -32,11 +32,10 @@ const MapComponent = () => {
   const [infowindow2, setInfowindow2] = useState(null);
   const [clientMarkers, setClientMarkers] = useState([]);
   const [driverMarkers, setDriverMarkers] = useState([]);
-
-  const [clientMarkerSelect, setClientMarkerSelect] = useState(false);
   const [driverMarkerList, setDriverMarkerList] = useState([]);
+  const [driverBoundaryList, setDriverBoundaryList] = useState([]);
+  const [clientMarkerSelect, setClientMarkerSelect] = useState(false);
   const [driverMarkerSelect, setDriverMarkerSelect] = useState(false);
-
   const [isTableVisible, setIsTableVisible] = useState(false);
 
   // Redux에서 값 가져오기
@@ -58,6 +57,27 @@ const MapComponent = () => {
 
   console.log("callId : " + callId);
   console.log("DId : " + driverId);
+
+  function animateCircle(polyline2) {
+    const path = polyline2.getPath();
+
+    const reversedPath = new window.google.maps.MVCArray(); // 뒤집힌 경로를 저장할 새로운 배열
+
+    for (let i = path.getLength() - 1; i >= 0; i--) {
+      reversedPath.push(path.getAt(i)); // 경로를 거꾸로 뒤집어 새 배열에 추가
+    }
+
+    polyline2.setPath(reversedPath); // 뒤집힌 경로를 폴리라인에 설정
+
+    let count = 3000;
+
+    window.setInterval(() => {
+      count = (count - 1 + 3000) % 3000;
+      const icons = polyline2.get("icons");
+      icons[0].offset = (3000 - count) / 8 + "%"; // 방향을 반대로 변경
+      polyline2.set("icons", icons);
+    }, 20);
+  }
 
   // 마크 사진 적용
   useEffect(() => {
@@ -100,27 +120,6 @@ const MapComponent = () => {
       const multiPolylineCoordinates = [];
       multiPolylineCoordinates.push(coords);
       console.log(multiPolylineCoordinates);
-
-      function animateCircle(polyline2) {
-        const path = polyline2.getPath();
-
-        const reversedPath = new window.google.maps.MVCArray(); // 뒤집힌 경로를 저장할 새로운 배열
-
-        for (let i = path.getLength() - 1; i >= 0; i--) {
-          reversedPath.push(path.getAt(i)); // 경로를 거꾸로 뒤집어 새 배열에 추가
-        }
-
-        polyline2.setPath(reversedPath); // 뒤집힌 경로를 폴리라인에 설정
-
-        let count = 3000;
-
-        window.setInterval(() => {
-          count = (count - 1 + 3000) % 3000;
-          const icons = polyline2.get("icons");
-          icons[0].offset = (3000 - count) / 8 + "%"; // 방향을 반대로 변경
-          polyline2.set("icons", icons);
-        }, 20);
-      }
 
       const lineSymbol = {
         path: window.google.maps.SymbolPath.CIRCLE,
@@ -177,9 +176,28 @@ const MapComponent = () => {
         setOpenPage(true);
       }
     }
-
     getAndSetPolylineCoords();
+    
   }, [centerLat, centerLng, driverId, map]);
+  
+  
+  
+    // return new Promise((resolve, reject) => {
+    //   setDriverBoundaryList([]);
+    //   axios.get(`http://localhost:4000/api/dispatch/${callId}`)
+    //     .then((res) => {
+    //       const data = res.data;
+    //       data.forEach((item) => {
+    //         setDriverBoundaryList((prevList) => [...prevList, item.driverId]);
+    //       });
+    //       resolve("드라이버 목록을 가져오는 데 성공했습니다.");
+    //     })
+    //     .catch((error) => {
+    //       reject(`드라이버 목록을 가져오는 데 실패했습니다. 오류: ${error.message}`);
+    //     });
+    // });
+  // };
+  
 
   // 시작하자마자 구글 맵 적용
   useEffect(() => {
@@ -297,19 +315,11 @@ const MapComponent = () => {
     ]);
   };
 
-  // driverId 매핑하는 함수
-  const addDriverMarkerToMap = (driverId, marker, position) => {
-    setDriverMarkers((prevMarkers) => [
-      ...prevMarkers,
-      { driverId, marker, position },
-    ]);
-  };
 
   const selectMarkerByCallId = (callId) => {
     clientMarkers.forEach((marker) => {
       if (marker.callId !== callId && marker.marker) {
         // 클릭 안된 마커들
-        // 여기에다가만 마커들 다 모션멈추게
         setMarkerToTransparent(marker.marker);
       } else if (marker.marker) {
         // 클릭된 마커들
@@ -334,21 +344,13 @@ const MapComponent = () => {
   };
 
   // 드라이버 마커와 callId를 매핑하는 함수
-  // const addDriverMarkerToMap = (driverId, marker) => {
-  //   setDriverMarkerList((prevMarkers) => [
-  //     ...prevMarkers,
-  //     { driverId, marker }
-  //   ]);
-  // };
-
-  // const selectMarkerByCallId = (driverId) => {
-  //   driverMarkerList.forEach((marker) => {
-  //     if (marker.driverId === driverId && marker.marker) {
-  //       marker.driverInfo
-  //     }
-  //   });
-  // };
-
+  const  addDriverMarkerToMap = (driverId, marker, position) => {
+    setDriverMarkerList((prevMarkers) => [
+      ...prevMarkers,
+      { driverId, marker, position}
+    ]);
+  };
+  
   const addClientMarker = (positionInfo, mapInfo, callId) => {
     const marker1 = new window.google.maps.Marker({
       position: positionInfo,
@@ -361,6 +363,7 @@ const MapComponent = () => {
       const clickedCallId = callId; // 클릭한 마커의 callId 가져오기
       const latitude = positionInfo.lat;
       const longitude = positionInfo.lng;
+      
       console.log(
         "마크 클릭한 위치 반환 : ",
         positionInfo.lat,
@@ -370,15 +373,15 @@ const MapComponent = () => {
       setTimeout(() => {
         marker1.setAnimation(null);
       }, 3000); // 3초 후 중지 (원하는 시간으로 변경 가능)
+      
 
       // 이제 clickedCallId를 활용하여 원하는 작업을 수행할 수 있음
-      console.log("Clicked Marker's callId:", clickedCallId);
+      console.log("@@Clicked Marker's callId:", clickedCallId);
       dispatch(setCallId(clickedCallId));
       setClientMarkerSelect(() => true);
       dispatch(setClientLatitude(latitude));
       dispatch(setClientLongitude(longitude));
     });
-
     addClientMarkerToMap(callId, marker1, positionInfo);
     return marker1;
   };
@@ -418,10 +421,10 @@ const MapComponent = () => {
     // 정보 창 생성
     // 기사 정보 불러오는 함수
     let driverInfo;
-
-    const fetchData = async () => {
+    const getDriverInfo = async () => {
       const res = await axios.get(
         `http://k9s101.p.ssafy.io:4000/api/drivers/${driverId}`
+        // `http://localhost:4000/api/drivers/${driverId}`
       );
 
       // 성공적으로 데이터를 불러왔을 때의 처리
@@ -440,11 +443,12 @@ const MapComponent = () => {
         `;
     };
 
-    fetchData();
+    getDriverInfo();
     // 드라이버 마커 클릭 이벤트 리스너 추가
     marker2.addListener("click", () => {
       const clickedDriverId = driverId;
       setDriverMarkerSelect(() => true);
+      
       dispatch(setDriverId(clickedDriverId));
       dispatch(setDriverLatitude(positionInfo.lat));
       dispatch(setDriverLongitude(positionInfo.lng));
@@ -455,17 +459,44 @@ const MapComponent = () => {
       }, 3000);
       marker2.setAnimation(window.google.maps.Animation.BOUNCE);
     });
-
     addDriverMarkerToMap(driverId, marker2, positionInfo);
     return marker2;
   };
-
-  // 여기서 마크를 만들고 없앤다
+  // 6km 내의 driver 탐색
   useEffect(() => {
-    console.log(isClientLocationChanged);
-    if (isClientLocationChanged || clientMarkerSelect)
-      selectMarkerByCallId(callId);
-  }, [callId, isClientLocationChanged]);
+    const getDriversInBoundary = async () => {
+      try {
+        setDriverBoundaryList([]);
+        const res = await axios.get(`http://localhost:4000/api/dispatch/${callId}`);
+        const data = res.data;
+        
+        data.forEach((item) => {
+          setDriverBoundaryList((prevList) => [...prevList, item.driverId]);
+        });
+      } catch (error) {
+        console.error("데이터 가져오기 실패", error);
+      }
+    };
+    if(map)
+    getDriversInBoundary();
+
+  },[callId])
+
+useEffect(() => {
+  const selectDriverMarkerByCallId = () => {
+    // 일단 다 투명하게
+    driverMarkerList.forEach((driver) => driver.marker.setOpacity(0.2));
+    driverBoundaryList.forEach((driverId) => 
+    getDriverMarkerToOpaque(driverId))
+}
+selectDriverMarkerByCallId();
+},[driverBoundaryList]);
+
+const getDriverMarkerToOpaque = (driverId) => {
+  driverMarkerList.forEach((driver) => {
+    if(driver.driverId === driverId) driver.marker.setOpacity(1);
+  })
+}
 
   useEffect(() => {
     if (isDriverLocationChanged || driverMarkerSelect)
@@ -483,6 +514,13 @@ const MapComponent = () => {
   const setMarkerToOpaque = (marker) => {
     marker.setOpacity(1);
   };
+
+  // 여기서 마크를 만들고 없앤다
+  useEffect(() => {
+    console.log(isClientLocationChanged);
+    if (isClientLocationChanged || clientMarkerSelect)
+      selectMarkerByCallId(callId);
+  }, [callId, isClientLocationChanged]);
 
   // 마킹
   useEffect(() => {
@@ -532,11 +570,15 @@ const MapComponent = () => {
         console.error("drivers api error :", error);
       }
     };
+    getDriverData();
+  },[map, driverId, driverLocation])
 
+  useEffect(() => {
     const getClientData = async () => {
       try {
         const response = await axios.get(
           "http://k9s101.p.ssafy.io:4000/api/callings"
+          // "http://localhost:4000/api/callings"
         );
         const data = response.data;
         if (data) {
@@ -552,9 +594,9 @@ const MapComponent = () => {
         console.error("drivers api error :", error);
       }
     };
-    getDriverData();
+    
     getClientData();
-  }, [map, driverLocation, clientLocation, driverId]);
+  }, [map]);
 
   const getAndSetPolylineCoords = useCallback(() => {
     // 출발지 도착지가 들어가는 부분, OSM 에서 위 형식을 맞춰 넣어야함 / 형식 추가
@@ -608,7 +650,7 @@ const MapComponent = () => {
     setIsTableVisible(!isTableVisible);
   };
 
-  console.log("location : ", driverLng, driverLat);
+  
 
   return (
     <div>
@@ -621,7 +663,14 @@ const MapComponent = () => {
         />
       </div>
 
-      <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
+      <div
+        style={{
+          position: "relative",
+          height: "100vh",
+          width: "100vw",
+          overflow: "hidden",
+        }}
+      >
         <div
           id="map"
           style={{
@@ -640,7 +689,7 @@ const MapComponent = () => {
           style={{
             position: "absolute",
             bottom: 15,
-            left: 30,
+            left: "10%",
             zIndex: 2,
           }}
         >

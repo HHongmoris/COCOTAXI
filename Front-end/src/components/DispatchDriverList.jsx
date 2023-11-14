@@ -20,7 +20,7 @@ const RoundedDiv = styled.div`
 
 const TableContainer = styled.div`
   max-height: 200px;
-  width: 110%;
+  width: 11 0%;
   overflow: hidden;
   border-radius: 10px 10px 0 0;
 `;
@@ -93,8 +93,8 @@ function DispatchDriverList() {
 
   //[updateDriverId, updateDriveLng, updateDriverLat]
 
-  const url = `http://k9s101.p.ssafy.io:4000/api/dispatch/${callId}`;
-  // const url = `http://localhost:9000/api/dispatch/${callId}`;
+  // const url = `http://k9s101.p.ssafy.io:4000/api/dispatch/${callId}`;
+  const url = `http://localhost:4000/api/dispatch/${callId}`;
 
   const fetchData = async () => {
     try {
@@ -103,7 +103,7 @@ function DispatchDriverList() {
       });
       if (response.status === 200) {
         const data = await response.json();
-        console.log("driverList : " + data);
+        // console.log("driverList : " + data);
         setDriverList(data);
       }
     } catch (error) {

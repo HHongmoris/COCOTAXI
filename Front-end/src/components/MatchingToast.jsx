@@ -10,6 +10,9 @@ const CustomToast = styled.div`
     padding: 16px 28px;
     color: #fff;
     background: rgba(107, 115, 135, 0.8);
+    /* position: fixed;
+    top: 5%;
+    left: 10%; */
   }
 
   .Toastify__toast-icon {
@@ -19,6 +22,8 @@ const CustomToast = styled.div`
 `;
 
 function MatchingToast() {
+  // const [toastCount, setToastCount] = useState(0);
+
   useEffect(() => {
     const showToastWithDelay = () => {
       // 랜덤한 숫자 및 차량 배치 정보 생성
@@ -29,13 +34,15 @@ function MatchingToast() {
       // 토스트 메시지 표시
       toast.info(<CustomToast>{message}</CustomToast>, {
         position: "top-left",
+        className: "custom-toast",
         autoClose: 4000,
         closeButton: false,
         hideProgressBar: true,
       });
 
       // 랜덤한 시간 간격 생성
-      const delay = Math.floor(Math.random() * 4000) + 5000;
+      const delay = Math.floor(Math.random() * 6000) + 4000;
+      console.log("delay", delay);
 
       setTimeout(showToastWithDelay, delay);
     };
@@ -45,7 +52,12 @@ function MatchingToast() {
 
   return (
     <div>
-      <ToastContainer />
+      <ToastContainer
+        style={{
+          top: "8%",
+          left: "1.5%",
+        }}
+      />
     </div>
   );
 }
