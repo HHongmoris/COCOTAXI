@@ -177,27 +177,23 @@ const MapComponent = () => {
       }
     }
     getAndSetPolylineCoords();
-    
   }, [centerLat, centerLng, driverId, map]);
-  
-  
-  
-    // return new Promise((resolve, reject) => {
-    //   setDriverBoundaryList([]);
-    //   axios.get(`http://localhost:4000/api/dispatch/${callId}`)
-    //     .then((res) => {
-    //       const data = res.data;
-    //       data.forEach((item) => {
-    //         setDriverBoundaryList((prevList) => [...prevList, item.driverId]);
-    //       });
-    //       resolve("드라이버 목록을 가져오는 데 성공했습니다.");
-    //     })
-    //     .catch((error) => {
-    //       reject(`드라이버 목록을 가져오는 데 실패했습니다. 오류: ${error.message}`);
-    //     });
-    // });
+
+  // return new Promise((resolve, reject) => {
+  //   setDriverBoundaryList([]);
+  //   axios.get(`http://localhost:4000/api/dispatch/${callId}`)
+  //     .then((res) => {
+  //       const data = res.data;
+  //       data.forEach((item) => {
+  //         setDriverBoundaryList((prevList) => [...prevList, item.driverId]);
+  //       });
+  //       resolve("드라이버 목록을 가져오는 데 성공했습니다.");
+  //     })
+  //     .catch((error) => {
+  //       reject(`드라이버 목록을 가져오는 데 실패했습니다. 오류: ${error.message}`);
+  //     });
+  // });
   // };
-  
 
   // 시작하자마자 구글 맵 적용
   useEffect(() => {
@@ -299,6 +295,12 @@ const MapComponent = () => {
     }
   };
 
+  // 드라이버 마크 지우기 함수
+  const removeDriverMarker = (marker) => {
+    if (marker) {
+      marker.setMap(null);
+    }
+  };
   // 원 지우기
   const removeCircle = () => {
     if (circle) {
@@ -315,7 +317,6 @@ const MapComponent = () => {
     ]);
   };
 
-
   const selectMarkerByCallId = (callId) => {
     clientMarkers.forEach((marker) => {
       if (marker.callId !== callId && marker.marker) {
@@ -329,6 +330,7 @@ const MapComponent = () => {
       }
     });
   };
+
   // 드라이버 마크 지우기
   const selectMarkerByDriverID = (driverId) => {
     driverMarkers.forEach((marker) => {
@@ -343,14 +345,21 @@ const MapComponent = () => {
     });
   };
 
-  // 드라이버 마커와 callId를 매핑하는 함수
-  const  addDriverMarkerToMap = (driverId, marker, position) => {
+  const addDriverMarkerToMap = (driverId, marker, position) => {
+    // 이전 마커 지우기
+    driverMarkers.forEach((existingMarker) => {
+      if (existingMarker.driverId === driverId && existingMarker.marker) {
+        removeMarker(existingMarker.marker);
+      }
+    });
+
+    // 새로운 마커 추가
     setDriverMarkerList((prevMarkers) => [
       ...prevMarkers,
-      { driverId, marker, position}
+      { driverId, marker, position },
     ]);
   };
-  
+
   const addClientMarker = (positionInfo, mapInfo, callId) => {
     const marker1 = new window.google.maps.Marker({
       position: positionInfo,
@@ -363,7 +372,7 @@ const MapComponent = () => {
       const clickedCallId = callId; // 클릭한 마커의 callId 가져오기
       const latitude = positionInfo.lat;
       const longitude = positionInfo.lng;
-      
+
       console.log(
         "마크 클릭한 위치 반환 : ",
         positionInfo.lat,
@@ -373,7 +382,6 @@ const MapComponent = () => {
       setTimeout(() => {
         marker1.setAnimation(null);
       }, 3000); // 3초 후 중지 (원하는 시간으로 변경 가능)
-      
 
       // 이제 clickedCallId를 활용하여 원하는 작업을 수행할 수 있음
       console.log("@@Clicked Marker's callId:", clickedCallId);
@@ -443,12 +451,17 @@ const MapComponent = () => {
         `;
     };
 
+    // 드라이버 마크를 2초 후에 지우기
+    setTimeout(() => {
+      removeDriverMarker(marker2);
+    }, 4800);
+
     getDriverInfo();
     // 드라이버 마커 클릭 이벤트 리스너 추가
     marker2.addListener("click", () => {
       const clickedDriverId = driverId;
       setDriverMarkerSelect(() => true);
-      
+
       dispatch(setDriverId(clickedDriverId));
       dispatch(setDriverLatitude(positionInfo.lat));
       dispatch(setDriverLongitude(positionInfo.lng));
@@ -468,9 +481,11 @@ const MapComponent = () => {
       try {
         setDriverBoundaryList([]);
         // const res = await axios.get(`http://localhost:4000/api/dispatch/${callId}`);
-        const res = await axios.get(`http://k9s101.p.ssafy.io:4000/api/dispatch/${callId}`);
+        const res = await axios.get(
+          `http://k9s101.p.ssafy.io:4000/api/dispatch/${callId}`
+        );
         const data = res.data;
-        
+
         data.forEach((item) => {
           setDriverBoundaryList((prevList) => [...prevList, item.driverId]);
         });
@@ -478,26 +493,25 @@ const MapComponent = () => {
         console.error("데이터 가져오기 실패", error);
       }
     };
-    if(map)
-    getDriversInBoundary();
-
-  },[callId])
+    if (map) getDriversInBoundary();
+  }, [callId]);
 
   useEffect(() => {
     const selectDriverMarkerByCallId = () => {
       // 일단 다 투명하게
       driverMarkerList.forEach((driver) => driver.marker.setOpacity(0.2));
-      driverBoundaryList.forEach((driverId) => 
-      getDriverMarkerToOpaque(driverId))
-  }
-  selectDriverMarkerByCallId();
-  },[driverBoundaryList]);
+      driverBoundaryList.forEach((driverId) =>
+        getDriverMarkerToOpaque(driverId)
+      );
+    };
+    selectDriverMarkerByCallId();
+  }, [driverBoundaryList]);
 
-const getDriverMarkerToOpaque = (driverId) => {
-  driverMarkerList.forEach((driver) => {
-    if(driver.driverId === driverId) driver.marker.setOpacity(1);
-  })
-}
+  const getDriverMarkerToOpaque = (driverId) => {
+    driverMarkerList.forEach((driver) => {
+      if (driver.driverId === driverId) driver.marker.setOpacity(1);
+    });
+  };
 
   useEffect(() => {
     if (isDriverLocationChanged || driverMarkerSelect)
@@ -548,6 +562,13 @@ const getDriverMarkerToOpaque = (driverId) => {
           "http://k9s101.p.ssafy.io:4000/api/drivers"
         );
 
+        // 이전 드라이버 마커 삭제
+        driverMarkerList.forEach((driver) => {
+          if (driver.marker) {
+            driver.marker.setMap(null);
+          }
+        });
+
         // SSE 이벤트 핸들러 등록
         eventSource.addEventListener("allDrivers", (res) => {
           const data = JSON.parse(res.data);
@@ -571,8 +592,9 @@ const getDriverMarkerToOpaque = (driverId) => {
         console.error("drivers api error :", error);
       }
     };
+
     getDriverData();
-  },[map, driverId, driverLocation])
+  }, [map, driverId, driverLocation]);
 
   useEffect(() => {
     const getClientData = async () => {
@@ -595,7 +617,7 @@ const getDriverMarkerToOpaque = (driverId) => {
         console.error("drivers api error :", error);
       }
     };
-    
+
     getClientData();
   }, [map]);
 
@@ -650,8 +672,6 @@ const getDriverMarkerToOpaque = (driverId) => {
   const toggleTable = () => {
     setIsTableVisible(!isTableVisible);
   };
-
-  
 
   return (
     <div>
