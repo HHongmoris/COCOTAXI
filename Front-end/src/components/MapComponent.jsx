@@ -633,7 +633,14 @@ const getDriverMarkerToOpaque = (driverId) => {
         />
       </div>
 
-      <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
+      <div
+        style={{
+          position: "relative",
+          height: "100vh",
+          width: "100vw",
+          overflow: "hidden",
+        }}
+      >
         <div
           id="map"
           style={{
