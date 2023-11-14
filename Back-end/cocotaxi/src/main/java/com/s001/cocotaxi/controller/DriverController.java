@@ -69,7 +69,7 @@ public class DriverController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }, 0, 1, TimeUnit.SECONDS);
+        }, 0, 2, TimeUnit.SECONDS);
 
         return ResponseEntity.status(HttpStatus.OK).body(emitter);
     }
