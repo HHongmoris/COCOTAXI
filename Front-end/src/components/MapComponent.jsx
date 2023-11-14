@@ -360,11 +360,11 @@ const MapComponent = () => {
     ]);
   };
 
-  const addClientMarker = (positionInfo, mapInfo, callId) => {
+  const addClientMarker = (positionInfo, mapInfo, callId, icontype) => {
     const marker1 = new window.google.maps.Marker({
       position: positionInfo,
       map: mapInfo, // 마커를 지도에 추가
-      icon: "https://ssafy-cocotaxi.s3.ap-northeast-2.amazonaws.com/client.png",
+      icon: `https://sw-s3-bucket.s3.ap-northeast-2.amazonaws.com/${icontype}.png`,
       animation: window.google.maps.Animation.DROP, // 바운스(drop) 애니메이션 활성화
     });
     marker1.addListener("click", () => {
@@ -610,7 +610,8 @@ const MapComponent = () => {
               lat: clients.startPointLatitude,
               lng: clients.startPointLongitude,
             };
-            addClientMarker(clientPosition, map, clients.callId);
+            const icontype = clients.lineColor;
+            addClientMarker(clientPosition, map, clients.callId, icontype);
           });
         }
       } catch (error) {
