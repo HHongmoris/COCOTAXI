@@ -35,13 +35,8 @@ const MapComponent = () => {
   const [driverMarkerList, setDriverMarkerList] = useState([]);
   const [driverBoundaryList, setDriverBoundaryList] = useState([]);
   const [clientMarkerSelect, setClientMarkerSelect] = useState(false);
-  const [driverMarkerList, setDriverMarkerList] = useState([]);
   const [driverMarkerSelect, setDriverMarkerSelect] = useState(false);
-
   const [isTableVisible, setIsTableVisible] = useState(false);
-
-  // 테스트
-  const [tempCallId, setTempCallId] = useState(0);
 
   // Redux에서 값 가져오기
   const dispatch = useDispatch();
