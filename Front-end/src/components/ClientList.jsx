@@ -7,7 +7,6 @@ import {
   setDriverLatitude,
   setDriverLongitude,
   setCallId,
-  setDriverBoundary,
 } from "../redux/actions";
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
