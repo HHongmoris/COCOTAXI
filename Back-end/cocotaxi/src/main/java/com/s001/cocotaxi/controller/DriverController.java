@@ -36,43 +36,43 @@ public class DriverController {
 //    }
 
     //SSE 이식
-    @GetMapping
-    public ResponseEntity<SseEmitter> getDriverList() {
-        //timeout 시간 설정
-        SseEmitter emitter = new SseEmitter(-1L);
-        sseEmitters.add(emitter);
-
-        try {
-            List<AllDriverResponse> driverList = driverService.selectAllDrivers();
-
-            //이 네임이 프론트에서 이 에미터를 실행시켜주는
-            emitter.send(SseEmitter.event().name("allDrivers").data(driverList));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(emitter);
-    }
-
-    //SSE 테스트 2 -> 보다 직접적으로 데이터 전송 로직
 //    @GetMapping
 //    public ResponseEntity<SseEmitter> getDriverList() {
+//        //timeout 시간 설정
 //        SseEmitter emitter = new SseEmitter(-1L);
 //        sseEmitters.add(emitter);
 //
-//        // 주기적으로 최신 좌표를 가져와서 클라이언트에게 전송
-//        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-//        executor.scheduleAtFixedRate(() -> {
-//            try {
-//                List<AllDriverResponse> driverList = driverService.selectAllDrivers();
-//                emitter.send(SseEmitter.event().name("allDrivers").data(driverList));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }, 0, 1, TimeUnit.SECONDS);
+//        try {
+//            List<AllDriverResponse> driverList = driverService.selectAllDrivers();
+//
+//            //이 네임이 프론트에서 이 에미터를 실행시켜주는
+//            emitter.send(SseEmitter.event().name("allDrivers").data(driverList));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 //
 //        return ResponseEntity.status(HttpStatus.OK).body(emitter);
 //    }
+
+    //SSE 테스트 2 -> 보다 직접적으로 데이터 전송 로직
+    @GetMapping
+    public ResponseEntity<SseEmitter> getDriverList() {
+        SseEmitter emitter = new SseEmitter(-1L);
+        sseEmitters.add(emitter);
+
+        // 주기적으로 최신 좌표를 가져와서 클라이언트에게 전송
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(() -> {
+            try {
+                List<AllDriverResponse> driverList = driverService.selectAllDrivers();
+                emitter.send(SseEmitter.event().name("allDrivers").data(driverList));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }, 0, 1, TimeUnit.SECONDS);
+
+        return ResponseEntity.status(HttpStatus.OK).body(emitter);
+    }
 
 
 
