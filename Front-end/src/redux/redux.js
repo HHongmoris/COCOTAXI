@@ -63,7 +63,6 @@ const flagsReducer = (state = initialState, action) => {
           ...state,
           driver_id: action.payload,
         };
-
     default:
       return state;
   }
