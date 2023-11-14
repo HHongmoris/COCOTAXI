@@ -98,7 +98,7 @@ const MapComponent = () => {
 
       const getDriverinfo = async () => {
         const res = await axios.get(
-          "http://k9s101.p.ssafy.io:4000/api/callings"
+          `http://k9s101.p.ssafy.io:4000/api/dispatch?callId=${callId}&driverId=${driverId}`
         );
         console.log("@@@@@@@@@@@@@@@@@2", res);
       };
@@ -462,7 +462,7 @@ const MapComponent = () => {
     // 드라이버 마크를 2초 후에 지우기
     setTimeout(() => {
       removeDriverMarker(marker2);
-    }, 4800);
+    }, 3000);
 
     getDriverInfo();
     // 드라이버 마커 클릭 이벤트 리스너 추가
