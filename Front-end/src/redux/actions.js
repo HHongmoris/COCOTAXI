@@ -68,11 +68,3 @@ export const setDriverId = (id) => {
     payload : id,
   }
 }
-
-// driverBoundaryList를 저장하는 창고
-export const setDriverBoundary = (items) => {
-  return {
-    type : SET_DRIVER_BOUNDARY,
-    payload : items
-  }
-}
