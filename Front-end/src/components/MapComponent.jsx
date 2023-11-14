@@ -467,7 +467,8 @@ const MapComponent = () => {
     const getDriversInBoundary = async () => {
       try {
         setDriverBoundaryList([]);
-        const res = await axios.get(`http://localhost:4000/api/dispatch/${callId}`);
+        // const res = await axios.get(`http://localhost:4000/api/dispatch/${callId}`);
+        const res = await axios.get(`http://k9s101.p.ssafy.io:4000/api/dispatch/${callId}`);
         const data = res.data;
         
         data.forEach((item) => {
@@ -482,15 +483,15 @@ const MapComponent = () => {
 
   },[callId])
 
-useEffect(() => {
-  const selectDriverMarkerByCallId = () => {
-    // 일단 다 투명하게
-    driverMarkerList.forEach((driver) => driver.marker.setOpacity(0.2));
-    driverBoundaryList.forEach((driverId) => 
-    getDriverMarkerToOpaque(driverId))
-}
-selectDriverMarkerByCallId();
-},[driverBoundaryList]);
+  useEffect(() => {
+    const selectDriverMarkerByCallId = () => {
+      // 일단 다 투명하게
+      driverMarkerList.forEach((driver) => driver.marker.setOpacity(0.2));
+      driverBoundaryList.forEach((driverId) => 
+      getDriverMarkerToOpaque(driverId))
+  }
+  selectDriverMarkerByCallId();
+  },[driverBoundaryList]);
 
 const getDriverMarkerToOpaque = (driverId) => {
   driverMarkerList.forEach((driver) => {
