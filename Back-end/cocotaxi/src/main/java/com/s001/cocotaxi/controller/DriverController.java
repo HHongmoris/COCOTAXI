@@ -38,8 +38,8 @@ public class DriverController {
     //SSE 이식
     @GetMapping
     public ResponseEntity<SseEmitter> getDriverList() {
-        //1초씩 갱신되게
-        SseEmitter emitter = new SseEmitter(1000L);
+        //timeout 시간 설정
+        SseEmitter emitter = new SseEmitter(-1L);
         sseEmitters.add(emitter);
 
         try {
@@ -57,7 +57,7 @@ public class DriverController {
     //SSE 테스트 2 -> 보다 직접적으로 데이터 전송 로직
 //    @GetMapping
 //    public ResponseEntity<SseEmitter> getDriverList() {
-//        SseEmitter emitter = new SseEmitter(20000L);
+//        SseEmitter emitter = new SseEmitter(-1L);
 //        sseEmitters.add(emitter);
 //
 //        // 주기적으로 최신 좌표를 가져와서 클라이언트에게 전송
