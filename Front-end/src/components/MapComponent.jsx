@@ -96,6 +96,14 @@ const MapComponent = () => {
       const midIndex = Math.floor(coords.length / 2);
       const midCoord = coords[midIndex];
 
+      const getDriverinfo = async () => {
+        const res = await axios.get(
+          "http://k9s101.p.ssafy.io:4000/api/callings"
+        );
+        console.log("@@@@@@@@@@@@@@@@@2", res);
+      };
+      getDriverinfo();
+
       // 정보 창 내용 설정
       const contentString = `
       <div style="max-height: 58px; overflow: auto;">
@@ -381,7 +389,7 @@ const MapComponent = () => {
       marker1.setAnimation(window.google.maps.Animation.BOUNCE);
       setTimeout(() => {
         marker1.setAnimation(null);
-      }, 3000); // 3초 후 중지 (원하는 시간으로 변경 가능)
+      }, 3200); // 3초 후 중지 (원하는 시간으로 변경 가능)
 
       // 이제 clickedCallId를 활용하여 원하는 작업을 수행할 수 있음
       console.log("@@Clicked Marker's callId:", clickedCallId);
