@@ -706,7 +706,7 @@ const MapComponent = () => {
 
   return (
     <div>
-      <div style={{ position: "absolute", top: "5%", right: "5%", zIndex: 2 }}>
+      <div style={{ position: "absolute", top: "10%", right: "5%", zIndex: 2 }}>
         <img
           src={isTableVisible ? CoCoGreen : CoCoRed}
           alt={isTableVisible ? "CoCoGreen" : "CoCoRed"}
@@ -714,18 +714,20 @@ const MapComponent = () => {
           style={{ cursor: "pointer", width: "70px", height: "70px" }}
         />
       </div>
-
-      <button
-        onClick={toggleManual}
-        style={{
-          cursor: "pointer",
-          marginLeft: "10px", // Adjust the margin as needed
-        }}
-      >
-        Open Manual Information
-      </button>
-
-      {isManualVisible && <ManualInformation />}
+      <div style={{ position: "absolute", top: "2%", right: "5%", zIndex: 2 }}>
+        <button
+          onClick={toggleManual}
+          style={{
+            cursor: "pointer",
+            marginLeft: "10px", // Adjust the margin as needed
+          }}
+        >
+          Open Manual Information
+        </button>
+      </div>
+      <div style={{ position: "absolute", top: "10%", right: "5%", zIndex: 2 }}>
+        {isManualVisible && <ManualInformation />}
+      </div>
 
       <div
         style={{
