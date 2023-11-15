@@ -446,7 +446,7 @@ const MapComponent = () => {
       );
 
       // 성공적으로 데이터를 불러왔을 때의 처리
-      // console.log('데이터:', res.data);
+      console.log("데이터:", res.data);
       // 정보 창 내용 설정
       driverInfo = `
         <div>
