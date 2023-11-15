@@ -306,7 +306,8 @@ const MapComponent = () => {
   // 드라이버 마크 지우기 함수
   const removeDriverMarker = (marker) => {
     if (marker) {
-      marker.setMap(null);
+      // marker.setMap(null);
+      removeMarker(marker);
     }
   };
   // 원 지우기
@@ -422,6 +423,7 @@ const MapComponent = () => {
     driverMarkers.forEach((marker) => {
       if (marker.marker) {
         marker.marker.setMap(null);
+        removeDriverMarker(marker2);
       }
     });
 
@@ -480,7 +482,19 @@ const MapComponent = () => {
       }, 3000);
       marker2.setAnimation(window.google.maps.Animation.BOUNCE);
     });
-    addDriverMarkerToMap(driverId, marker2, positionInfo);
+    // 최초 1회만 호출되도록 확인하는 변수
+    let isMarkerAdded = false;
+
+    const addMarkerOnce = () => {
+      if (!isMarkerAdded) {
+        addDriverMarkerToMap(driverId, marker2, positionInfo);
+        isMarkerAdded = true;
+      }
+    };
+
+    // 1회 호출
+    addMarkerOnce();
+
     return marker2;
   };
   // 6km 내의 driver 탐색
@@ -488,7 +502,6 @@ const MapComponent = () => {
     const getDriversInBoundary = async () => {
       try {
         setDriverBoundaryList([]);
-        // const res = await axios.get(`http://localhost:4000/api/dispatch/${callId}`);
         const res = await axios.get(
           `http://k9s101.p.ssafy.io:4000/api/dispatch/${callId}`
         );
@@ -554,9 +567,9 @@ const MapComponent = () => {
         addClientMarker({ lat: centerLat, lng: centerLng }, map, callId)
       );
       if (driverMarker) removeMarker(driverMarker);
-      setDriverMarker(() =>
-        addDriverMarker({ lat: driverLat, lng: driverLng }, map, driverId)
-      );
+      // setDriverMarker(() =>
+      //   addDriverMarker({ lat: driverLat, lng: driverLng }, map, driverId)
+      // );
     }
   }, [driverLat, driverLng, centerLng, centerLat, map]);
 
