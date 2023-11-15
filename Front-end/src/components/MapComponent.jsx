@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import ClientList from "./ClientList";
 import DispatchDriverList from "./DispatchDriverList";
 import MatchingToast from "./MatchingToast";
+import ManualInformation from "./ManualInformation";
 import axios from "axios";
 import { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -37,6 +38,7 @@ const MapComponent = () => {
   const [clientMarkerSelect, setClientMarkerSelect] = useState(false);
   const [driverMarkerSelect, setDriverMarkerSelect] = useState(false);
   const [isTableVisible, setIsTableVisible] = useState(false);
+  const [isManualVisible, setIsManualVisible] = useState(false);
 
   // Redux에서 값 가져오기
   const dispatch = useDispatch();
@@ -696,6 +698,12 @@ const MapComponent = () => {
     setIsTableVisible(!isTableVisible);
   };
 
+  const toggleManual = () => {
+    setIsManualVisible(!isManualVisible);
+  };
+
+  console.log("location : ", driverLng, driverLat);
+
   return (
     <div>
       <div style={{ position: "absolute", top: "5%", right: "5%", zIndex: 2 }}>
@@ -706,6 +714,18 @@ const MapComponent = () => {
           style={{ cursor: "pointer", width: "70px", height: "70px" }}
         />
       </div>
+
+      <button
+        onClick={toggleManual}
+        style={{
+          cursor: "pointer",
+          marginLeft: "10px", // Adjust the margin as needed
+        }}
+      >
+        Open Manual Information
+      </button>
+
+      {isManualVisible && <ManualInformation />}
 
       <div
         style={{
