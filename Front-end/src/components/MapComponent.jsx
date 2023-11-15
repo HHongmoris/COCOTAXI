@@ -706,7 +706,7 @@ const MapComponent = () => {
 
   return (
     <div>
-      <div style={{ position: "absolute", top: "10%", right: "5%", zIndex: 2 }}>
+      <div style={{ position: "absolute", top: "11%", right: "6%", zIndex: 2 }}>
         <img
           src={isTableVisible ? CoCoGreen : CoCoRed}
           alt={isTableVisible ? "CoCoGreen" : "CoCoRed"}
@@ -720,6 +720,7 @@ const MapComponent = () => {
           style={{
             cursor: "pointer",
             marginLeft: "10px", // Adjust the margin as needed
+            border: "2px solid",
           }}
         >
           Open Manual Information
