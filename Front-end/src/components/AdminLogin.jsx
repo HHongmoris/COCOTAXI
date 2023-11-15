@@ -34,6 +34,12 @@ const LogoImage = styled.img`
   margin: 20px auto;
 `;
 
+const LoginButton = styled.button`
+  width: 200px;
+  border: 1px solid;
+  border-radius: 8px;
+`;
+
 function AdminLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -56,7 +62,7 @@ function AdminLogin() {
 
       <LoginForm onSubmit={handleLogin}>
         <InputContainer>
-          <InputLabel>아이디</InputLabel>
+          <InputLabel style={{ fontWeight: "bold" }}>ID</InputLabel>
           <input
             type="text"
             placeholder="Username"
@@ -66,7 +72,7 @@ function AdminLogin() {
         </InputContainer>
 
         <InputContainer>
-          <InputLabel>비밀번호</InputLabel>
+          <InputLabel style={{ fontWeight: "bold" }}>Password</InputLabel>
           <input
             type="password"
             placeholder="Password"
@@ -75,7 +81,12 @@ function AdminLogin() {
           />
         </InputContainer>
 
-        <button type="submit">Login</button>
+        <LoginButton
+          type="submit"
+          style={{ marginTop: "10px", fontWeight: "bold" }}
+        >
+          Login
+        </LoginButton>
       </LoginForm>
     </LoginContainer>
   );
