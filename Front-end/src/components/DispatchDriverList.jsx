@@ -96,7 +96,7 @@ function DispatchDriverList() {
   //[updateDriverId, updateDriveLng, updateDriverLat]
 
   const url = `http://k9s101.p.ssafy.io:4000/api/dispatch/${callId}`;
-  // const url = `http://localhost:9000/api/dispatch/${callId}`;
+  // const url = `http://localhost:4000/api/dispatch/${callId}`;
 
   const fetchData = async () => {
     try {
@@ -105,7 +105,7 @@ function DispatchDriverList() {
       });
       if (response.status === 200) {
         const data = await response.json();
-        console.log("driverList : " + data);
+        // console.log("driverList : " + data);
         setDriverList(data);
       }
     } catch (error) {
@@ -162,7 +162,7 @@ function DispatchDriverList() {
   };
 
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
-  const maxRows = 99;
+  const maxRows = 60;
 
   console.log("driverList called");
 

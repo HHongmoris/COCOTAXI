@@ -11,6 +11,7 @@ import {
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
+import axios from "axios";
 
 const TableContainer = styled.div`
   max-height: 240px;
@@ -97,7 +98,7 @@ function ClientList() {
   };
 
   const url = `http://k9s101.p.ssafy.io:4000/api/callings`;
-  // const url = `http://localhost:9000/api/callings`;
+  // const url = `http://localhost:4000/api/callings`;
   const fetchData = async () => {
     try {
       const response = await fetch(url, {
@@ -105,7 +106,7 @@ function ClientList() {
       });
       if (response.status === 200) {
         const data = await response.json();
-        console.log("clientList : ", data);
+        // console.log("clientList : ", data);
         setClientList(data);
       }
     } catch (error) {
@@ -120,22 +121,21 @@ function ClientList() {
   // 좌표를 주소로 변환하는 함수
   async function reverseGeocodeCoordinates(latitude, longitude) {
     // const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
-
-    try {
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      if (data.display_name) {
-        const address = data.display_name;
-        console.log("주소:", address);
-        return address;
-      } else {
-        console.error("좌표를 주소로 변환할 수 없습니다.");
-        return "주소 없음";
-      }
-    } catch (error) {
-      console.error("네트워크 오류:", error);
-      return "네트워크 오류";
-    }
+    // try {
+    //   const response = await fetch(apiUrl);
+    //   const data = await response.json();
+    //   if (data.display_name) {
+    //     const address = data.display_name;
+    //     console.log("주소:", address);
+    //     return address;
+    //   } else {
+    //     console.error("좌표를 주소로 변환할 수 없습니다.");
+    //     return "주소 없음";
+    //   }
+    // } catch (error) {
+    //   console.error("네트워크 오류:", error);
+    //   return "네트워크 오류";
+    // }
   }
 
   // 데이터를 react-table 형식에 맞게 변환
@@ -214,12 +214,12 @@ function ClientList() {
       );
 
       setData(newData);
-      console.log(data);
+      // console.log(data);
     };
 
     fetchData();
   }, [clientList]);
-  console.log(data);
+  // console.log(data);
 
   // react-table 초기화
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
@@ -228,7 +228,7 @@ function ClientList() {
   });
 
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
-  const maxRows = 99;
+  const maxRows = 30;
 
   console.log("clientList called");
 
