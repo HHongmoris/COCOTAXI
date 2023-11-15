@@ -5,12 +5,14 @@ import com.s001.cocotaxi.repository.DriverRepository;
 import com.s001.cocotaxi.repository.MovingRepository;
 import com.s001.cocotaxi.sse.DTO.Location;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MovingService {
@@ -59,6 +61,8 @@ public class MovingService {
             location.setDriverLongitude(driverMoving.getDriverLongitude());
             locationList.add(location);
         }
+
+        log.info("movingCount : "+movingCount);
         movingCount++;
 
         return locationList;
