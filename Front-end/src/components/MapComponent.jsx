@@ -106,9 +106,10 @@ const MapComponent = () => {
 
       // 정보 창 내용 설정
       const contentString = `
-      <div style="max-height: 58px; overflow: auto;">
+      <div style="max-height: 100px; overflow: auto;">
         <h2 style="font-size: 12px;">3KM</h2>
         <p style="font-size: 10px;">6min.</p>
+        <button style="width: 100%">Dispatch</button>
       </div>
     `;
 
