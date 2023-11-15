@@ -11,7 +11,7 @@ import {
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
-import axios from 'axios';
+import axios from "axios";
 
 const TableContainer = styled.div`
   max-height: 240px;
@@ -79,7 +79,7 @@ function ClientList() {
   const callId = useSelector((state) => state.call_id);
   const dispatch = useDispatch();
   const [clickedRow, setClickedRow] = useState(null);
- 
+
   // let map;
 
   const handleRowClick = (startPointLatitude, startPointLongitude, callId) => {
@@ -121,7 +121,6 @@ function ClientList() {
   // 좌표를 주소로 변환하는 함수
   async function reverseGeocodeCoordinates(latitude, longitude) {
     // const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
-
     // try {
     //   const response = await fetch(apiUrl);
     //   const data = await response.json();
@@ -229,7 +228,7 @@ function ClientList() {
   });
 
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
-  const maxRows = 99;
+  const maxRows = 30;
 
   console.log("clientList called");
 
