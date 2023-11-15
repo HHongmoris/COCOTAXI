@@ -170,7 +170,6 @@ function DispatchDriverList() {
     <div>
       {isDispatchCheckOpen && (
         <DispatchCheck
-          style={{ height: "200px" }}
           onClose={() => setDispatchCheckOpen(false)}
           callId={callId} // callId와 driverId를 DispatchCheck에 전달
           driverId={driverId}
