@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
 import axios from "axios";
+import DispatchCheck from "./DispatchCheck";
 
 const RoundedDiv = styled.div`
   border-radius: 10px 10px 0 0;
@@ -80,6 +81,7 @@ function DispatchDriverList() {
   const driverId = useSelector((state) => state.driver_id);
   const dispatch = useDispatch();
   const [clickedDriver, setClickedDriver] = useState(null);
+  const [isDispatchCheckOpen, setDispatchCheckOpen] = useState(false);
 
   const handleRowClick = (driverId, driverLng, driverLat) => {
     dispatch(setDriverId(driverId));
@@ -155,22 +157,8 @@ function DispatchDriverList() {
     data,
   });
 
-  const onClickDispatch = () => {
-    axios
-      .post("http://k9s101.p.ssafy.io:4000/api/dispatch", null, {
-        params: {
-          callId: callId,
-          driverId: driverId,
-        },
-      })
-      .then((response) => {
-        console.log("Dispatch Activated", response);
-        alert("강제 배차가 완료되었습니다.");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    console.log("Dispatch Activated");
+  const onClickDispatchCheck = () => {
+    setDispatchCheckOpen(true);
   };
 
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
@@ -180,92 +168,103 @@ function DispatchDriverList() {
 
   return (
     <div>
-      <RoundedDiv>
-        <TableContainer>
-          <Table {...getTableProps()}>
-            <Thead>
-              {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps()}>
-                      {column.render("Header")}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </Thead>
-          </Table>
-          <TbodyContainer>
+      {isDispatchCheckOpen && (
+        <DispatchCheck
+          onClose={() => setDispatchCheckOpen(false)}
+          callId={callId} // callId와 driverId를 DispatchCheck에 전달
+          driverId={driverId}
+        />
+      )}
+      {!isDispatchCheckOpen && (
+        <RoundedDiv>
+          <TableContainer>
             <Table {...getTableProps()}>
-              <Tbody>
-                {rows.map((row) => {
-                  prepareRow(row);
-                  return (
-                    <TableRow
-                      {...row.getRowProps()}
-                      onClick={() =>
-                        handleRowClick(
-                          row.original.driverId,
-                          row.original.driverLongitude,
-                          row.original.driverLatitude
-                        )
-                      }
-                      isClicked={row.original.driverId === clickedDriver} // 클릭된 행에만 스타일 적용
-                    >
-                      {row.cells.map((cell, index) => {
-                        let cellWidth;
-                        switch (index) {
-                          case 1:
-                            cellWidth = "40%";
-                            break;
-                          case 2:
-                            cellWidth = "26%";
-                            break;
-                          default:
-                            cellWidth = "auto";
-                        }
-
-                        return (
-                          <TableCell
-                            {...cell.getCellProps()}
-                            style={{ width: cellWidth }}
-                          >
-                            {cell.render("Cell")}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
-                {Array(Math.max(0, maxRows - rows.length))
-                  .fill()
-                  .map((_, index) => (
-                    <tr key={index}>
-                      {columns.map((column, columnIndex) => (
-                        <TableCell key={columnIndex}></TableCell>
-                      ))}
-                    </tr>
-                  ))}
-              </Tbody>
+              <Thead>
+                {headerGroups.map((headerGroup) => (
+                  <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <th {...column.getHeaderProps()}>
+                        {column.render("Header")}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </Thead>
             </Table>
-          </TbodyContainer>
-        </TableContainer>
-      </RoundedDiv>
-      <div>
-        <button
-          onClick={onClickDispatch}
-          style={{
-            width: "100%", // 버튼이 표 안에 가득 차도록 너비 설정
-            padding: "10px", // 원하는 패딩 설정
-            border: "none", // 테두리 제거
-            color: "white", // 글자색 설정
-            backgroundColor: "#fa7d0b",
-            cursor: "pointer", // 커서 스타일 설정
-          }}
-        >
-          Dispatch
-        </button>
-      </div>
+            <TbodyContainer>
+              <Table {...getTableProps()}>
+                <Tbody>
+                  {rows.map((row) => {
+                    prepareRow(row);
+                    return (
+                      <TableRow
+                        {...row.getRowProps()}
+                        onClick={() =>
+                          handleRowClick(
+                            row.original.driverId,
+                            row.original.driverLongitude,
+                            row.original.driverLatitude
+                          )
+                        }
+                        isClicked={row.original.driverId === clickedDriver} // 클릭된 행에만 스타일 적용
+                      >
+                        {row.cells.map((cell, index) => {
+                          let cellWidth;
+                          switch (index) {
+                            case 1:
+                              cellWidth = "40%";
+                              break;
+                            case 2:
+                              cellWidth = "26%";
+                              break;
+                            default:
+                              cellWidth = "auto";
+                          }
+
+                          return (
+                            <TableCell
+                              {...cell.getCellProps()}
+                              style={{ width: cellWidth }}
+                            >
+                              {cell.render("Cell")}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
+                  {Array(Math.max(0, maxRows - rows.length))
+                    .fill()
+                    .map((_, index) => (
+                      <tr key={index}>
+                        {columns.map((column, columnIndex) => (
+                          <TableCell key={columnIndex}></TableCell>
+                        ))}
+                      </tr>
+                    ))}
+                </Tbody>
+              </Table>
+            </TbodyContainer>
+          </TableContainer>
+        </RoundedDiv>
+      )}
+      {!isDispatchCheckOpen && (
+        <div>
+          <button
+            onClick={onClickDispatchCheck}
+            style={{
+              width: "100%", // 버튼이 표 안에 가득 차도록 너비 설정
+              padding: "10px", // 원하는 패딩 설정
+              border: "none", // 테두리 제거
+              color: "white", // 글자색 설정
+              backgroundColor: "#fa7d0b",
+              cursor: "pointer", // 커서 스타일 설정
+            }}
+          >
+            Dispatch
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -32,12 +32,61 @@ function DispatchCheck({ onClose, callId, driverId }) {
   };
 
   return (
-    <div>
-      <p>
-        Would you like to dispatch Client {callId} in Driver {driverId}?
-      </p>
-      <button onClick={onClose}>Close</button>
-      <button onClick={onClickDispatch}>Dispatch</button>
+    <div
+      style={{
+        height: "240px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "#fa7d0b",
+          padding: "10px",
+          textAlign: "center",
+          color: "white",
+          borderRadius: "10px 10px 0 0",
+          fontWeight: "bold",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Dispatch Information
+      </div>
+      <div style={{ textAlign: "center", fontSize: "20px" }}>
+        <p>Would you like to dispatch</p>
+        <p>
+          <span style={{ fontWeight: "bold", fontSize: "25px" }}>
+            Client {callId}
+          </span>
+          {"  "}
+          in {"  "}
+          <span style={{ fontWeight: "bold", fontSize: "25px" }}>
+            Driver {driverId}
+          </span>
+          ?
+        </p>
+      </div>
+
+      <button
+        style={{
+          width: "100%",
+          padding: "10px",
+          border: "none",
+          color: "white",
+          backgroundColor: "#fa7d0b",
+          cursor: "pointer",
+          borderRadius: "0",
+        }}
+        onClick={onClickDispatch}
+      >
+        Dispatch
+      </button>
+      <button style={{ borderRadius: "0 0 10px 10px" }} onClick={onClose}>
+        Cancel
+      </button>
     </div>
   );
 }
