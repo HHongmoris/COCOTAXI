@@ -13,23 +13,56 @@ import styled from "styled-components";
 import axios from "axios";
 
 function DispatchCheck({ onClose, callId, driverId }) {
-  const onClickDispatch = () => {
-    axios
-      .post("http://k9s101.p.ssafy.io:4000/api/dispatch", null, {
-        params: {
-          callId: callId,
-          driverId: driverId,
-        },
-      })
-      .then((response) => {
-        console.log("Dispatch Activated", response);
-        alert("강제 배차가 완료되었습니다.");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  // Dispatch 버튼 게이지
+  const [progress, setProgress] = useState(100);
+  const dispatch = useDispatch();
+
+  const onClickDispatch = async () => {
+    try {
+      const response = await axios.post(
+        "http://k9s101.p.ssafy.io:4000/api/dispatch",
+        null,
+        {
+          params: {
+            callId: callId,
+            driverId: driverId,
+          },
+        }
+      );
+
+      console.log("Dispatch Activated", response);
+      alert("강제 배차가 완료되었습니다.");
+      onClose(); // Dispatch가 완료된 후에 onClose 호출
+    } catch (error) {
+      console.error(error);
+    }
     console.log("Dispatch Activated");
   };
+
+  useEffect(() => {
+    const startTime = performance.now();
+
+    const animate = (time) => {
+      const progressTime = time - startTime;
+      const maxProgressTime = 5000;
+      const progressPercentage = Math.min(progressTime / maxProgressTime, 1);
+
+      setProgress(100 - progressPercentage * 100);
+
+      if (progressPercentage < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        onClickDispatch();
+        onClose();
+      }
+    };
+
+    requestAnimationFrame(animate);
+
+    return () => {
+      setProgress(100);
+    };
+  }, []);
 
   return (
     <div
@@ -76,15 +109,24 @@ function DispatchCheck({ onClose, callId, driverId }) {
           padding: "10px",
           border: "none",
           color: "white",
-          backgroundColor: "#fa7d0b",
+          fontWeight: "bold",
+          background: `linear-gradient(to right, #269c42 ${progress}%, #fa7d0b ${progress}%)`,
           cursor: "pointer",
           borderRadius: "0",
+          transition: "background-color 0.1s ease",
         }}
         onClick={onClickDispatch}
       >
         Dispatch
       </button>
-      <button style={{ borderRadius: "0 0 10px 10px" }} onClick={onClose}>
+      <button
+        style={{
+          borderRadius: "0 0 10px 10px",
+          color: "red",
+          fontWeight: "bold",
+        }}
+        onClick={onClose}
+      >
         Cancel
       </button>
     </div>
