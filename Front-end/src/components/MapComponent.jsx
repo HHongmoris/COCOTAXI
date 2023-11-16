@@ -87,46 +87,41 @@ const MapComponent = () => {
       if (polylineData) polylineData.setMap(null);
       if (polyline2) polyline2.setMap(null);
       console.log(isClientLocationChanged);
-      // if (isClientLocationChanged) {
-      //   polylineData.setMap(null);
-      //   polyline2.setMap(null);
-      //   dispatch(isClientChanged(false));
-      // }
 
       if (infowindow2) infowindow2.setMap(null);
 
       const midIndex = Math.floor(coords.length / 2);
       const midCoord = coords[midIndex];
-
       const getDriverinfo = async () => {
         const res = await axios.get(
           `http://k9s101.p.ssafy.io:4000/api/dispatch?callId=${callId}&driverId=${driverId}`
         );
         console.log("@@@@@@@@@@@@@@@@@2", res);
+        // 정보 창 내용 설정
+        const contentString = `
+            <div style="max-height: 100px; overflow: auto;">
+            <h2 style="font-size: 12px;">${res.data.distance}</h2>
+            <p style="font-size: 10px;">${res.data.realTime}</p>
+            <button style="width: 100%">Dispatch</button>
+            </div>
+        `;
+
+        // 정보 창 생성
+        const infoWindow2 = new window.google.maps.InfoWindow({
+          content: contentString,
+        });
+
+        // 폴리라인의 중간 지점 위치 설정
+        const polylineMidpoint = new window.google.maps.LatLng(
+          midCoord.lat,
+          midCoord.lng
+        );
+        infoWindow2.setPosition(polylineMidpoint); // 정보 창을 중간 지점으로
+        infoWindow2.open(map);
       };
+
+      // 함수 호출
       getDriverinfo();
-
-      // 정보 창 내용 설정
-      const contentString = `
-      <div style="max-height: 100px; overflow: auto;">
-        <h2 style="font-size: 12px;">3KM</h2>
-        <p style="font-size: 10px;">6min.</p>
-        <button style="width: 100%">Dispatch</button>
-      </div>
-    `;
-
-      // 정보 창 생성
-      const infoWindow2 = new window.google.maps.InfoWindow({
-        content: contentString,
-      });
-
-      // 폴리라인의 중간 지점 위치 설정
-      const polylineMidpoint = new window.google.maps.LatLng(
-        midCoord.lat,
-        midCoord.lng
-      );
-      infoWindow2.setPosition(polylineMidpoint); // 정보 창을 중간 지점으로
-      infoWindow2.open(map);
 
       const multiPolylineCoordinates = [];
       multiPolylineCoordinates.push(coords);
@@ -189,22 +184,6 @@ const MapComponent = () => {
     }
     getAndSetPolylineCoords();
   }, [centerLat, centerLng, driverId, map]);
-
-  // return new Promise((resolve, reject) => {
-  //   setDriverBoundaryList([]);
-  //   axios.get(`http://localhost:4000/api/dispatch/${callId}`)
-  //     .then((res) => {
-  //       const data = res.data;
-  //       data.forEach((item) => {
-  //         setDriverBoundaryList((prevList) => [...prevList, item.driverId]);
-  //       });
-  //       resolve("드라이버 목록을 가져오는 데 성공했습니다.");
-  //     })
-  //     .catch((error) => {
-  //       reject(`드라이버 목록을 가져오는 데 실패했습니다. 오류: ${error.message}`);
-  //     });
-  // });
-  // };
 
   // 시작하자마자 구글 맵 적용
   useEffect(() => {

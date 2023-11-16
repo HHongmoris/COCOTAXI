@@ -31,7 +31,6 @@ function DispatchCheck({ onClose, callId, driverId }) {
       );
 
       console.log("Dispatch Activated", response);
-      alert("강제 배차가 완료되었습니다.");
       onClose(); // Dispatch가 완료된 후에 onClose 호출
     } catch (error) {
       console.error(error);
