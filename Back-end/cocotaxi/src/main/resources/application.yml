@@ -1,0 +1,36 @@
+# database ?? ??
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://k9s101.p.ssafy.io:3306/cocotaxi
+    username: root
+    password: rlatjddn
+
+#    # SSAFY MariaDB
+#    url: jdbc:mariadb://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S09P31S101?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+#    username: S09P31S101
+#    password: vCLYNcqE0x
+
+#    # 로컬 디비 (비상용)
+#    url: jdbc:mariadb://127.0.0.1:3305/cocot
+#    username: root
+#    password: 1234
+
+  thymeleaf:
+    cache: false
+
+  # spring data jpa ??
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 4000
+
+
+openrouteservice:
+  api:
+    key: 5b3ce3597851110001cf6248e4f9c4790f51442babb69eaa1deca3d8
