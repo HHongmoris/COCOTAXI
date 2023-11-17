@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setClientLatitude,
+  setClientLongitude,
+  isClientChanged,
+  setDriverLatitude,
+  setDriverLongitude,
+  setCallId,
+} from "../redux/actions";
 import { useParams } from "react-router-dom";
 import { useTable } from "react-table";
 import styled from "styled-components";
+import axios from "axios";
 
 const TableContainer = styled.div`
   max-height: 240px;
-  width: 100%;
+  width: 170%;
   overflow: hidden;
+  border-radius: 10px;
 `;
 
 const Table = styled.table`
@@ -15,12 +26,13 @@ const Table = styled.table`
 `;
 
 const Thead = styled.thead`
-  background-color: #f2f2f2;
+  background-color: #fa7d0b;
   th {
     padding: 6px;
     border-bottom: 1px solid #ddd;
     font-size: 12px;
     text-align: left;
+    color: white;
   }
 `;
 
@@ -31,40 +43,62 @@ const TbodyContainer = styled.div`
 `;
 
 const Tbody = styled.tbody`
+  background-color: white;
   td {
     padding: 6px;
     border-bottom: 1px solid #ddd;
     font-size: 14px;
+    text-align: left;
   }
 `;
 
-const TableCell = styled.td`
+const ExtendedCell = styled(Tbody)`
+  width: 200px;
+`;
+
+const TableRow = styled.tr`
   height: 30px;
   cursor: pointer;
   transition: background-color 0.3s;
+  background-color: ${(props) => (props.isClicked ? "#e0e0e0" : "inherit")};
 
   &:hover {
     background-color: #e0e0e0;
   }
 `;
 
-function ClientList(props) {
-  const { callId } = props;
+const TableCell = styled.td`
+  height: 30px;
+`;
+
+function ClientList() {
   const [clientList, setClientList] = useState([]);
-  const { centerLat, centerLng } = props;
-  const { updateCallId } = props;
   // MapComponent 갱신을 위한 콜백 함수
-  const { updateCenterLat, updateCenterLng } = props;
+  const clientLatitude = useSelector((state) => state.client_latitude);
+  const clientLongitude = useSelector((state) => state.client_longitude);
+  const callId = useSelector((state) => state.call_id);
+  const dispatch = useDispatch();
+  const [clickedRow, setClickedRow] = useState(null);
 
   // let map;
 
   const handleRowClick = (startPointLatitude, startPointLongitude, callId) => {
-    updateCallId(callId);
-    updateCenterLat(startPointLatitude);
-    updateCenterLng(startPointLongitude);
+    dispatch(setCallId(callId));
+    setClickedRow(callId);
+    if (
+      startPointLatitude !== clientLatitude &&
+      startPointLongitude !== clientLongitude
+    ) {
+      dispatch(isClientChanged(true));
+      dispatch(setClientLatitude(startPointLatitude));
+      dispatch(setClientLongitude(startPointLongitude));
+      dispatch(setDriverLatitude(0));
+      dispatch(setDriverLongitude(0));
+    }
   };
 
-  const url = `http://k9s101.p.ssafy.io:9000/api/callings`;
+  const url = `http://k9s101.p.ssafy.io:4000/api/callings`;
+  // const url = `http://localhost:4000/api/callings`;
   const fetchData = async () => {
     try {
       const response = await fetch(url, {
@@ -72,7 +106,7 @@ function ClientList(props) {
       });
       if (response.status === 200) {
         const data = await response.json();
-        console.log("clientList : ", data);
+        // console.log("clientList : ", data);
         setClientList(data);
       }
     } catch (error) {
@@ -87,33 +121,32 @@ function ClientList(props) {
   // 좌표를 주소로 변환하는 함수
   async function reverseGeocodeCoordinates(latitude, longitude) {
     // const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
-
-    try {
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      if (data.display_name) {
-        const address = data.display_name;
-        console.log("주소:", address);
-        return address;
-      } else {
-        console.error("좌표를 주소로 변환할 수 없습니다.");
-        return "주소 없음";
-      }
-    } catch (error) {
-      console.error("네트워크 오류:", error);
-      return "네트워크 오류";
-    }
+    // try {
+    //   const response = await fetch(apiUrl);
+    //   const data = await response.json();
+    //   if (data.display_name) {
+    //     const address = data.display_name;
+    //     console.log("주소:", address);
+    //     return address;
+    //   } else {
+    //     console.error("좌표를 주소로 변환할 수 없습니다.");
+    //     return "주소 없음";
+    //   }
+    // } catch (error) {
+    //   console.error("네트워크 오류:", error);
+    //   return "네트워크 오류";
+    // }
   }
 
   // 데이터를 react-table 형식에 맞게 변환
   const columns = React.useMemo(
     () => [
       {
-        Header: "callTime",
+        Header: "Request Time",
         accessor: "callCreatedTime",
       },
       {
-        Header: "vehicleType",
+        Header: "VehicleType",
         accessor: "vehicleType",
       },
       {
@@ -127,6 +160,10 @@ function ClientList(props) {
       {
         Header: "Distance",
         accessor: "distance",
+      },
+      {
+        Header: "RealTime",
+        accessor: "realTime",
       },
     ],
     []
@@ -171,17 +208,18 @@ function ClientList(props) {
             distance: item.distance,
             pickUpLocation: item.pickUpLocation,
             dropOffLocation: item.dropOffLocation,
+            realTime: item.realTime,
           };
         })
       );
 
       setData(newData);
-      console.log(data);
+      // console.log(data);
     };
 
     fetchData();
   }, [clientList]);
-  console.log(data);
+  // console.log(data);
 
   // react-table 초기화
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
@@ -190,7 +228,7 @@ function ClientList(props) {
   });
 
   // 표시할 최대 행 수 (4개 이하의 데이터인 경우를 대비)
-  const maxRows = 6;
+  const maxRows = 30;
 
   console.log("clientList called");
 
@@ -213,7 +251,7 @@ function ClientList(props) {
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr
+                <TableRow
                   {...row.getRowProps()}
                   onClick={() =>
                     handleRowClick(
@@ -222,13 +260,40 @@ function ClientList(props) {
                       row.original.callId
                     )
                   }
+                  isClicked={row.original.callId === clickedRow}
                 >
-                  {row.cells.map((cell) => (
-                    <TableCell {...cell.getCellProps()}>
-                      {cell.render("Cell")}
-                    </TableCell>
-                  ))}
-                </tr>
+                  {row.cells.map((cell, index) => {
+                    let cellWidth;
+                    switch (index) {
+                      case 1:
+                        cellWidth = "15.5%";
+                        break;
+                      case 2:
+                        cellWidth = "21%";
+                        break;
+                      case 3:
+                        cellWidth = "23%";
+                        break;
+                      case 4:
+                        cellWidth = "12%";
+                        break;
+                      case 5:
+                        cellWidth = "10.5%";
+                        break;
+                      default:
+                        cellWidth = "auto";
+                    }
+
+                    return (
+                      <TableCell
+                        {...cell.getCellProps()}
+                        style={{ width: cellWidth }}
+                      >
+                        {cell.render("Cell")}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
               );
             })}
             {Array(Math.max(0, maxRows - rows.length))
