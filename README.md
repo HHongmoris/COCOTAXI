@@ -19,9 +19,9 @@
 
 | 이름         | 역할     | 설명                                                         |
 | ------------ | -------- | ------------------------------------------------------------ |
-| 김성우(팀장) | Frontend |                                                              |
+| 김성우(팀장) | Frontend | React를 활용한 프론트 개발<br />JavaScript를 통한 API 호출 및 자료구조 알고리즘 적용을 통한 API들의 최적화된 송출 |
 | 김남우       | Frontend | React와 JavaScript를 이용한 프론트 개발 컴포넌트 설계 ReverseGeocoding(OpenStreetMap/Nominatim) <br />requestAnimationFrame <br />UI/UX |
-| 김민태       | Frontend | Google map 을 활용한 ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ |
+| 김민태       | Frontend | Open Router Service 를 활용한 경로 추출 및 Google Map 적용<br />SSE 통신을 통한 실시간 차량위치 마커 적용<br />ORS 좌표 변형 Google map Polyline 적용<br />DataBase 유지 및 보수 |
 | 홍성민       | Backend  |                                                              |
 
 
@@ -32,24 +32,24 @@
 
 <h4>Google MAP</h4>
 
-| 기능   | 세부기능                                              |
-| ------ | ----------------------------------------------------- |
-| 구글맵 | 영어 버전   Google 버전, 라오스에서 적용              |
-|        | 그림 지도 및 위성 사진 제공                           |
-|        | 호출 요청 및 운전자 시각화 마크 제공 및 정보 제공     |
-|        | 호출 클릭시 6km 반경 원 제공 및 호출 가능 차량 시각화 |
-|        | 30초 이상 대기시 강제배차 서비스 제공                 |
-|        | 차량 유저  간 이동 경로 제공                          |
-|        | 교통 정보 제공                                        |
-|        |                                                       |
-|        |                                                       |
+| 기능            | 세부기능                                                     |
+| --------------- | ------------------------------------------------------------ |
+| 구글맵          | 영어 버전 Google Map, 라오스어 적용, 교통정보, 위성 사진 제공 |
+| 마크            | 호출 요청 및 운전자 시각화 마크 제공 및 정보 제공            |
+| 리스트업        | 6km 이내의 법인차량 및 개인차량 리스트업                     |
+|                 | 30초 이상 배차가 안된 고객 리스트업                          |
+|                 | 승객과 차량의 최적의 경로 리스트업                           |
+| 실시간 모니터링 | 법인 차량 및 개인 차량 위치와 정보 실시간 모니터링           |
+| 강제 배차       | 승객과 차량의 Dispatch 버튼을 통한 강제 배차                 |
 
 
 
 ### **프로젝트의 특장점 **
 
 1. 구글 경로 API 사용료를 줄이기 위해 Open Router Service 를 사용하여 비용을 절감
-1. 
+1. SSE를 통해 기사의 실시간 위치를 반영, 지도에 실시간으로 위치 변동
+1. ReverseGeocoding 으로 위도/경도 좌표계 - 주소 상호변환 
+1. RequestAnimationFrame으로 사용자 모니터 프레임 맞춤형 애니메이션 구현 
 
 
 
@@ -62,51 +62,33 @@
 
 </hr>
 
-<h4>거래소</h4>
+<h4>실시간 모니터링</h4>
 
-![거래소](./exec/assets/전화번호인증.gif)
-
-</hr>
-
-<h4>주문</h4>
-
-![주문](./exec/assets/메인페이지.gif)
+![모니터링](./exec/assets/모니터링.gif)
 
 </hr>
 
-<h4>차트</h4>
+<h4>고객 리스트업</h4>
 
-![차트](./exec/assets/케이지-만들기.gif)
-
-</hr>
-
-<h4>정보</h4>
-
-![정보](./exec/assets/동물추가.gif)
+![리스트업](./exec/assets/리스트업1.gif)
 
 </hr>
 
-<h4>마이페이지</h4>
+<h4>법인 차량 및 개인차량 리스트업</h4>
 
-![마이페이지](./exec/assets/동물 상세.gif)
-
-</hr>
-
-<h4>입출금 내역</h4>
-
-![입출금 내역](./exec/assets/실시간-영상.gif)
+![리스트업](./exec/assets/리스트업2.gif)
 
 </hr>
 
-<h4>더보기</h4>
+<h4>최적 경로 리스트업</h4>
 
-![더보기](./exec/assets/자동화-설정.gif)
+![리스트업](./exec/assets/리스트업3.gif)
 
 </hr>
 
-<h4>내정보 수정</h4>
+<h4>강제 배차</h4>
 
-![내정보 수정](./exec/assets/알림-추가.gif)
+![강제배차](./exec/assets/강제배차.gif)
 
 </hr>
 
@@ -127,17 +109,18 @@
 
 <h4>📱 FrontEnd&BackEnd</h4>
 
-| 상세           |  버전  |
-| :------------- | :----: |
-| REACT          |  1.8   |
-| Java           |   17   |
-| SpringBoot     | 3.1.3  |
-| SpringSecurity |   6    |
-| redisson       | 3.23.4 |
-| redis          |  7.2   |
-| Jenkins        | 2.423  |
-| nginx          | 1.25.2 |
-| docker         | 24.0.6 |
+| 상세       |  버전   |
+| :--------- | :-----: |
+| REACT      |  1.82   |
+| Node       | 18.18.2 |
+| Redux      |  4.2.1  |
+| Java       |   11    |
+| SpringBoot | 2.7.17  |
+| Maria DB   | 11.1.2  |
+| Jenkins    | 2.414.3 |
+| Pipeline   |  2.33   |
+| Ubuntu     |  20.04  |
+| Docker     | 24.0.6  |
 
 
 
@@ -145,7 +128,7 @@
 
 <h4>System Architecture</h4>
 
-![image-20231116154633724](C:\Users\SSAFY\AppData\Roaming\Typora\typora-user-images\image-20231116154633724.png)
+![Architecture](./exec/assets/Architecture.png)
 
 
 
@@ -192,7 +175,7 @@ fffff
 
 ## 6️⃣ 데이터베이스 모델링 (ERD)
 
-![erd](C:\Users\SSAFY\Desktop\coco taxi pic\erd.png)
+![erd](./exec/assets/erd.png)
 
 
 
@@ -244,8 +227,7 @@ fffff
 
 | 이름                                                         | 내용                                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| <a href="https://github.com/niyamallo"><img src="https://avatars.githubusercontent.com/u/122415726?v=4?s=100" width="100px;" alt=""/> |                                                              |
+| <a href="https://github.com/chriskim9512"><img src="https://avatars.githubusercontent.com/u/122415726?v=4?s=100" width="100px;" alt=""/> | **김성우** <br />프론트앤드는 여러 컴포넌트를 만들고 컴포넌트 간의 로직을 구현하는 것이 가장 큰 부분인 줄 알았지만, 핵심적인 부분은 내부 콜백 함수를 포함한 함수들의 연결과 여러 객체 관리를 통한 많은 데이터를 효율적으로 출력하는 것이라는 것을 알게 되었고, 객체 관리와 함수 관리 및 내부 로직들의 연결에 대해 깊이 경험하고 배울 수 있게 되었습니다. |
 | <a href="https://github.com/niyamallo"><img src="https://avatars.githubusercontent.com/u/122415726?v=4?s=100" width="100px;" alt=""/> | **김남우** <br />개발한 대부분의 컴포넌트를 한 페이지에 위치시키는 과정에서 컴포넌트의 구조를 설계하는 것이 어려웠다. 특정 데이터를 어떤 컴포넌트가 가지고 있어야하는지 고민하며 구조를 만들었지만, 기능이나 컴포넌트가 추가될 때마다 데이터의 전달 루트를 새롭게 구성해야했고, 만족스러운 최적화가 되지 않은 상태이다.(추후 리팩토링을 통해 해당 부분 수정 예정). 다량의 위치 데이터가 포함된 테이블에 ReverseGeocoding을 구현하고 적용하며 최소한의 API를 호출하는 로직을 구성하기 어려웠다. requestAnimationFrame을 사용하며 Animation Frame이라는 별도의 queue에 콜백 함수를 담아 실행이 밀리는 현상을 감소시키는 작동원리를 학습했다. 추가적으로 CPU나 GPU 사용량 여부에 따른 콜백 함수의 실행 순서에 대해서도 학습하였다. 기업에서 실제 사용하는 서비스의 일부분을 구현하며 직간접적으로 임직원의 피드백을 받을 수 있었다는 점이 좋았다. 현업에서 요구하는 페이지의 퀄리티를 만들어내기 위해서는 개발에 앞서 컴포넌트의 구조를 정확하게 설계해야 한다는 점을 절실히 느꼈다. 리팩토링을 통해 데이터 전달 과정을 최적화하며 해당 부분에 대해 깊게 고민해볼 계획이다. |
-| <a href="https://github.com/HHongmoris"><img src="https://avatars.githubusercontent.com/u/122426101?v=4?s=100" width="100px;" alt=""/> |                                                              |
-| <a href="https://github.com/minsoon025"><img src="https://avatars.githubusercontent.com/u/112068306?v=4?s=100" width="100px;" alt=""/> | **김민태**<br /> 경주마 조각투자 거래 플랫폼이라는 흥미로운 주제를 가지고 프로젝트를 진행하는 일은 즐거운 일이였습니다. 매일 개발 방향성을 얘기하고 진행했던 점이 좋은 결과를 가져오지 않았나 싶으며, 직접 구현하고 싶었던 기능인 생체인증은 뿌듯함을 가져왔습니다. 처음 사용하는 코틀린 언어는 자바와 유사해 빠르게 익숙해 졌던 것도 신기한 경험이였습니다. |
+| <a href="https://github.com/minsoon025"><img src="https://avatars.githubusercontent.com/u/112068306?v=4?s=100" width="100px;" alt=""/> | **김민태**<br /> 기업과 프로젝트를 진행하면서 요구를 인지하고 맞춰가는 일은 지금까지 해왔던 프로젝트랑 다르게 정리해서 피드백 받고 추가적으로 디벨롭 하는 일은 새롭게 다가왔습니다. <br />기업에서 요금을 절감하기 위해 ORS를 활용해 구글 맵에 적용을 하였는데, 실질적으로 이러한 일이 사업적인 측면에서 더 좋다는 새로운 관점도 배워간 좋은 경험이였습니다. |
 | <a href="https://github.com/HHongmoris"><img src="https://avatars.githubusercontent.com/u/122426101?v=4?s=100" width="100px;" alt=""/> | **홍성민**<br />  팀원들이 자유롭게 의견을 나누고 원활한 피드백이 프로젝트에 많은 도움이 되 |
