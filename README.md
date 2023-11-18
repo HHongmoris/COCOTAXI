@@ -168,7 +168,109 @@
 <h4>💾 BackEnd</h4>
 
 ```
-fffff
+📂 src/main/java
+  ㄴ📦 com.s001.cocotaxi
+      ㄴ📦 config
+          ㄴ📄 EncodeConfig.java
+          ㄴ📄 SwaggerConfig.java
+          ㄴ📄 WebConfig.java
+      ㄴ📦 controller
+          ㄴ📄 CallingsController.java
+          ㄴ📄 ClientController.java
+          ㄴ📄 DispatchController.java
+          ㄴ📄 DriverController.java
+          ㄴ📄 UserController.java
+      ㄴ📦 domain
+          ㄴ📄 Callings.java
+          ㄴ📄 Client.java
+          ㄴ📄 Dispatch.java
+          ㄴ📄 Driver.java
+          ㄴ📄 DriverMoving.java
+      ㄴ📦 dto
+          ㄴ📦 request
+              ㄴ📄 AddClientRequest.java
+              ㄴ📄 DispatchRequest.java
+          ㄴ📦 response
+              ㄴ📄 AllDriverResponse.java
+              ㄴ📄 CallAndDriverResponse.java
+              ㄴ📄 CallingDetailResponse.java
+              ㄴ📄 CallingsResponse.java
+              ㄴ📄 ClientResponse.java
+              ㄴ📄 DispatchListResponse.java
+              ㄴ📄 DriverDetailResponse.java
+      ㄴ📦 jwt
+          ㄴ📦 config
+              ㄴ📄 SecurityConfig.java
+          ㄴ📦 controller
+              ㄴ📄 JwtLoginApiController.java
+          ㄴ📦 domain
+              ㄴ📄 User.java
+              ㄴ📄 UserRole.java
+          ㄴ📦 dto
+              ㄴ📄 JoinRequest.java
+              ㄴ📄 LoginRequest.java
+          ㄴ📦 filter    
+              ㄴ📄 JwtTokenFilter.java
+          ㄴ📦 repository    
+              ㄴ📄 UserRepository.java
+          ㄴ📦 service    
+              ㄴ📄 UserService.java
+          ㄴ📦 util    
+              ㄴ📄 JwtTokenUtil.java
+      ㄴ📦 openRouteService
+          ㄴ📦 config
+              ㄴ📄 AppConfig.java
+          ㄴ📦 controller
+              ㄴ📄 RouteController.java
+          ㄴ📦 dto
+              ㄴ📄 CoordinateResponse.java
+              ㄴ📄 RouteAddressFeature.java
+              ㄴ📄 RouteAddressProperties.java
+              ㄴ📄 RouteAddressResponse.java
+              ㄴ📄 RouteFeature.java
+              ㄴ📄 RouteGeometry.java
+              ㄴ📄 RouteProperties.java
+              ㄴ📄 RouteResponse.java
+              ㄴ📄 RouteSegment.java
+              ㄴ📄 RouteStep.java
+              ㄴ📄 RouteSummary.java
+          ㄴ📦 service
+              ㄴ📄 OpenRouteService.java
+      ㄴ📦 repository
+          ㄴ📄 CallRepository.java
+          ㄴ📄 ClientRepository.java
+          ㄴ📄 DispatchRepository.java
+          ㄴ📄 DriverRepository.java
+          ㄴ📄 MovingRepository.java
+      ㄴ📦 service
+          ㄴ📄 CallingsService.java
+          ㄴ📄 CallingsServiceImpl.java
+          ㄴ📄 ClientService.java
+          ㄴ📄 DispatchService.java
+          ㄴ📄 DispatchServiceImpl.java
+          ㄴ📄 DriverService.java
+          ㄴ📄 DriverServiceImpl.java
+          ㄴ📄 MovingService.java
+      ㄴ📦 openRouteService
+          ㄴ📦 DTO
+              ㄴ📄 Location.java
+          ㄴ📦 sseemitter
+              ㄴ📄 SseEmitters.java
+          ㄴ📦 sserepository
+              ㄴ📄 EmitterRepository.java
+          ㄴ📦 sseservice
+              ㄴ📄 SseService.java
+    ㄴ📄 CocotaxiApplication.java
+📂 src/main/resources
+    ㄴ📂 static
+        ㄴ📄 index.html
+    ㄴ📄 application.yml
+📄 .gitignore
+🐘 build.gradle
+🐳 Dockerfile
+🐘 gradlew
+🐘 gradlew.bat
+🐘 settings.gradle
 ```
 
 
@@ -227,7 +329,7 @@ fffff
 
 | 이름                                                         | 내용                                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| <a href="https://github.com/chriskim9512"><img src="https://avatars.githubusercontent.com/u/122415726?v=4?s=100" width="100px;" alt=""/> | **김성우** <br />프론트앤드는 여러 컴포넌트를 만들고 컴포넌트 간의 로직을 구현하는 것이 가장 큰 부분인 줄 알았지만, 핵심적인 부분은 내부 콜백 함수를 포함한 함수들의 연결과 여러 객체 관리를 통한 많은 데이터를 효율적으로 출력하는 것이라는 것을 알게 되었고, 객체 관리와 함수 관리 및 내부 로직들의 연결에 대해 깊이 경험하고 배울 수 있게 되었습니다. |
+| <a href="https://github.com/ImChrisKim"><img src="https://avatars.githubusercontent.com/u/122762293?v=4?s=100" width="100px;" alt=""/> | **김성우** <br />프론트앤드는 여러 컴포넌트를 만들고 컴포넌트 간의 로직을 구현하는 것이 가장 큰 부분인 줄 알았지만, 핵심적인 부분은 내부 콜백 함수를 포함한 함수들의 연결과 여러 객체 관리를 통한 많은 데이터를 효율적으로 출력하는 것이라는 것을 알게 되었고, 객체 관리와 함수 관리 및 내부 로직들의 연결에 대해 깊이 경험하고 배울 수 있게 되었습니다. |
 | <a href="https://github.com/niyamallo"><img src="https://avatars.githubusercontent.com/u/122415726?v=4?s=100" width="100px;" alt=""/> | **김남우** <br />개발한 대부분의 컴포넌트를 한 페이지에 위치시키는 과정에서 컴포넌트의 구조를 설계하는 것이 어려웠다. 특정 데이터를 어떤 컴포넌트가 가지고 있어야하는지 고민하며 구조를 만들었지만, 기능이나 컴포넌트가 추가될 때마다 데이터의 전달 루트를 새롭게 구성해야했고, 만족스러운 최적화가 되지 않은 상태이다.(추후 리팩토링을 통해 해당 부분 수정 예정). 다량의 위치 데이터가 포함된 테이블에 ReverseGeocoding을 구현하고 적용하며 최소한의 API를 호출하는 로직을 구성하기 어려웠다. requestAnimationFrame을 사용하며 Animation Frame이라는 별도의 queue에 콜백 함수를 담아 실행이 밀리는 현상을 감소시키는 작동원리를 학습했다. 추가적으로 CPU나 GPU 사용량 여부에 따른 콜백 함수의 실행 순서에 대해서도 학습하였다. 기업에서 실제 사용하는 서비스의 일부분을 구현하며 직간접적으로 임직원의 피드백을 받을 수 있었다는 점이 좋았다. 현업에서 요구하는 페이지의 퀄리티를 만들어내기 위해서는 개발에 앞서 컴포넌트의 구조를 정확하게 설계해야 한다는 점을 절실히 느꼈다. 리팩토링을 통해 데이터 전달 과정을 최적화하며 해당 부분에 대해 깊게 고민해볼 계획이다. |
 | <a href="https://github.com/minsoon025"><img src="https://avatars.githubusercontent.com/u/112068306?v=4?s=100" width="100px;" alt=""/> | **김민태**<br /> 기업과 프로젝트를 진행하면서 요구를 인지하고 맞춰가는 일은 지금까지 해왔던 프로젝트랑 다르게 정리해서 피드백 받고 추가적으로 디벨롭 하는 일은 새롭게 다가왔습니다. <br />기업에서 요금을 절감하기 위해 ORS를 활용해 구글 맵에 적용을 하였는데, 실질적으로 이러한 일이 사업적인 측면에서 더 좋다는 새로운 관점도 배워간 좋은 경험이였습니다. |
-| <a href="https://github.com/HHongmoris"><img src="https://avatars.githubusercontent.com/u/122426101?v=4?s=100" width="100px;" alt=""/> | **홍성민**<br />  팀원들이 자유롭게 의견을 나누고 원활한 피드백이 프로젝트에 많은 도움이 되 |
+| <a href="https://github.com/HHongmoris"><img src="https://avatars.githubusercontent.com/u/122426101?v=4?s=100" width="100px;" alt=""/> | **홍성민**<br />  기업과 연계하여 진행한 프로젝트였기에 기업과 소통하는 방식, 요구사항에 맞춰 프로젝트를 확장시키는 방법들을 배울 수 있었습니다. 다른 지역에 있는 팀원과 함께하다보니 온라인과 오프라인을 오가며 소통하고 프로젝트를 진행하여 새로웠고, 온오프라인의 팀 프로젝트를 경험할 수 있어서 좋았습니다. SSE를 통한 실시간 데이터 전송을 구현하여 프로젝트의 완성도를 높일 수 있어 뿌듯했고, 다음에는 웹소켓 서버를 통한 양방향 통신 방식을 구현해보고 싶었습니다. |
