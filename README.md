@@ -67,9 +67,6 @@
     <td align="center">
       ![리스트업](./exec/assets/리스트업1.gif)
     </td>
-    <td align="center">
-      ![리스트업](./exec/assets/리스트업2.gif)
-    </td>
   </tr>
   <tr>
     <td align="center">
@@ -81,24 +78,35 @@
     <td align="center">
       <span>고객 리스트업</span>
     </td>
-    <td align="center">
-      <span>법인 차량 및 개인차량 리스트업</span>
-    </td>
   </tr>
 </table>
 
+<br/>
 
-<h4>최적 경로 리스트업</h4>
-
-![리스트업](./exec/assets/리스트업3.gif)
-
-</hr>
-
-<h4>강제 배차</h4>
-
-![강제배차](./exec/assets/강제배차.gif)
-
-</hr>
+<table>
+  <tr>
+    <td align="center">
+      ![리스트업](./exec/assets/리스트업2.gif)
+    </td>
+    <td align="center">
+      ![리스트업](./exec/assets/리스트업3.gif)
+    </td>
+    <td align="center">
+      ![강제배차](./exec/assets/강제배차.gif)
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <span>법인 차량 및 <br/>개인차량 리스트업</span>
+    </td>
+    <td align="center">
+      <span>최적 경로 리스트업</span>
+    </td>
+    <td align="center">
+      <span>강제 배차</span>
+    </td>
+  </tr>
+</table>
 
 
 
