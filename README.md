@@ -120,7 +120,7 @@
 
 <h4>System Architecture</h4>
 
-![Architecture](./exec/assets/Architecture.png)
+![Architecture](./exec/assets/Architecture.PNG)
 
 
 
