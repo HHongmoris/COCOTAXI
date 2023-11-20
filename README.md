@@ -22,7 +22,7 @@
 | 김성우(팀장) | Frontend | React를 활용한 프론트 개발<br />JavaScript를 통한 API 호출 및 자료구조 알고리즘 적용을 통한 API들의 최적화된 송출 |
 | 김남우       | Frontend | React와 JavaScript를 이용한 프론트 개발 컴포넌트 설계 ReverseGeocoding(OpenStreetMap/Nominatim) <br />requestAnimationFrame <br />UI/UX |
 | 김민태       | Frontend | Open Router Service 를 활용한 경로 추출 및 Google Map 적용<br />SSE 통신을 통한 실시간 차량위치 마커 적용<br />ORS 좌표 변형 Google map Polyline 적용<br />DataBase 유지 및 보수 |
-| 홍성민       | Backend  |                                                              |
+| 홍성민       | Backend  | ERD 설계<br />MariaDB 기반 데이터베이스 구축 및 데이터 관리 <br />Backend Spring Data JPA 적용 API 적용 <br />ORS API 활용, SSE 통신 구현 |
 
 
 
